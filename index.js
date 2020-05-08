@@ -21,8 +21,11 @@ client.config = require("./config.js");
 // Load the logger.
 client.logger = require("./modules/Logger");
 
-// Load the util functions module.
+// Load the client functions module.
 require("./modules/functions.js")(client);
+
+// Load general util functions.
+require("./modules/utils.js")(client);
 
 // Create collections for all commands and aliases.
 client.commands = new Enmap();
