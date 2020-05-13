@@ -1,4 +1,4 @@
-# Equilibrator
+# equibot
 Discord Bot for Equilibrium, a Torn City faction.
 
 ## Requirements
@@ -12,21 +12,19 @@ Other bits needed:
  - At least one [Torn API key](https://www.torn.com/preferences.php#tab=api).
  - The Discord ID for each bot owner, admin, and moderator.
 
-## Downloading
+## Installation
 
-In the parent directory where you want to clone this repo. run the following:
-`git clone https://github.com/PommesMitMayo/Equilibrator`
-
-Once finished:
-- In the folder from where you ran the git command, run `cd Equilibrator` and then run `npm install`.
-- **If you get any error about python or msibuild.exe or binding, read the requirements section again!**
+- In the parent directory where you want to clone this repo. run the following:
+- - `git clone https://github.com/dclose73/equibot`
+- In the folder from where you ran the git command, run `cd equibot` and then run `npm install`.
+- **If you get any error about python or msibuild.exe or binding, review the requirements section**
 - Copy `auth.js.template` to `auth.js` and fill out the required fields.
 - Copy `config.js.template` to `config.js` and fill out the required fields.
 
 ## Starting the bot
 
 To start the bot, run the following command:
-`node new.js`
+`node start`
 
 ## Inviting to a guild
 
@@ -34,3 +32,5 @@ To add the bot to your guild, you have to get an oauth link for it.
 
 You can use this site to help you generate a full OAuth Link, which includes a calculator for the permissions:
 [https://finitereality.github.io/permissions-calculator/?v=0](https://finitereality.github.io/permissions-calculator/?v=0)
+
+Or you can use the [discord developer portal](https://discordapp.com/developers/applications/me) where you created your bot.
