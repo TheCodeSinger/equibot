@@ -24,7 +24,7 @@ Other bits needed:
 ## Starting the bot
 
 To start the bot, run the following command:
-`node start`
+`npm start`
 
 ## Inviting to a guild
 
