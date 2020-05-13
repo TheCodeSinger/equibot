@@ -17,12 +17,12 @@
   "license": "MIT",
   "homepage": "https://github.com/dclose73/equibot#readme",
   "dependencies": {
-    "better-sqlite3": "^6.0.1",
+    "better-sqlite3": "^7.0.1",
     "chalk": "^4.0.0",
-    "discord.js": "^11.6.4",
+    "discord.js": "^12.2.0",
     "enmap": "^5.2.4",
     "inquirer": "^7.1.0",
-    "moment": "^2.24.0",
+    "moment": "^2.25.3",
     "moment-duration-format": "^2.3.2"
   }
 }
