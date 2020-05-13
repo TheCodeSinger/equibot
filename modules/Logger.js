@@ -1,40 +1,50 @@
-/**
- * Logger class employs `chalk` library for adding color and log level
- * highlighting to the console log.
- */
-
 const chalk = require("chalk");
 const moment = require("moment");
+const config = require("../config");
 
-exports.log = (content, type = "log") => {
+/**
+ * Prints a timestamped and colorized message according to log level.
+ */
+function printLogMessage(content, type) {
+  const logLevels = config.logLevels;
   const timestamp = `[${moment().format("YYYY-MM-DD HH:mm:ss")}]:`;
   switch (type) {
-    case "log": {
-      return console.log(`${timestamp} ${chalk.bgBlue(type.toUpperCase())} ${content} `);
-    }
-    case "warn": {
-      return console.log(`${timestamp} ${chalk.black.bgYellow(type.toUpperCase())} ${content} `);
-    }
-    case "error": {
-      return console.log(`${timestamp} ${chalk.bgRed(type.toUpperCase())} ${content} `);
-    }
+
     case "debug": {
+      if (!logLevels.debug) { return; }
       return console.log(`${timestamp} ${chalk.green(type.toUpperCase())} ${content} `);
     }
+
+    case "log": {
+      if (!logLevels.log) { return; }
+      return console.log(`${timestamp} ${chalk.bgCyan(type.toUpperCase())} ${content} `);
+    }
+
+    case "warn": {
+      if (!logLevels.warn) { return; }
+      return console.log(`${timestamp} ${chalk.black.bgYellow(type.toUpperCase())} ${content} `);
+    }
+
+    case "error": {
+      return console.log(`${timestamp} ${chalk.white.bgRed(type.toUpperCase())} ${content} `);
+    }
+
     case "cmd": {
+      if (!logLevels.cmd) { return; }
       return console.log(`${timestamp} ${chalk.black.bgWhite(type.toUpperCase())} ${content}`);
     }
+
     case "ready": {
       return console.log(`${timestamp} ${chalk.black.bgGreen(type.toUpperCase())} ${content}`);
     }
-    default: throw new TypeError("Logger type must be either warn, debug, log, ready, cmd or error.");
+
+    default: throw new TypeError("Logger type must be either log, warn, error, debug, cmd, or ready.");
   }
-};
+}
 
-exports.error = (...args) => this.log(...args, "error");
-
-exports.warn = (...args) => this.log(...args, "warn");
-
-exports.debug = (...args) => this.log(...args, "debug");
-
-exports.cmd = (...args) => this.log(...args, "cmd");
+exports.debug = (...args) => printLogMessage(...args, "debug");
+exports.log = (...args) => printLogMessage(...args, "log");
+exports.warn = (...args) => printLogMessage(...args, "warn");
+exports.error = (...args) => printLogMessage(...args, "error");
+exports.cmd = (...args) => printLogMessage(...args, "cmd");
+exports.ready = (...args) => printLogMessage(...args, "ready");

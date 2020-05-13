@@ -1,7 +1,5 @@
-# equibot
+# Equilibrator
 Discord Bot for Equilibrium, a Torn City faction.
-
-This bot is based on Guide Bot (https://github.com/An-Idiots-Guide/guidebot.git) written and maintained by Evelyne Lachance <eslachance@gmail.com> (http://evie.codes).
 
 ## Requirements
 
@@ -14,21 +12,21 @@ Other bits needed:
  - At least one [Torn API key](https://www.torn.com/preferences.php#tab=api).
  - The Discord ID for each bot owner, admin, and moderator.
 
-
 ## Downloading
 
 In the parent directory where you want to clone this repo. run the following:
-`git clone https://github.com/dclose73/equibot`
+`git clone https://github.com/PommesMitMayo/Equilibrator`
 
 Once finished:
-- In the folder from where you ran the git command, run `cd equibot` and then run `npm install`.
+- In the folder from where you ran the git command, run `cd Equilibrator` and then run `npm install`.
 - **If you get any error about python or msibuild.exe or binding, read the requirements section again!**
 - Copy `auth.js.template` to `auth.js` and fill out the required fields.
+- Copy `config.js.template` to `config.js` and fill out the required fields.
 
 ## Starting the bot
 
 To start the bot, run the following command:
-`node index.js`
+`node new.js`
 
 ## Inviting to a guild
 

@@ -1,27 +1,22 @@
 /**
- * DO NOT COMMIT THIS FILE ANYWHERE PUBLIC because these are sensitive data.
- *
- * The filename auth.js is added to the `.gitignore` file for this repo. Do not
- * undo that.
- *
- * Copy this file to `auth.js` and fill out the required fields.
+ * INSTRUCTIONS
+ *   1. Copy this file to `auth.js`.
+ *   2. Fill out the required fields.
+ *   3. Delete this comment.
  */
 
-const auth = {
-  // Bot Owner, level 10 by default. A User ID. Should never be anything else than the bot owner's ID.
-  "ownerID": "", // required
+ /**
+ * DO NOT COMMIT THIS FILE ANYWHERE PUBLIC because it contains sensitive data.
+ *
+ * The filename auth.js is added to the `.gitignore` file for this repo. Do
+ * not undo that.
+ */
+ const auth = {
+  // Your Discord Bot Secret Token. Available from https://discordapp.com/developers/applications/me
+  token: '',
 
-  // Bot Admins, level 9 by default. Array of user ID strings.
-  "admins": [],
-
-  // Bot Support, level 8 by default. Array of user ID strings.
-  "support": [],
-
-  // Your Bot's Token. Available from https://discordapp.com/developers/applications/me
-  "token": "", // required
-
-  // At least one Torn City API key. Available from https://www.torn.com/preferences.php#tab=api
-  "api": "", // required
+  // Your Torn City API key. Available from https://www.torn.com/preferences.php#tab=api
+  api: '',
 };
 
 module.exports = auth;

@@ -16,46 +16,46 @@
 exports.run = (client, message, args, level) => {
   if (!args[0]) {
     // No command specified, so show a list of all commands available to the
-    // user. Filter the list according to user level and whether requested via
-    // direct message or within a guild.
-    const myCommands = message.guild ? client.commands.filter(cmd => client.levelCache[cmd.conf.permLevel] <= level) :
+    // user. Filter the list according to whether user has permission and
+    // whether requested via direct message or within a guild.
+    const myCommands = message.guild ?
+      client.commands.filter(cmd => client.levelCache[cmd.conf.permLevel] <= level) :
       client.commands.filter(cmd => client.levelCache[cmd.conf.permLevel] <= level && cmd.conf.guildOnly !== true);
 
-    // Get a list of all the command names and determine the length of the longest one.the Here we have to get the command names only, and we use that array to get the longest name.
-    // This make the help commands "aligned" in the output.
+    // Get a list of all the command names and determine the length of the
+    // longest one in order to determine a nice width for the command name
+    // column.
     const commandNames = myCommands.keyArray();
     const longest = commandNames.reduce((long, str) => Math.max(long, str.length), 0);
 
     // Build the help message.
-    let currentCategory = "";
-    let output = `= Command List =\n\n[Use ${message.settings.prefix}help <commandname> for details]\n`;
+    let currentCategory = '';
+    let output = `= Command List =\n\n[Use ${client.config.prefix}help <commandname> for details]\n`;
     const sorted = myCommands.array().sort((p, c) => p.help.category > c.help.category ? 1 :  p.help.name > c.help.name && p.help.category === c.help.category ? 1 : -1 );
     sorted.forEach( c => {
-      const cat = c.help.category.toProperCase();
+      const cat = c.help.category.toUpperCase();
       if (currentCategory !== cat) {
         output += `\u200b\n== ${cat} ==\n`;
         currentCategory = cat;
       }
-      output += `${message.settings.prefix}${c.help.name}${" ".repeat(longest - c.help.name.length)} :: ${c.help.description}\n`;
+      output += `${client.config.prefix}${c.help.name}${' '.repeat(longest - c.help.name.length)} :: ${c.help.description}\n`;
     });
-    message.channel.send(output, {code: "asciidoc", split: { char: "\u200b" }});
+    message.channel.send(output, {code: 'asciidoc', split: { char: '\u200b' }});
   } else {
     // Show detailed help for specified command.
     if (client.commands.has(args[0])) {
       const command = client.commands.get(args[0]);
-      if (level < client.levelCache[command.conf.permLevel]) {
-        // User lacks permission to use this command. Do not show the detailed help.
-        message.channel.send('Unrecognized command: `' + args[0] + '`. Or its usage is above your pay grade.');
-        return;
-      }
+
+      // Show command only if User has appropriate permission.
+      if (level < client.levelCache[command.conf.permLevel]) { return; }
 
       // Build the help message.
       let text = `= ${command.help.name} = \n${command.help.description}\nusage:: ${command.help.usage}`;
       if (command.conf.aliases.length) {
-        text += `\naliases:: ${command.conf.aliases.join(", ")}`;
+        text += `\naliases:: ${command.conf.aliases.join(', ')}`;
       }
       text += `\n= ${command.help.name} =`;
-      message.channel.send(text, {code:"asciidoc"});
+      message.channel.send(text, {code:'asciidoc'});
     } else {
       // Unrecognized command.
       message.channel.send('Unrecognized command: `' + args[0] + '`. Or its usage is above your pay grade.');
@@ -66,13 +66,13 @@ exports.run = (client, message, args, level) => {
 exports.conf = {
   enabled: true,
   guildOnly: false,
-  aliases: ["h", "halp"],
-  permLevel: "User"
+  aliases: ['h'],
+  permLevel: 'User'
 };
 
 exports.help = {
-  name: "help",
-  category: "System",
-  description: "Displays all the available commands for your permission level.",
-  usage: "help [command]"
+  name: 'help',
+  category: 'General',
+  description: 'Displays all available commands for your permission level.',
+  usage: 'help <command>'
 };

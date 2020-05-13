@@ -1,0 +1,93 @@
+/**
+ * INSTRUCTIONS
+ *   1. Copy this file to `config.js`.
+ *   2. All Discord IDs for your bot operators.
+ *   3. Delete this comment.
+ */
+
+ /**
+ * DO NOT COMMIT THIS FILE ANYWHERE PUBLIC because it contains sensitive data.
+ *
+ * The filename config.js is added to the `.gitignore` file for this repo. Do
+ * not undo that.
+ */
+ const config = {
+
+  // Authorized bot operators.
+  auth: {
+    // Bot Owner, level 10 by default. A Discord User ID.
+    ownerID: '', // Name:
+
+    // Bot Admins, level 9 by default. Array of Discord User ID strings.
+    admins: [''], // Names:
+
+    // Bot Support, level 8 by default. Array of Discord User ID strings.
+    support: [''], // Names:
+  },
+
+  // Prefix for bot commands.
+  prefix: '!',
+
+  // Logging Levels
+  logLevels: {
+    // Displays verbose info about programmatic actions.
+    debug: true,
+
+    // Displays each command executed, including arguments and the callee.
+    // Example: CMD help(["link"]) PeterPan(Level 0)
+    cmd: true,
+
+    // Displays completed loading and init actions.
+    // Example: READY Loaded a total of 3 events.
+    ready: true,
+
+    // The following three standard levels should generally be enabled.
+    log: true,
+    warn: true,
+    error: true,
+  },
+
+  /**
+   * Master list of permissions and the logic to verify them.
+   */
+  permLevels: [
+    {
+      // This is the lowest permisison level: Users without a role.
+      // No check needed for this role.
+      level: 0,
+      name: "User",
+      check: () => true
+    },
+    {
+      level: 4,
+      name: "Server Owner",
+      check: (message) => message.channel.type === "text" ? (message.guild.ownerID === message.author.id ? true : false) : false
+    },
+    {
+      // Access to non-destructive commands.
+      level: 8,
+      name: "Bot Support",
+
+      // Verify the user is listed in the bot config `support` list.
+      check: (message) => config.auth.support.includes(message.author.id)
+    },
+    {
+      // Full access.
+      level: 9,
+      name: "Bot Admin",
+
+      // Verify the user is listed in the bot config `admins` list.
+      check: (message) => config.auth.admins.includes(message.author.id)
+    },
+    {
+      // Full access.
+      level: 10,
+      name: "Bot Owner",
+
+      // Verify the user is the bot owner.
+      check: (message) => config.auth.ownerID === message.author.id
+    }
+  ]
+};
+
+module.exports = config;
