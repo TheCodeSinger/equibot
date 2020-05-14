@@ -20,7 +20,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       return;
     }
 
-    // message.delete();
+    // Add this user to the list of joins.
     client.lotto.joins.push(message.author);
 
     const output = {
@@ -33,6 +33,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       }
     };
     client.lotto.channel.send(output);
+    message.delete();
 
   } catch (e) {
     client.logger.error(`Error executing 'join' command: ${e}`);

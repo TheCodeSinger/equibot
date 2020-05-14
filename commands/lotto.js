@@ -22,16 +22,16 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     const output = {
       'embed': {
         'color': client.config.color,
-        'author': {
-          'name': 'New lotto started!'
-        },
-        'title': client.lotto.starter.username + ' started a new lotto for ' + client.lotto.prize,
+        // 'author': {
+        //   'name': 'New lotto started!'
+        // },
+        'title': client.lotto.starter.username + ' started a new lotto for *' + client.lotto.prize + '*',
         'fields': [
           {
             'name': 'Starter commands:',
-            'value': '`' + client.config.prefix + 'lc` Ping (works only once per lotto)\n' +
-              '`' + client.config.prefix + 'draw` Draw\n' +
-              '`' + client.config.prefix + 'cancel` Cancel lotto'
+            'value': '`' + client.config.prefix + 'lc` Announce last call\n' +
+              '`' + client.config.prefix + 'draw` Draw the winner\n' +
+              '`' + client.config.prefix + 'cancel` Cancel the lotto'
           },
           {
             'name': 'Player commands:',
