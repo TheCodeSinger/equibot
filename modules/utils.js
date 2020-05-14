@@ -1,17 +1,21 @@
 const fs = require("fs");
+const Enmap = require("enmap");
 const chalk = require("chalk");
+const memberQuotes = require("./quotes");
 
 module.exports = (client) => {
 
   // Attach public methods to the client.
   Object.assign(client, {
     getPermlevel: getPermlevel,
+    getRandomItem: getRandomItem,
     loadCommand: loadCommand,
     loadCommandModules: loadCommandModules,
     loadEventModules: loadEventModules,
+    loadMemberQuotes: loadMemberQuotes,
     loadPermissions: loadPermissions,
-    unloadCommand: unloadCommand,
     setBotStatus: setBotStatus,
+    unloadCommand: unloadCommand,
   });
 
   /**
@@ -143,6 +147,10 @@ module.exports = (client) => {
    * Iterate over the folder ./commands/ and load each command into memory.
    */
   function loadCommandModules() {
+    // Initialize EnMaps for commands and aliases.
+    client.commands = new Enmap();
+    client.aliases = new Enmap();
+
     fs.readdir("./commands/", (err, files) => {
       let numLoadedCommands = 0;
       if (err) {
@@ -156,6 +164,28 @@ module.exports = (client) => {
         }
       });
       client.logger.ready(`Loaded a total of ${chalk.bgGreen(numLoadedCommands)} events.`);
+    });
+  }
+
+  function loadMemberQuotes() {
+    // Initialize EnMaps of quoted member names and aliases.
+    client.quotedMembers = new Enmap();
+    client.quotedAliases = new Enmap();
+    client.listOfQuotedMembers = [];
+
+    memberQuotes.forEach(member => {
+      const memberName = member.name.toLowerCase();
+
+      // Add this member to the EnMap of quoted members.
+      client.quotedMembers.set(memberName, member);
+
+      // Add this member name to a simple list for easy randomization.
+      client.listOfQuotedMembers.push(memberName);
+
+      // Map each member alias to the primary member name.
+      member.aliases.forEach(alias => {
+        client.quotedAliases.set(alias.toLowerCase(), memberName);
+      });
     });
   }
 
@@ -206,6 +236,17 @@ module.exports = (client) => {
   function setBotStatus(type, name) {
     type = type || '';
     client.user.setActivity(name, { type: type.toUpperCase() });
+  }
+
+  /**
+   * Returns a random item from the specified list.
+   *
+   * @param   {Array}   list    A list of items.
+   * @return  {String}  A random item from the list.
+   */
+  function getRandomItem(list) {
+    list = list || [];
+    return list[Math.floor(Math.random() * list.length)];
   }
 
 };

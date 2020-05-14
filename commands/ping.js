@@ -19,7 +19,7 @@ exports.conf = {
 
 exports.help = {
   name: 'ping',
-  category: 'General',
+  category: 'System',
   description: 'Displays server-bot latency.',
   usage: 'ping',
 };

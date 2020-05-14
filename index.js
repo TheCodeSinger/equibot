@@ -1,5 +1,4 @@
 const Discord = require("discord.js");
-const Enmap = require("enmap");
 
 // Create Discord client instance .
 const client = new Discord.Client();
@@ -20,15 +19,14 @@ require("./modules/Utils")(client);
 // Load and bind the events.
 client.loadEventModules();
 
-// Initialize EnMaps for commands and aliases.
-client.commands = new Enmap();
-client.aliases = new Enmap();
-
 // Load the commands into memory.
 client.loadCommandModules();
 
 // Load a cache of user-friendly permission names.
 client.loadPermissions();
+
+// Load the member quotes into memory.
+client.loadMemberQuotes();
 
 // Log the bot into the Discord client.
 client.login(client.auth.token);

@@ -16,8 +16,17 @@ module.exports = (client, message) => {
   // Grab the command data from the client.commands or client.aliases Enmap.
   const cmd = client.commands.get(command) || client.commands.get(client.aliases.get(command));
 
-  // If that command doesn't exist, silently exit and do nothing.
-  if (!cmd) { return; }
+  if (!cmd) {
+    // That command doesn't exist. Check for a matching quotable.
+    const memberQuote =
+      client.quotedMembers.get(command) ||
+      client.quotedMembers.get(client.quotedAliases.get(command));
+    if (memberQuote) {
+      // Found a matching quotable. Run the quote command.
+      client.commands.get('quote').run(client, message, [command], level);
+    }
+    return;
+  }
 
   // Log execution of the command.
   const commandLogString = args.length ? command + '(' + JSON.stringify(args) + ')' : command;
