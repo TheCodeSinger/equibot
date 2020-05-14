@@ -3,12 +3,17 @@ const Enmap = require("enmap");
 const chalk = require("chalk");
 const memberQuotes = require("./quotes");
 
+const profileLink = 'https://www.torn.com/profiles.php?XID=';
+
 module.exports = (client) => {
 
   // Attach public methods to the client.
   Object.assign(client, {
+    decorateUser: decorateUser,
     getPermlevel: getPermlevel,
     getRandomItem: getRandomItem,
+    getTornId: getTornId,
+    getTornName: getTornName,
     loadCommand: loadCommand,
     loadCommandModules: loadCommandModules,
     loadEventModules: loadEventModules,
@@ -247,6 +252,106 @@ module.exports = (client) => {
   function getRandomItem(list) {
     list = list || [];
     return list[Math.floor(Math.random() * list.length)];
+  }
+
+  /**
+   * Parses the parts of a member's Discord name.
+   *
+   * @param   {String}   name    A Discord member name.
+   * @return  {Array[]}  The three string parts of a Discord name.
+   */
+  function getNameParts(name) {
+    if (!name) {
+      client.logger.error('Null `name` arg provided to `getNameParts(name)`');
+      return ['unknownName [unknownId]', 'unknownName', '[unknownId]'];
+    }
+
+    // Parses the name into parts: ['Aarlo [2252482]', 'Aarlo', '[2252482]']
+    return name.match(/(.*) \[(\d*)\]/) || '[unknownId]';
+  }
+
+  /**
+   * Parses the parts of a member's Discord name.
+   *
+   * @param   {String}   name    A Discord member name.
+   * @return  {String}   The Torn name for the Discord User.
+   */
+  function getTornName(name) {
+    if (!name) {
+      client.logger.error('Null `name` arg provided to `getTornName(name)`');
+      return 'unknownName';
+    }
+    return getNameParts(name)[1];
+  }
+
+  /**
+   * Parses the parts of a member's Discord name.
+   *
+   * @param   {String}   name    A Discord member name.
+   * @return  {String}   The Torn ID for the Discord User.
+   */
+  function getTornId(name) {
+    if (!name) {
+      client.logger.error('Null `name` arg provided to `getTornId(name)`');
+      return 'unknownId';
+    }
+    return getNameParts(name)[2];
+  }
+
+  /**
+   * Returns the Guild User object corresponding to the provided Discord
+   * User object.
+   *
+   * Discord User object:
+      {
+        "id": "550079162564476997",
+        "bot": false,
+        "username": "Aarlo",
+        "discriminator": "2177",
+        "avatar": "8c44b56f16aaf2ee32d39d39a7025913",
+        "lastMessageChannelID": "580992963363078163",
+        "flags": 0,
+        "createdTimestamp": 1551219492332,
+        "defaultAvatarURL": "string_url",
+        "tag": "Aarlo#2177",
+        "avatarURL": "string_url",
+        "displayAvatarURL": "string_url"
+      }
+   *
+   * Guild User object:
+      {
+        "guildID": "580992963363078157",
+        "userID": "550079162564476997",
+        "joinedTimestamp": 1558589916795,
+        "lastMessageChannelID": "580992963363078163",
+        "premiumSinceTimestamp": null,
+        "deleted": false,
+        "nickname": "Aarlo [2252482]",
+        "displayName": "Aarlo [2252482]"
+      }
+   *
+   * @param   {Object}   user      A Discord User object.
+   * @param   {Object}   message   The current message object.
+   * @return  {Object}   The corresponding Guild User object.
+   */
+  function decorateUser(user, message) {
+    if (!user || !message) {
+      client.logger.error('Null arg(s) provided for `decorateUser(user, message)`');
+      return user;
+    }
+    client.logger.debug('decorateUser(' + user + ', ' + message + ')');
+
+    const guildUser = message.guild.member(user);
+    if (!guildUser) {
+      client.logger.debug('could not decorateUser(' + user + ') because not in the guild');
+      return user;
+    }
+
+    user.discordName = guildUser.displayName;
+    user.tornName = getTornName(user.discordName);
+    user.tornLink = profileLink + getTornId(user.discordName);
+
+    return user;
   }
 
 };

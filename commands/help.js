@@ -19,8 +19,8 @@ exports.run = (client, message, args, level) => {
     // user. Filter the list according to whether user has permission and
     // whether requested via direct message or within a guild.
     const myCommands = message.guild ?
-      client.commands.filter(cmd => client.levelCache[cmd.conf.permLevel] <= level) :
-      client.commands.filter(cmd => client.levelCache[cmd.conf.permLevel] <= level && cmd.conf.guildOnly !== true);
+      client.commands.filter(cmd => client.levelCache[cmd.conf.permLevel] <= level && !!cmd.help.category) :
+      client.commands.filter(cmd => client.levelCache[cmd.conf.permLevel] <= level && !!cmd.help.category && cmd.conf.guildOnly !== true);
 
     // Get a list of all the command names and determine the length of the
     // longest one in order to determine a nice width for the command name
