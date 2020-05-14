@@ -8,10 +8,6 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       return message.reply('The winner for this lotto hasn\'t been drawn yet.');
     }
 
-    if (client.lotto.starter === message.author) {
-      return message.delete();
-    }
-
     const starterMessages = [
       ':clap: A big round of applause for me. Thank you!',
     ]
