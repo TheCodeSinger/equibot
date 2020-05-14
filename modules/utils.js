@@ -6,9 +6,11 @@ module.exports = (client) => {
   // Attach public methods to the client.
   Object.assign(client, {
     getPermlevel: getPermlevel,
+    loadCommand: loadCommand,
     loadCommandModules: loadCommandModules,
     loadEventModules: loadEventModules,
     loadPermissions: loadPermissions,
+    unloadCommand: unloadCommand,
     setBotStatus: setBotStatus,
   });
 
@@ -73,9 +75,6 @@ module.exports = (client) => {
    */
   function loadCommand(filename) {
     try {
-      // If the file is not a JS file, ignore it.
-      if (!filename.endsWith(".js")) { return false; }
-
       client.logger.debug(`Loading command: ${filename}`);
       const commandModule = require(`../commands/${filename}`);
 
@@ -114,7 +113,8 @@ module.exports = (client) => {
     } else if (client.aliases.has(commandName)) {
       command = client.commands.get(client.aliases.get(commandName));
     } else {
-      return `No command or alias \`${commandName}\` is loaded.`;
+      client.logger.warn(`No command or alias \`${commandName}\` is loaded.`);
+      return false;
     }
 
     // If the command has a shutdown function, then execute it. This must be an
@@ -134,7 +134,9 @@ module.exports = (client) => {
         break;
       }
     }
-    return false;
+
+    // Signal that the command module was loaded successfully.
+    return true;
   }
 
   /**
@@ -147,6 +149,8 @@ module.exports = (client) => {
         return client.logger.error(err);
       }
       files.forEach(filename => {
+        // If the file is not a JS file, ignore it.
+        if (!filename.endsWith(".js")) { return false; }
         if (loadCommand(filename)) {
           numLoadedCommands = numLoadedCommands + 1;
         }

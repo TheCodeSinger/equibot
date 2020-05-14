@@ -79,6 +79,6 @@ exports.conf = {
 exports.help = {
   name: 'link',
   category: 'Torn API',
-  description: 'Displays a clickable link to someone\'s Torn profile.',
+  description: 'Displays a clickable link to a Torn profile.',
   usage: 'link <@discord name>'
 };

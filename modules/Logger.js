@@ -1,12 +1,11 @@
 const chalk = require("chalk");
 const moment = require("moment");
-const config = require("../config");
+const { logLevels } = require("../config");
 
 /**
  * Prints a timestamped and colorized message according to log level.
  */
 function printLogMessage(content, type) {
-  const logLevels = config.logLevels;
   const timestamp = `[${moment().format("YYYY-MM-DD HH:mm:ss")}]:`;
   switch (type) {
 
