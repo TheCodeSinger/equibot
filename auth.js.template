@@ -13,10 +13,10 @@
  */
  const auth = {
   // Your Discord Bot Secret Token. Available from https://discordapp.com/developers/applications/me
-  token: '',
+  botToken: '',
 
   // Your Torn City API key. Available from https://www.torn.com/preferences.php#tab=api
-  api: '',
+  apiKey: '',
 };
 
 module.exports = auth;

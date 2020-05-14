@@ -1,23 +1,28 @@
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   try {
-    if (!client.lotto) {
+    const lotto = client.lotto;
+    const config = client.config;
+
+    if (!lotto) {
       return message.reply('No active lotto. Why don\'t you start one?');
     }
 
-    if (message.author !== client.lotto.starter) {
+    if (message.author !== lotto.starter) {
       return message.reply('Only the starter can cancel a lotto.');
     }
 
     const output = {
       'embed': {
-        'color': client.config.color,
-        'description': 'It appears that ' + client.lotto.starter.toString() + ' got cold feet and cancelled the lotto.',
+        'color': config.color,
+        'description': 'It appears that ' + lotto.starter.toString() + ' got cold feet and cancelled the lotto.',
         'footer': {
           'text': 'They probably deserve to be TP\'d or forked or some other innocous but socially approved form of hazing.'
         }
       }
     };
-    client.lotto.channel.send(output);
+    lotto.channel.send(output);
+
+    // Must use the original reference when setting null.
     client.lotto = null;
 
   } catch (e) {

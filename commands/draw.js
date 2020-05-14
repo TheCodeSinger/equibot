@@ -1,49 +1,57 @@
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   try {
-    if (!client.lotto) {
+    const lotto = client.lotto;
+    const config = client.config;
+
+    if (!lotto) {
       return message.reply('No active lotto. Why don\'t you start one?');
     }
 
-    if (message.author !== client.lotto.starter) {
+    if (message.author !== lotto.starter) {
       return message.reply('Nice try, but only the lotto starter can draw the prize.');
     }
 
-    if (!client.lotto.joins.length) {
+    if (!lotto.joins.length) {
       return message.reply(
         'Not so fast! No one has joined the lotto yet. If you are having cold feet you should `' +
-        client.config.prefix + 'cancel` the lotto.');
+        config.prefix + 'cancel` the lotto.');
     }
 
-    if (client.lotto.winner) {
+    if (lotto.winner) {
       return message.reply('The winner for this lotto has already been drawn.');
     }
 
-    if (message.channel !== client.lotto.channel) {
+    if (message.channel !== lotto.channel) {
       return message.reply('Please draw in the channel where the lotto is running.');
     }
 
     message.delete();
-    client.lotto.winner = client.getRandomItem(client.lotto.joins);
+    lotto.winner = client.getRandomItem(lotto.joins);
 
-    client.decorateUser(client.lotto.winner, message);
+    client.decorateUser(lotto.winner, message);
+    client.decorateUser(lotto.starter, message);
 
     const output = {
-      // 'content': ':tada: ' + client.lotto.winner.toString() + ' :tada:',
+      // 'content': ':tada: ' + lotto.winner.toString() + ' :tada:',
       'embed': {
-        'color': client.config.color,
+        'color': config.color,
         'fields': [
           {
             'name': 'The winner is revealed!',
-            'value': client.lotto.winner.toString() + ' won **' + client.lotto.prize + '** from ' + client.lotto.starter.toString()
+            'value': lotto.winner.toString() + ' won **' + lotto.prize + '** from ' + lotto.starter.tornName + '.'
           },
           {
-            'name': 'Links for the host:',
-            'value': '[' + client.lotto.winner.discordName + '](' + client.lotto.winner.tornLink +
-              ')\n Please copy the sent message in the next 5 minutes to close the lotto.'
+            'name': 'Link to winner\'s profile:',
+            'value': '[' + lotto.winner.discordName + '](' + lotto.winner.tornLink + ')',
+          },
+          {
+            'name': 'Link to your items page:',
+            'value': '[https://www.torn.com/item.php](https://www.torn.com/item.php)\n' +
+              'Please copy the sent message in the next 5 minutes to close the lotto.'
           },
           {
             'name': 'Show your love:',
-            'value': '`' + client.config.prefix + 'gg` - Congratulate the winner\n `' + client.config.prefix + 'ty` - Thank the host'
+            'value': '`' + config.prefix + 'gg` - Congratulate the winner\n `' + config.prefix + 'ty` - Thank the host'
           }
         ]
       }
@@ -58,12 +66,16 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
           }
         )
         .then((collected) => {
-          client.lotto.channel.send('Prize has been recorded. Lotto for **' + client.lotto.prize +  '** is now closed.');
+          lotto.channel.send('Prize has been recorded. Lotto for **' + lotto.prize +  '** is now closed.');
+
+          // Must use the original reference when setting null.
           client.lotto = null;
         })
         .catch(() => {
-          client.lotto.channel.send('Lotto for **' + client.lotto.prize +  '** is now closed. ' + client.lotto.starter.toString() +
-            ', did you send the prize to ' + client.lotto.winner.toString() + '?');
+          lotto.channel.send('Lotto for **' + lotto.prize +  '** is now closed. ' + lotto.starter.toString() +
+            ', did you send the prize to ' + lotto.winner.toString() + '?');
+
+            // Must use the original reference when setting null.
           client.lotto = null;
         });
     });

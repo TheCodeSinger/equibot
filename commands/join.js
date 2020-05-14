@@ -1,38 +1,41 @@
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   try {
-    if (!client.lotto) {
+    const lotto = client.lotto;
+    const config = client.config;
+
+    if (!lotto) {
       message.reply('No active lotto. Why don\'t you start one?');
       return;
     }
 
-    if (client.lotto.winner) {
+    if (lotto.winner) {
       message.reply('Sorry, the winner has already been drawn. You\'ll have to wait for the next lotto.');
       return;
     }
 
-    if (client.lotto.starter === message.author) {
+    if (lotto.starter === message.author) {
       message.reply('Hey! No shenanigans. You can\'t join your own lotto.');
       return;
     }
 
-    if (client.lotto.joins.includes(message.author)) {
+    if (lotto.joins.includes(message.author)) {
       message.reply('You have already joined this lotto.');
       return;
     }
 
     // Add this user to the list of joins.
-    client.lotto.joins.push(message.author);
+    lotto.joins.push(message.author);
 
     const output = {
       'embed': {
-        'color': client.config.color,
-        'description': message.author.toString() + ' joined as number ' + client.lotto.joins.length,
+        'color': config.color,
+        'description': message.author.toString() + ' joined as number ' + lotto.joins.length,
         // 'footer': {
-        //   'text': 'Join now to have a chance at winning ' + client.lotto.prize
+        //   'text': 'Join now to have a chance at winning ' + lotto.prize
         // }
       }
     };
-    client.lotto.channel.send(output);
+    lotto.channel.send(output);
     message.delete();
 
   } catch (e) {

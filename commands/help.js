@@ -50,7 +50,7 @@ exports.run = (client, message, args, level) => {
       if (level < client.levelCache[command.conf.permLevel]) { return; }
 
       // Build the help message.
-      let text = `= ${command.help.name} = \n${command.help.description}\nusage:: ${command.help.usage}`;
+      let text = `= ${command.help.name} = \n${command.help.detailedDescription || command.help.description}\nusage:: ${command.help.usage}`;
       if (command.conf.aliases.length) {
         text += `\naliases:: ${command.conf.aliases.join(', ')}`;
       }
@@ -73,6 +73,7 @@ exports.conf = {
 exports.help = {
   name: 'help',
   category: 'System',
-  description: 'Displays all available commands for your permission level.',
+  description: 'Displays available commands.',
+  detailedDescription: 'Displays all available commands for your permission level.',
   usage: 'help <command>'
 };

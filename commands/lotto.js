@@ -1,15 +1,31 @@
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   try {
-    if (client.lotto) {
-      return message.reply('There is already a game running. You\'ll have to wait until this one is done.');
+    let lotto = client.lotto;
+    const config = client.config;
+
+    if (lotto) {
+      // Already a game of lotto running. Display the lotto info.
+      const lottoInfo = {
+        'embed': {
+          'color': config.color,
+          'title': lotto.starter.username + ' is running a lotto for *' + lotto.prize + '*',
+          'fields': [
+            {
+              'name': 'Number of entrants: ',
+              'value': lotto.joins.length,
+            },
+          ]
+        }
+      };
+      return lotto.channel.send(lottoInfo);
     }
 
     if (!args[0]) {
       return message.reply('You did not specify a prize. Lottos are more fun when you actually offer something to win.');
     }
 
-    // message.delete();
-    client.lotto = {
+    // Must set the original reference.
+    lotto = client.lotto = {
       'starter': message.author,
       'channel': message.channel,
       'prize': args.join(' '),
@@ -21,26 +37,27 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
     const output = {
       'embed': {
-        'color': client.config.color,
+        'color': config.color,
         // 'author': {
         //   'name': 'New lotto started!'
         // },
-        'title': client.lotto.starter.username + ' started a new lotto for *' + client.lotto.prize + '*',
+        'title': lotto.starter.username + ' started a new lotto for *' + lotto.prize + '*',
         'fields': [
           {
             'name': 'Starter commands:',
-            'value': '`' + client.config.prefix + 'lc` Announce last call\n' +
-              '`' + client.config.prefix + 'draw` Draw the winner\n' +
-              '`' + client.config.prefix + 'cancel` Cancel the lotto'
+            'value': '`' + config.prefix + 'lc` Announce last call\n' +
+              '`' + config.prefix + 'draw` Draw the winner\n' +
+              '`' + config.prefix + 'cancel` Cancel the lotto'
           },
           {
             'name': 'Player commands:',
-            'value': '`' + client.config.prefix + 'j` Join'
+            'value': '`' + config.prefix + 'j` Join'
           }
         ]
       }
     };
     message.channel.send(output);
+    message.delete();
 
   } catch (e) {
     client.logger.error(`Error executing 'lotto' command: ${e}`);

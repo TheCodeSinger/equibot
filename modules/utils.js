@@ -1,4 +1,5 @@
 const fs = require("fs");
+const fetch = require('isomorphic-fetch');
 const Enmap = require("enmap");
 const chalk = require("chalk");
 const memberQuotes = require("./quotes");
@@ -10,6 +11,8 @@ module.exports = (client) => {
   // Attach public methods to the client.
   Object.assign(client, {
     decorateUser: decorateUser,
+    filterItems: filterItems,
+    formatNumber: formatNumber,
     getPermlevel: getPermlevel,
     getRandomItem: getRandomItem,
     getTornId: getTornId,
@@ -19,6 +22,7 @@ module.exports = (client) => {
     loadEventModules: loadEventModules,
     loadMemberQuotes: loadMemberQuotes,
     loadPermissions: loadPermissions,
+    loadTornData: loadTornData,
     setBotStatus: setBotStatus,
     unloadCommand: unloadCommand,
   });
@@ -194,6 +198,18 @@ module.exports = (client) => {
     });
   }
 
+  function loadTornData() {
+    client.tornData = {};
+
+    fetch('https://api.torn.com/torn/?selections=items&key=' + client.auth.apiKey)
+      .then(data => data.json())
+      .then(res => {
+        client.tornData.itemHashById = res['items'];
+        client.logger.ready('Loaded the Torn City item list.');
+      })
+      .catch(error => { client.logger.error(error) });
+  }
+
   /**
    * Returns the permission level of the specified user.
    *
@@ -352,6 +368,26 @@ module.exports = (client) => {
     user.tornLink = profileLink + getTornId(user.discordName);
 
     return user;
+  }
+
+  function formatNumber(number) {
+    let num = number.toString();
+    let formatted = num.slice(-3);
+    let n = -3;
+    while (n > -(num.length)) {
+      formatted = num.slice(n - 3, n) + ',' + formatted;
+      n -= 3;
+    }
+    return formatted;
+  }
+
+  function filterItems(itemList, substring) {
+    return Object.keys(itemList)
+      .filter(key => itemList[key].name.toLowerCase().includes(substring.toLowerCase()))
+      .reduce((obj, key) => {
+        obj[key] = itemList[key];
+        return obj;
+      }, {});
   }
 
 };

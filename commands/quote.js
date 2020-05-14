@@ -40,7 +40,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
 exports.conf = {
   enabled: true,
-  guildOnly: true,
+  guildOnly: false,
   aliases: [],
   permLevel: 'User',
 };
@@ -49,5 +49,6 @@ exports.help = {
   name: 'quote',
   category: 'Faction',
   description: 'Displays a perfectly apropos quote.',
-  usage: 'quote [name]',
+  detailedDescription: 'Displays a random quote by or about a specified member. If you do not specify a member name, then I will select a perfectly apropos quote for the moment. You may also omit the `!quote` and directly use the member name (or nickname) as the command. e.g. `!peterpan` or `!pan`.',
+  usage: 'quote [member name]',
 };
