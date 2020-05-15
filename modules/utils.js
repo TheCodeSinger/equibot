@@ -2,7 +2,7 @@ const fs = require("fs");
 const fetch = require('isomorphic-fetch');
 const Enmap = require("enmap");
 const chalk = require("chalk");
-const memberQuotes = require("./quotes");
+const memberQuotes = require("./quotes.json");
 
 const profileLink = 'https://www.torn.com/profiles.php?XID=';
 
