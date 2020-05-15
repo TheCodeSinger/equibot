@@ -1,5 +1,9 @@
 const moment = require("moment");
 
+/**
+ * Copy `../modules/quotes.json.template` to `../modules/quotes.json` and add
+ * quotes and images for your members.
+ */
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   try {
     const specifiedName = (args[0] || '').toLowerCase();

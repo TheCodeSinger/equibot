@@ -2,3 +2,4 @@ auth.js
 config.js
 node_modules
 data
+modules/quotes.json
