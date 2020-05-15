@@ -49,6 +49,6 @@ exports.help = {
   name: 'quote',
   category: 'Faction',
   description: 'Displays a perfectly apropos quote.',
-  detailedDescription: 'Displays a random quote by or about a specified member. If you do not specify a member name, then I will select a perfectly apropos quote for the moment. You may also omit the `!quote` and directly use the member name (or nickname) as the command. e.g. `!peterpan` or `!pan`.',
+  detailedDescription: 'Displays a random quote by or about a specified member.\n\nIf no member specified, then selects a perfectly apropos quote for the moment.\n\nYou may also omit the `!quote` and directly use the member name (or nickname) as the command. e.g. `!peterpan` or `!pan`.',
   usage: 'quote [member name]',
 };
