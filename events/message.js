@@ -1,9 +1,9 @@
 module.exports = (client, message) => {
   // Ignore all bots, unless you enjoy that sort of thing.
-  if (message.author.bot) return;
+  if (message.author.bot) { return; }
 
   // Ignore messages not starting with the prefix (in config.json)
-  if (message.content.indexOf(client.config.prefix) !== 0) return;
+  if (message.content.indexOf(client.config.prefix) !== 0) { return; }
 
   // Parse the input into the command and arguments.
   const args = message.content.slice(client.config.prefix.length).trim().split(/ +/g);
@@ -23,10 +23,13 @@ module.exports = (client, message) => {
       client.quotedMembers.get(client.quotedAliases.get(command));
     if (memberQuote) {
       // Found a matching quotable. Run the quote command.
-      client.commands.get('quote').run(client, message, [command], level);
+      return client.commands.get('quote').run(client, message, [command], level);
     }
-    return;
+    return message.delete();
   }
+
+  // Ignore commands which are disabled.
+  if (!cmd.conf.enabled) { return message.delete(); }
 
   // Log execution of the command.
   const commandLogString = args.length ? command + '(' + JSON.stringify(args) + ')' : command;

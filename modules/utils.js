@@ -178,10 +178,8 @@ module.exports = (client) => {
 
   function loadMemberQuotes() {
     // Initialize EnMaps of quoted member names and aliases.
-    // client.quotedMembers = new Enmap();
-    // client.quotedAliases = new Enmap();
-    client.quotedMembers = {};
-    client.quotedAliases = {};
+    client.quotedMembers = new Enmap();
+    client.quotedAliases = new Enmap();
     client.listOfQuotedMembers = [];
 
     memberQuotes.forEach(member => {

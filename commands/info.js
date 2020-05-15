@@ -11,8 +11,17 @@
     }
 
     const itemHashById = client.tornData.itemHashById;
+    const filtered = client.filterItems(itemHashById, args[0]);
+    let itemKeys = Object.keys(filtered);
 
-    function itemInfo(item, id) {
+    /**
+     * Returns an embed for display item info.
+     *
+     * @param   {Object}  item   Item info.
+     * @param   {Number}  id     Item ID.
+     * @return  {Object}  Embed object for item info.
+     */
+    function itemInfoEmbed(item, id) {
       return {
         'embed': {
           'color': client.config.color,
@@ -51,36 +60,42 @@
       };
     }
 
-    const filtered = client.filterItems(itemHashById, args[0]);
+    if (!itemKeys.length) {
+      return message.reply('No item found by that name.');
+    }
 
-    let itemKeys = Object.keys(filtered);
-    if (itemKeys.length === 0) {
-      message.channel.send('No item found by that name.');
-    } else if (itemKeys.length > 10) {
-      message.channel.send('More than 10 items found. Be more precise.');
-    } else if (itemKeys.length > 1) {
+    if (itemKeys.length > 10) {
+      return message.reply('More than 10 items found. Be more precise.');
+    }
+
+    if (itemKeys.length > 1) {
+      // Found 1-10 matching items. Prompt for a specific one.
       const content = itemKeys.length + ' items found. Type the ID of your intended item.';
       let choices = '';
       itemKeys.forEach(i => choices += '[' + i + '] ' + itemHashById[i].name + '\n');
-      message.channel.send(content + '```' + choices + '```')
+
+      return message.reply(content + '```' + choices + '```')
         .then(() => {
-          message.channel.awaitMessages(response =>
-            (response.author.username === message.author.username && itemKeys.includes(response.content)),
-            {
-            max: 1,
-            time: 15000,
-            errors: ['time'],
-          })
+          message.channel
+            .awaitMessages(response =>
+              (response.author.username === message.author.username && itemKeys.includes(response.content)),
+              {
+                max: 1,
+                time: 15000, // 15 seconds
+                errors: ['time'],
+              }
+            )
             .then((collected) => {
-              message.channel.send(itemInfo(itemHashById[collected.first().content], collected.first().content));
+              message.reply(itemInfoEmbed(itemHashById[collected.first().content], collected.first().content));
             })
             .catch(() => {
-              message.channel.send('Done waiting. You can ask me again if you still need the info.');
+              message.reply('Done waiting. You can ask me again if you still need the info.');
             });
         });
-    } else {
-      message.channel.send(itemInfo(itemHashById[itemKeys[0]], itemKeys[0]));
     }
+
+    // Exactly one match found. Show it.
+    message.reply(itemInfoEmbed(itemHashById[itemKeys[0]], itemKeys[0]));
 
   } catch (e) {
     client.logger.error(`Error executing 'info' command: ${e}`);

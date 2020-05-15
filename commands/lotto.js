@@ -26,32 +26,33 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
     // Must set the original reference.
     lotto = client.lotto = {
-      'starter': message.author,
-      'channel': message.channel,
-      'prize': args.join(' '),
-      'lc': true,
-      'joins': [],
-      'ggs': [],
-      'tys': []
+      starter: message.author,
+      channel: message.channel,
+      prize: args.join(' '),
+      lc: true,
+      joins: [],
+      ggs: [],
+      tys: [],
+      roasts: [],
     };
 
     const output = {
-      'embed': {
-        'color': config.color,
-        // 'author': {
-        //   'name': 'New lotto started!'
+      embed: {
+        color: config.color,
+        // author: {
+        //   name: 'New lotto started!'
         // },
-        'title': lotto.starter.username + ' started a new lotto for *' + lotto.prize + '*',
-        'fields': [
+        title: lotto.starter.username + ' started a new lotto for *' + lotto.prize + '*',
+        fields: [
           {
-            'name': 'Starter commands:',
-            'value': '`' + config.prefix + 'lc` Announce last call\n' +
+            name: 'Starter commands:',
+            value: '`' + config.prefix + 'lc` Announce last call\n' +
               '`' + config.prefix + 'draw` Draw the winner\n' +
               '`' + config.prefix + 'cancel` Cancel the lotto'
           },
           {
-            'name': 'Player commands:',
-            'value': '`' + config.prefix + 'j` Join'
+            name: 'Player commands:',
+            value: '`' + config.prefix + 'j` Join'
           }
         ]
       }

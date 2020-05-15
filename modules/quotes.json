@@ -105,6 +105,17 @@
     ]
   },
   {
+    "name": "Metallistar",
+    "aliases": ["metal"],
+    "images": [
+      "https://media.tenor.com/images/f91469bca847613dd3b6211fd32d0b3e/tenor.gif",
+      "https://i.imgflip.com/11w8vz.jpg",
+      "https://vignette.wikia.nocookie.net/spongebob/images/e/ed/113a_-_Krusty_Krushers_%28590%29.jpg",
+      "https://4.bp.blogspot.com/-fo1KIpbRu6g/UMYRODrwViI/AAAAAAAABOw/WRZX7OJYDdQ/s1600/DSC02290.JPG",
+      "https://media3.giphy.com/media/PDsgxQoXvUZGg/giphy.gif?cid=ecf05e4787a06f191f462763b79f6e9772aa291d768460cc&rid=giphy.gif"
+    ]
+  },
+  {
     "name": "PommesMitMayo",
     "aliases": ["pmm", "pom", "pommes"],
     "quotes": [
@@ -113,7 +124,11 @@
       "discount DPs!!",
       "discount plushies!!",
       "discount cans!!",
-      "i really really love the :pirate_flag: system"
+      "i really really love the :pirate_flag: system",
+      "DPs are too much for you,\ndollars in your wallet few,\nbuying weapons too expensive,\nyour bank account looks apprehensive,\ndebt is building up with Duke,\nthe shack you live in makes you puke,\nno items left to trade with Lord,\nyour loan requests all get ignored,\nFloofist wins another lotto,\nwhile you slut yourself for low dough,\ngetting buy mugged all the time,\nsearch the dump for every dime,\ndidnt pay your rent for weeks,\nyour seven month old armor reeks,\nwhen LinFeng mugs another prey,\nand Conys clowns ruin your day,\nwhen Zym sends you to hospital,\nand Madams bloodlust turns you brittle,\neveryone around you rich,\nyour measely networth makes you twitch,\nthen maybe you will understand:\nThe dark side is your biggest friend."
+    ],
+    "images": [
+      "https://media1.tenor.com/images/f3c17c5ab1efca8e1cce4b8b6dd88228/tenor.gif"
     ]
   }
 ]

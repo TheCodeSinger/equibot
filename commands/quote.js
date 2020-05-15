@@ -22,7 +22,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       return;
     }
 
-    const embed = {
+    const quoteEmbed = {
       embed: {
         color: client.config.color,
         author: {
@@ -32,7 +32,28 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         description: client.getRandomItem(member.quotes),
       }
     };
-    message.channel.send(embed);
+
+    const imageEmbed = {
+      embed: {
+        color: client.config.color,
+        title: member.name,
+        image: {
+          url: client.getRandomItem(member.images),
+        }
+      }
+    };
+
+    let embedType;
+    if (member.quotes && member.images) {
+      const random = Math.floor(Math.random() * 4) + 1;
+      embedType = random === 1 ? imageEmbed : quoteEmbed;
+    } else if (member.quotes) {
+      embedType = quoteEmbed;
+    } else if (member.images) {
+      embedType = imageEmbed;
+    }
+
+    message.channel.send(embedType);
   } catch (e) {
     client.logger.error(`Error executing 'quote' command: ${e}`);
   }
