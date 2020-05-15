@@ -4,7 +4,7 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 
 // Load the logger.
-client.logger = require("./modules/Logger");
+client.logger = require("./modules/logger");
 client.logger.ready('Logger Initialized');
 
 // Load the auth settings.
@@ -14,7 +14,7 @@ client.auth = require("./auth");
 client.config = require("./config");
 
 // Load the Utils module.
-require("./modules/Utils")(client);
+require("./modules/utils")(client);
 
 // Load and bind the events.
 client.loadEventModules();
