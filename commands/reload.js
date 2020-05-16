@@ -4,6 +4,17 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       return message.reply('Must provide a command to reload.');
     }
 
+    // Catch a few special cases which are not command modules.
+    if (args[0] === 'quotes') {
+      // Clear the existing quotes cache.
+      client.quotedMembers = null;
+      client.quotedAliases = null;
+
+      // Reload the quotes.json file.
+      client.loadMemberQuotes();
+      return message.reply('The quotes file has been reloaded.');
+    }
+
     const command = client.commands.get(args[0]) || client.commands.get(client.aliases.get(args[0]));
     if (!command) {
       message.reply(`No command by the name or alias \`${args[0]}\` is loaded at this time.`);

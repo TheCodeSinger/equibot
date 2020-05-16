@@ -2,7 +2,6 @@ const fs = require("fs");
 const fetch = require('isomorphic-fetch');
 const Enmap = require("enmap");
 const chalk = require("chalk");
-const memberQuotes = require("./quotes.json");
 
 const profileLink = 'https://www.torn.com/profiles.php?XID=';
 
@@ -176,6 +175,9 @@ module.exports = (client) => {
   }
 
   function loadMemberQuotes() {
+    client.logger.debug(`Starting to load member quotes`);
+    const memberQuotes = require("./quotes.json");
+
     // Initialize EnMaps of quoted member names and aliases.
     client.quotedMembers = new Enmap();
     client.quotedAliases = new Enmap();
@@ -195,6 +197,7 @@ module.exports = (client) => {
         client.quotedAliases.set(alias.toLowerCase(), memberName);
       });
     });
+    client.logger.ready(`Loaded quotes for ${chalk.bgGreen(client.quotedMembers.size)} members.`);
   }
 
   function loadTornData() {

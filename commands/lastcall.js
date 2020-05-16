@@ -19,13 +19,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       return message.reply('Sorry, you may only make one `Last call!`');
     }
 
-    const output = {
-      'embed': {
-        'color': config.color,
-        'description': '@here Last call for lotto to win **' + lotto.prize + '**',
-      }
-    };
-    lotto.channel.send(output);
+    lotto.channel.send(`@here Last call for lotto to win **${lotto.prize}**`);
     lotto.lc = false;
     message.delete();
 
