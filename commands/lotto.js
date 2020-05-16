@@ -65,6 +65,19 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   }
 };
 
+exports.shutdown = async (client) => {
+  try {
+    if (client.lotto) {
+      client.logger.log('Shutting down lotto...');
+      client.lotto.channel.send('I\'m being rebooted, so I need to cancel this lotto. Blame the  \*cough\*  @API Developer Don\'t  \*cough\*  blame  \*gasp\*  me.');
+      client.lotto = null;
+      client.logger.log('Lotto has been shutdown.');
+    }
+  } catch (e) {
+    client.logger.error(`Error shutting down 'lotto' command: ${e}`);
+  }
+};
+
 exports.conf = {
   enabled: true,
   guildOnly: true,

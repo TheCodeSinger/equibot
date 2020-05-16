@@ -133,7 +133,6 @@ module.exports = (client) => {
     // If the command has a shutdown function, then execute it. This must be an
     // async method.
     if (command.shutdown) {
-      client.logger.debug(`Shutting down command: ${commandName}`);
       await command.shutdown(client);
     }
 
