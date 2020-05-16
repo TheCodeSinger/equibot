@@ -21,7 +21,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     ]
 
     const loserMessages = [
-      ':Money_Bag_Emoji_large: ' + message.author.tornName + ' says, "Thanks for the lotto!"',
+      ':moneybag: ' + message.author.tornName + ' says, "Thanks for the lotto!"',
       ':sunglasses: ' + message.author.tornName + ' says, "Thanks for the lotto. Do another one!!"',
       ':clap: ' + message.author.tornName + ' says, "Thanks for a chance to win!"',
       ':money_with_wings: ' + message.author.tornName + ' says, "Thanks to ' + lotto.starter.toString() + ' for showing off their wealth!"',
