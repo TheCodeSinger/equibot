@@ -2,7 +2,7 @@ const chalk = require("chalk");
 
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   try {
-    await message.reply("Bot is shutting down...");
+    await message.reply("I am rebooting and should be back online within 5 seconds.");
     await Promise.all(client.commands.map(cmd => client.unloadCommand(cmd.help.name))).then(() => {
       client.logger.log(`Unloaded a total of ${chalk.bgGreen(client.commands.size)} commands.`);
     });
