@@ -22,7 +22,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
     if (!member) {
       // No match found.
-      message.reply(`Apparently \`${specifiedName}\` has not yet been quoted. Send you suggestions to the bot developer using \`bug\` command.`);
+      message.reply(`Apparently \`${specifiedName}\` has not yet been quoted. Send your suggestions using \`bug\` command.`);
       return;
     }
 
