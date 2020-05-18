@@ -12,6 +12,7 @@
     // Get the Developer's User object: Aarlo#2177
     let developer = message.guild.member('550079162564476997');
     developer.send(`${message.author.toString()} sends the following bug message: ${args.join(' ')}`);
+    message.reply('Message sent. Thank you for your feedback!');
   } catch (e) {
     client.logger.error(`Error executing 'bug' command: ${e}`);
   }
