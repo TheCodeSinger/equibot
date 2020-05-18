@@ -1,7 +1,7 @@
 /**
  * Displays a clickable link to the Torn profile for the specified member.
  *
- * @example   !link @Aarlo
+ * @example   !idea I think we should have a way to send in our ideas.
  */
  exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   try {
@@ -11,23 +11,23 @@
     }
     // Get the Developer's User object: Aarlo#2177
     let developer = message.guild.member('550079162564476997');
-    developer.send(`${message.author.toString()} sends the following bug message: ${args.join(' ')}`);
+    developer.send(`${message.author.toString()} sends the following message: ${args.join(' ')}`);
     message.reply('Message sent. Thank you for your feedback!');
   } catch (e) {
-    client.logger.error(`Error executing 'bug' command: ${e}`);
+    client.logger.error(`Error executing 'idea' command: ${e}`);
   }
 };
 
 exports.conf = {
   enabled: true,
   guildOnly: false,
-  aliases: [],
+  aliases: ['bug', 'idea', 'feedback', 'suggestion'],
   permLevel: 'User'
 };
 
 exports.help = {
-  name: 'bug',
+  name: 'idea',
   category: 'System',
   description: 'Sends a message to the bot developer.',
-  usage: 'bug <description of bug, question, or comment>'
+  usage: 'idea <description of idea, bug, suggestion, or comment>'
 };
