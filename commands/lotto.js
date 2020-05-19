@@ -5,10 +5,11 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
     if (lotto) {
       // Already a game of lotto running. Display the lotto info.
+      client.decorateUser(lotto.starter, message);
       const lottoInfo = {
         'embed': {
           'color': config.color,
-          'title': lotto.starter.username + ' is running a lotto for *' + lotto.prize + '*',
+          'title': lotto.starter.tornName + ' is running a lotto for *' + lotto.prize + '*',
           'fields': [
             {
               'name': 'Number of entrants: ',
@@ -36,13 +37,15 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       roasts: [],
     };
 
+    client.decorateUser(lotto.starter, message);
+
     const output = {
       embed: {
         color: config.color,
         // author: {
         //   name: 'New lotto started!'
         // },
-        title: lotto.starter.username + ' started a new lotto for *' + lotto.prize + '*',
+        title: lotto.starter.tornName + ' started a new lotto for *' + lotto.prize + '*',
         fields: [
           {
             name: 'Starter commands:',
