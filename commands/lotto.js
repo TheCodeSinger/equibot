@@ -1,3 +1,5 @@
+const moment = require("moment");
+
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   try {
     let lotto = client.lotto;
@@ -15,6 +17,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
               'name': 'Number of entrants: ',
               'value': lotto.joins.length,
             },
+            {
+              'name': 'Elapsed time: ',
+              'value': moment.duration(Date.now() - lotto.startTime).humanize(),
+            },
           ]
         }
       };
@@ -29,6 +35,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     lotto = client.lotto = {
       starter: message.author,
       channel: message.channel,
+      startTime: Date.now(),
       prize: args.join(' '),
       lc: true,
       joins: [],
@@ -72,7 +79,7 @@ exports.shutdown = async (client) => {
   try {
     if (client.lotto) {
       client.logger.log('Shutting down lotto...');
-      client.lotto.channel.send('I\'m being rebooted, so I need to cancel this lotto. Blame the  \*cough\*  @API Developer Don\'t  \*cough\*  blame  \*gasp\*  me.');
+      client.lotto.channel.send(`I'm being rebooted, so I need to cancel this lotto. Blame the..  \*cough\*  @API Developer.  ..Don\'t..  \*cough\*  ..blame..  \*gasp\*  me.`);
       client.lotto = null;
       client.logger.log('Lotto has been shutdown.');
     }
