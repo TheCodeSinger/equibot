@@ -26,13 +26,37 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     }
 
     message.delete();
-    lotto.winner = client.getRandomItem(lotto.joins);
 
+    // Display a ten-second countdown before drawing.
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    const msg = await message.channel.send({
+      'embed': {
+        'color': client.config.color,
+        'description': 'Drawing in ...',
+      }
+    });
+    let seconds = 10;
+     while (seconds > 0) {
+      await sleep(1000);
+      await msg.edit({
+        'embed': {
+          'color': client.config.color,
+          'description': `Drawing in ${seconds}`,
+        }
+      });
+      seconds--;
+    }
+    await msg.delete();
+
+    lotto.winner = client.getRandomItem(lotto.joins);
     client.decorateUser(lotto.winner, message);
     client.decorateUser(lotto.starter, message);
 
     const output = {
-      // 'content': ':tada: ' + lotto.winner.toString() + ' :tada:',
+      'content': ':tada: ' + lotto.winner.toString() + ' :tada:',
       'embed': {
         'color': config.color,
         'fields': [

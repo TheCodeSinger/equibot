@@ -25,11 +25,12 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
     // Add this user to the list of joins.
     lotto.joins.push(message.author);
+    client.decorateUser(message.author, message);
 
     const output = {
       'embed': {
         'color': config.color,
-        'description': message.author.toString() + ' joined as number ' + lotto.joins.length,
+        'description': message.author.tornName + ' joined as number ' + lotto.joins.length,
         // 'footer': {
         //   'text': 'Join now to have a chance at winning ' + lotto.prize
         // }
