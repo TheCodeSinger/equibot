@@ -62,7 +62,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         'fields': [
           {
             'name': 'The winner is revealed!',
-            'value': lotto.winner.toString() + ' won **' + lotto.prize + '** from ' + lotto.starter.tornName + '.'
+            'value': lotto.winner.tornName + ' won **' + lotto.prize + '** from ' + lotto.starter.tornName + '.'
           },
           {
             'name': 'Link to winner\'s profile:',

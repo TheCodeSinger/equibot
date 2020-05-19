@@ -11,6 +11,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     }
 
     client.decorateUser(message.author, message);
+    client.decorateUser(lotto.starter, message);
 
     const starterMessages = [
       ':clap: ' + message.author.tornName + ' says, "A big round of applause for me. Thank you!"',
@@ -21,10 +22,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     ]
 
     const loserMessages = [
-      ':moneybag: ' + message.author.tornName + ' says, "Thanks for the lotto!"',
-      ':sunglasses: ' + message.author.tornName + ' says, "Thanks for the lotto. Do another one!!"',
-      ':clap: ' + message.author.tornName + ' says, "Thanks for a chance to win!"',
-      ':money_with_wings: ' + message.author.tornName + ' says, "Thanks to ' + lotto.starter.toString() + ' for showing off their wealth!"',
+      ':moneybag: ' + message.author.tornName + ' says, "' + lotto.starter.tornName + ' Thank you for the lotto!"',
+      ':sunglasses: ' + message.author.tornName + ' says, "Thanks for the lotto, ' + lotto.starter.tornName + '. Do another one!!"',
+      ':clap: ' + message.author.tornName + ' says, "Thanks for a chance to win, ' + lotto.starter.tornName + '!"',
+      ':money_with_wings: ' + message.author.tornName + ' says, "Thanks to ' + lotto.starter.tornName + ' for showing off their wealth!"',
     ];
 
     let messages = loserMessages;

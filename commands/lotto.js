@@ -6,7 +6,12 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     const config = client.config;
 
     if (lotto) {
-      // Already a game of lotto running. Display the lotto info.
+      // Already a game of lotto running.
+      if (args[0]) {
+        return message.reply('There is already a lotto running. Please wait for this one to be completed.');
+      }
+
+      // Display the lotto info.
       client.decorateUser(lotto.starter, message);
       const lottoInfo = {
         'embed': {
