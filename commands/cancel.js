@@ -22,7 +22,6 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       }
     };
 
-
     message.reply('Are you sure you want to cancel this lotto? [yes/no]')
       .then(() => {
         message.channel

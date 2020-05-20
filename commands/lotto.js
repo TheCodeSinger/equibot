@@ -102,7 +102,7 @@ exports.conf = {
 
 exports.help = {
   name: 'lotto',
-  category: 'Faction',
+  category: 'Fun',
   description: 'Starts a lotto contest.',
   detailedDescription: 'Starts a lotto contest which is a free drawing for any member who joins.\n\nStarter Commands\n\t!lotto, !lastcall, !draw, !cancel\n\nParticipant Commands\n\t!join, !goodgame, !thankyou',
   usage: 'lotto',

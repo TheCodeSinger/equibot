@@ -354,8 +354,8 @@ module.exports = (client) => {
    */
   function decorateUser(user, message) {
     if (!user || !message) {
-      client.logger.error('Null arg(s) provided for `decorateUser(user, message)`');
-      return user;
+      client.logger.debug('Null arg(s) provided for `decorateUser(user, message)`');
+      return;
     }
     client.logger.debug('decorateUser(' + user + ', ' + message + ')');
 

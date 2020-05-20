@@ -72,7 +72,7 @@ exports.conf = {
 
 exports.help = {
   name: 'quote',
-  category: 'Faction',
+  category: 'Fun',
   description: 'Displays a perfectly apropos quote.',
   detailedDescription: 'Displays a random quote by or about a specified member.\n\nIf no member specified, then selects a perfectly apropos quote for the moment.\n\nYou may also omit the `!quote` and directly use the member name (or nickname) as the command. e.g. `!peterpan` or `!pan`.',
   usage: 'quote [member name]',
