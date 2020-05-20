@@ -1,3 +1,15 @@
+/**
+ * Reloads the specified module. This allows you to maintain uptime when
+ * patching the bot.
+ *
+ * NOTE: The reload command does not work for new commands. The bot
+ * will have to be rebooted to pick up new commands.
+ *
+ * TODO: Add ability to do a new `loadCommands` command in order to pickup new
+ * command modules.
+ *
+ * @example   !reload lotto
+ */
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   try {
     if (!args || args.length < 1) {

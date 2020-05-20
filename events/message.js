@@ -25,11 +25,13 @@ module.exports = (client, message) => {
       // Found a matching quotable. Run the quote command.
       return client.commands.get('quote').run(client, message, [command], level);
     }
-    return message.delete();
+    return message.reply(`Sorry. I don't know what to do with the command \`${client.config.prefix}${command}\``);
   }
 
   // Ignore commands which are disabled.
-  if (!cmd.conf.enabled) { return message.delete(); }
+  if (!cmd.conf.enabled) {
+    return message.reply(`Oops. You stumbled upon a secret command that is not yet enabled. Exciting!`);
+  }
 
   // Log execution of the command.
   const commandLogString = args.length ? command + '(' + JSON.stringify(args) + ')' : command;

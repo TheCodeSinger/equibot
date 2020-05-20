@@ -1,8 +1,21 @@
 const moment = require("moment");
 
 /**
+ * Displays a random quote by or about a specified member. If no member
+ * specified, then selects a perfectly apropos quote for the moment.
+ *
+ * You may also omit the `!quote` and directly use the member name (or nickname)
+ * as the command.
+ *
+ * INSTALLATION:
  * Copy `../modules/quotes.json.template` to `../modules/quotes.json` and add
- * quotes and images for your members.
+ * quotes and images for your members. There is a special `!reload quotes`
+ * command to reload the json file.
+ *
+ * @example   !quote
+ * @example   !quote peterpan
+ * @example   !quote pan
+ * @example   !pan
  */
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   try {

@@ -1,5 +1,20 @@
 const moment = require("moment");
 
+/**
+ * Starts a lotto game which is a free raffle/drawing. Other members can `!join`
+ * and the host can `!draw` when ready.
+ *
+ * The command expects an argument which is the prize to be given away. If no
+ * argument provided, the command will display info about the current lotto.
+ *
+ * Commands for:
+ *   Hosts: !lotto, !lastcall, !draw, !cancel
+ *   Participants: !join, !goodgame, !thankyou
+ *   Everyone: !lottoinfo, !roast
+ *
+ * @example   !lotto 10 Xanax
+ * @example   !lotto
+ */
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   try {
     let lotto = client.lotto;
