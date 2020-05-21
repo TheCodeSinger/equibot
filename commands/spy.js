@@ -3,7 +3,7 @@
  * even do.
  */
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
-  const spyLink = `https://www.tornstats.com/api.php?key=${client.auth.api}&action=spy&target=`;
+  const spyLink = `https://www.tornstats.com/api.php?key=${client.auth.apiKey}&action=spy&target=`;
 
   function getStatEmbed(stats, name) {
     return {

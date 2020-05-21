@@ -16,6 +16,7 @@ module.exports = (client) => {
     getRandomItem: getRandomItem,
     getTornId: getTornId,
     getTornName: getTornName,
+    handleApiError: handleApiError,
     loadCommand: loadCommand,
     loadCommandModules: loadCommandModules,
     loadEventModules: loadEventModules,
@@ -390,6 +391,46 @@ module.exports = (client) => {
         obj[key] = itemList[key];
         return obj;
       }, {});
+  }
+
+  /**
+   * Parses API error message and displays both error log message and sends
+   * message to guild channel.
+   *
+   * @param   {Object}   data       API Error data.
+   * @param   {Object}   channel    Current channel for messaging.
+   * @param   {String}   endpoint   API endpoint with this error.
+   */
+  function handleApiError(data, channel, endpoint) {
+    if (!data || !data.error) {
+      // No error info.
+      return;
+    }
+
+    client.logger.error(`API Error: ${JSON.stringify(data.error)}`);
+
+    return channel.send({
+      embed: {
+        color: client.config.color,
+        author: {
+          name: 'Ched broke the API again!'
+        },
+        description: 'API Response Error',
+        fields: [
+          {
+            name: 'Error Message',
+            value: `${data.error.error} (Code ${data.error.code})`,
+          },
+          {
+            name: 'Endpoint',
+            value: endpoint,
+          }
+        ],
+        footer: {
+          text: 'Send this info to Aarlo#2177 if he isn\'t here.'
+        }
+      }
+    });
   }
 
 };
