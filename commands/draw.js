@@ -34,7 +34,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
     const msg = await message.channel.send({
       'embed': {
-        'color': client.config.color,
+        'color': client.config.colors.default,
         'description': 'Drawing in ...',
       }
     });
@@ -43,7 +43,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       await sleep(1000);
       await msg.edit({
         'embed': {
-          'color': client.config.color,
+          'color': client.config.colors.default,
           'description': `Drawing in ${seconds}`,
         }
       });
@@ -58,7 +58,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     const output = {
       'content': ':tada: ' + lotto.winner.toString() + ' :tada:',
       'embed': {
-        'color': config.color,
+        'color': config.colors.default,
         'fields': [
           {
             'name': 'The winner is revealed!',

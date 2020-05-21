@@ -23,7 +23,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     function sendMessage(items) {
       channel.send({
         embed: {
-          color: client.config.color,
+          color: client.config.colors.default,
           author: {
             name: page > 1 ? `Bazaar List, part ${page}` : `Bazaar List`
           },
@@ -113,7 +113,7 @@ exports.conf = {
 
 exports.help = {
   name: 'bazaar',
-  category: 'Faction',
+  category: 'Trading',
   description: 'Displays a bazaar price list.',
   usage: 'bazaar <torn_profile_id>',
 };

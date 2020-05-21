@@ -30,7 +30,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       client.decorateUser(lotto.starter, message);
       const lottoInfo = {
         'embed': {
-          'color': config.color,
+          'color': config.colors.default,
           'title': lotto.starter.tornName + ' is running a lotto for *' + lotto.prize + '*',
           'fields': [
             {
@@ -68,7 +68,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
     const output = {
       embed: {
-        color: config.color,
+        color: config.colors.default,
         // author: {
         //   name: 'New lotto started!'
         // },

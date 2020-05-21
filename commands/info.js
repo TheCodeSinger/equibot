@@ -24,7 +24,7 @@
     function itemInfoEmbed(item, id) {
       return {
         'embed': {
-          'color': client.config.color,
+          'color': client.config.colors.default,
           'thumbnail': {
             'url': 'https://alltornup.netlify.com/TornItems965/' + id + '.png'
           },
@@ -111,7 +111,7 @@ exports.conf = {
 
 exports.help = {
   name: 'info',
-  category: 'Faction',
+  category: 'Trading',
   description: 'Displays info about a Torn item.',
   usage: 'info <item name>'
 };

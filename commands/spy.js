@@ -8,7 +8,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   function getStatEmbed(stats, name) {
     return {
       'embed': {
-        'color': client.config.color,
+        'color': client.config.colors.default,
         'author': {
           'name': name
         },

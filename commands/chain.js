@@ -17,7 +17,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     if (chain.cooldowm) {
       return {
         embed: {
-          color: client.config.color,
+          color: client.config.colors.default,
           author: {
             name: 'Chain Completed'
           },
@@ -46,7 +46,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     if (chain.current) {
       return {
         embed: {
-          color: client.config.color,
+          color: client.config.colors.default,
           author: {
             name: 'Chain Active'
           },
@@ -74,7 +74,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     // No chain active.
     return {
       embed: {
-        color: client.config.color,
+        color: client.config.colors.default,
         author: {
           name: 'No Active Chain'
         },

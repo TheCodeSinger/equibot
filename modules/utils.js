@@ -427,7 +427,7 @@ module.exports = (client) => {
 
     const embedErrorResponse = {
       embed: {
-        color: client.config.color,
+        color: client.config.colors.default,
         description: 'API Response Error',
         fields: [
           {

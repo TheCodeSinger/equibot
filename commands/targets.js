@@ -2,7 +2,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   try {
     const output = {
       'embed': {
-        'color': client.config.color,
+        'color': client.config.colors.default,
         'description': 'EQ Targets App: http://torneq.com/#!/targets',
       }
     };

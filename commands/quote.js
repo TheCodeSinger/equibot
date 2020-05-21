@@ -41,7 +41,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
     const quoteEmbed = {
       embed: {
-        color: client.config.color,
+        color: client.config.colors.default,
         author: {
           name: !member.title ? member.name : undefined,
         },
@@ -52,7 +52,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
     const imageEmbed = {
       embed: {
-        color: client.config.color,
+        color: client.config.colors.default,
         title: member.name,
         image: {
           url: client.getRandomItem(member.images),

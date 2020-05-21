@@ -29,7 +29,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
     const output = {
       'embed': {
-        'color': config.color,
+        'color': config.colors.default,
         'description': message.author.tornName + ' joined as number ' + lotto.joins.length,
         // 'footer': {
         //   'text': 'Join now to have a chance at winning ' + lotto.prize
