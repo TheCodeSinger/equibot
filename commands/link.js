@@ -4,11 +4,7 @@
  * @example   !link @Aarlo
  */
  exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
-  if (!args[0]) {
-    message.channel.send('If you provide a username then I will give you their Torn profile link.');
-    return;
-  }
-  const guildMember = message.guild.member(message.mentions.users.first());
+  const guildMember = message.guild.member(message.mentions.users.first() || message.author);
   if (!guildMember) {
     message.channel.send('Use a proper tagged Discord name.');
     return;
