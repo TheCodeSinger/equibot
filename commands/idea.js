@@ -28,6 +28,6 @@ exports.conf = {
 exports.help = {
   name: 'idea',
   category: 'System',
-  description: 'Sends a message to the bot developer.',
+  description: 'Sends message to bot developer.',
   usage: 'idea <description of idea, bug, suggestion, or comment>'
 };

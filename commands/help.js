@@ -19,8 +19,8 @@ exports.run = (client, message, args, level) => {
     // user. Filter the list according to whether user has permission and
     // whether requested via direct message or within a guild.
     const myCommands = message.guild ?
-      client.commands.filter(cmd => client.levelCache[cmd.conf.permLevel] <= level && !!cmd.help.category) :
-      client.commands.filter(cmd => client.levelCache[cmd.conf.permLevel] <= level && !!cmd.help.category && cmd.conf.guildOnly !== true);
+      client.commands.filter(cmd => client.levelCache[cmd.conf.permLevel] <= level && !!cmd.help.category && cmd.conf.enabled) :
+      client.commands.filter(cmd => client.levelCache[cmd.conf.permLevel] <= level && !!cmd.help.category && cmd.conf.enabled && cmd.conf.guildOnly !== true);
 
     // Get a list of all the command names and determine the length of the
     // longest one in order to determine a nice width for the command name
@@ -32,7 +32,7 @@ exports.run = (client, message, args, level) => {
     let currentCategory = '';
     let output = `= Command List =\n\n[Use ${client.config.prefix}help <commandname> for details]\n`;
     const sorted = myCommands.array().sort((p, c) => p.help.category > c.help.category ? 1 :  p.help.name > c.help.name && p.help.category === c.help.category ? 1 : -1 );
-    sorted.forEach( c => {
+    sorted.forEach(c => {
       const cat = c.help.category.toUpperCase();
       if (currentCategory !== cat) {
         output += `\u200b\n== ${cat} ==\n`;

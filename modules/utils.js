@@ -404,22 +404,39 @@ module.exports = (client) => {
   function handleApiError(data, channel, endpoint) {
     if (!data || !data.error) {
       // No error info.
-      return;
+      return client.logger.error(`API Error: ${JSON.stringify(data)}`);
     }
 
     client.logger.error(`API Error: ${JSON.stringify(data.error)}`);
 
-    return channel.send({
+    const errorCodeHash = {
+      0: 'Unhandled error, should not occur.',
+      1: 'Private key is empty in current request.',
+      2: 'Private key is wrong/incorrect format.',
+      3: 'Requesting an incorrect basic type.',
+      4: 'Requesting incorrect selection fields.',
+      5: 'Current private key is banned for a small period of time because of too many requests (max 100 per minute).',
+      6: 'Wrong ID value.',
+      7: 'A requested selection is private (For example, personal data of another user / faction).',
+      8: 'Current IP is banned for a small period of time because of abuse.',
+      9: 'Api system is currently disabled.',
+      10: 'Current key can\'t be used because owner is in federal jail.',
+      11: 'Key change error: You can only change your API key once every 60 seconds.',
+      12: 'Key read error: Error reading key from Database.',
+    }
+
+    const embedErrorResponse = {
       embed: {
         color: client.config.color,
-        author: {
-          name: 'Ched broke the API again!'
-        },
         description: 'API Response Error',
         fields: [
           {
+            name: 'Error Code',
+            value: `${data.error.code}: ${data.error.error}`,
+          },
+          {
             name: 'Error Message',
-            value: `${data.error.error} (Code ${data.error.code})`,
+            value: errorCodeHash[data.error.code],
           },
           {
             name: 'Endpoint',
@@ -427,10 +444,18 @@ module.exports = (client) => {
           }
         ],
         footer: {
-          text: 'Send this info to Aarlo#2177 if he isn\'t here.'
+          text: 'Send this info to Aarlo#2177 if he isn\'t around.'
         }
       }
-    });
+    };
+
+    if ([0, 9, 12].includes(data.error.code)) {
+      embed.author = {
+        name: 'Uh oh.. Ched broke the API again!'
+      };
+    }
+
+    return channel.send(embedErrorResponse);
   }
 
 };
