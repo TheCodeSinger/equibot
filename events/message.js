@@ -25,7 +25,9 @@ module.exports = (client, message) => {
       // Found a matching quotable. Run the quote command.
       return client.commands.get('quote').run(client, message, [command], level);
     }
-    return message.reply(`Sorry. I don't know what to do with the command \`${client.config.prefix}${command}\``);
+    // return message.reply(`Sorry. I don't know what to do with the command \`${client.config.prefix}${command}\``);
+    // Exit silently. Don't make a fuss.
+    return;
   }
 
   // Ignore commands which are disabled.
