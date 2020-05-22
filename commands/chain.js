@@ -44,7 +44,9 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
     // Active chain.
     if (chain.current) {
+      const content = chain.timeout < 45 ? `@here SAVE THE CHAIN: ${chain.timeout}s left!` : undefined;
       return {
+        content: content,
         embed: {
           color: client.config.colors.default,
           author: {
