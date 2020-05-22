@@ -31,5 +31,8 @@ client.loadExternalData();
 // Load into memory various Torn City data.
 client.loadTornData();
 
+// Initialize the games.
+client.loadGameData();
+
 // Log the bot into the Discord client.
 client.login(client.auth.botToken);

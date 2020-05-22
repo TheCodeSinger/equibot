@@ -64,6 +64,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       roasts: [],
     };
 
+    // Update database.
+    client.ensureMemberStats(lotto.starter.id);
+    client.updateGameStats('lotto', 'started', lotto.starter.id);
+
     client.decorateUser(lotto.starter, message);
 
     const output = {
