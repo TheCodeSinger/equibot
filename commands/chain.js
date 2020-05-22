@@ -108,7 +108,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
           client.logger.debug(`Chain data: ${JSON.stringify(data.chain)}`);
           channel.send(chainEmbed(data.chain || {}));
         })
-        .catch(error => client.logger.log(JSON.stringify(error)));
+        .catch(error => client.logger.error(JSON.stringify(error)));
     }
     return new CronJob('*/30 * * * * *', fetchChainData);
   }
