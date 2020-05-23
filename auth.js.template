@@ -12,11 +12,20 @@
  * not undo that.
  */
  const auth = {
-  // Your Discord Bot Secret Token. Available from https://discordapp.com/developers/applications/me
+  // Your Discord Bot Secret Token.
+  // Available from https://discordapp.com/developers/applications/me
   botToken: '',
 
-  // Your Torn City API key. Available from https://www.torn.com/preferences.php#tab=api
+  // A Torn City API key, for general use.
+  // Available from https://www.torn.com/preferences.php#tab=api
   apiKey: '',
+
+  // One API Key per faction, for faction-specific features.
+  // Use meaningful keynames for easy reference. e.g. `chain faction1`
+  factionKeys: {
+    faction1: '',
+    faction2: '',
+  }
 };
 
 module.exports = auth;

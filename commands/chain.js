@@ -1,6 +1,13 @@
 const CronJob = require('cron').CronJob;
 
 /**
+ * TODO:
+ *   1. Allow both factions to have chain watchers running
+ *   2. Add more granular control to start, pause, resume, stop.
+ *      - `!chain start eq2` *
+ */
+
+/**
  * Starts the chain watcher which displays chain status every 30 seconds.
  *
  * @example   !chain
@@ -16,6 +23,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     // Completed chain is in cool down.
     if (chain.cooldown) {
       client.watcher.stop();
+      delete client.watcher;
       const title = chain.current === chain.max ? 'Chain completed!' : 'Chain broken';
       return {
         content: `@here ${title}`,
@@ -78,6 +86,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
     // No chain active.
     client.watcher.stop();
+    delete client.watcher;
     return {
       embed: {
         color: client.config.colors.default,
@@ -95,11 +104,13 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
    * Creates a CronJob to fetch chain info and display status every 30 seconds.
    *
    * @param   {Object}   channel   Discord channel object.
+   * @param   {String}  [faction]  Faction nickname.
    * @return  {Object}   CronJob promise to send status message.
    */
-  function createChainWatcher(channel) {
+  function createChainWatcher(channel, faction) {
+    const apiKey = client.auth.factionApiKeys[faction] || client.auth.apiKey;
     const chainApiEndpoint = 'https://api.torn.com/faction/?selections=chain';
-    const chainApiLink = chainApiEndpoint + '&key=' + client.auth.apiKey;
+    const chainApiLink = chainApiEndpoint + '&key=' + apiKey;
 
     function fetchChainData() {
       client.logger.log('Fetching chain data');
@@ -132,10 +143,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       }
     } else {
       // No watcher found. Start one.
-      client.watcher = createChainWatcher(message.channel);
+      client.watcher = createChainWatcher(message.channel, args[0]);
       client.watcher.start();
-      client.logger.log(`Chain watcher started in #${message.channel.name} with 30-second interval.`);
-      message.channel.send('Chain watcher started with 30-second interval.');
+      client.logger.log(`Chain watcher started ${args[0] ? 'for ' + args[0] + ' ': ''}in #${message.channel.name} with 30-second interval.`);
+      message.channel.send(`Chain watcher started ${args[0] ? 'for ' + args[0] + ' ' : ''}with 30-second interval.`);
     }
 
   } catch (e) {
@@ -154,6 +165,6 @@ exports.help = {
   name: 'chain',
   category: 'Faction',
   description: 'Watches chain and displays status.',
-  detailedDescription: 'Watches chain and displays status. Typing the command a second time cancels the chain watcher.',
-  usage: 'chain',
+  detailedDescription: 'Watches chain and displays status. Typing the command a second time cancels the chain watcher. If you have more than one faction, specify which faction and ensure necessary API Keys in auth.js. If none specified, then it will use the primary API Key.',
+  usage: 'chain <faction_name>',
 };
