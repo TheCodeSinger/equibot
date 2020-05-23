@@ -25,8 +25,8 @@ client.loadCommandModules();
 // Load a cache of user-friendly permission names.
 client.loadPermissions();
 
-// Load the member quotes into memory.
-client.loadMemberQuotes();
+// Load the member quotes, jokes, and others into memory.
+client.loadExternalData();
 
 // Load into memory various Torn City data.
 client.loadTornData();

@@ -21,7 +21,7 @@ module.exports = (client) => {
     loadCommand: loadCommand,
     loadCommandModules: loadCommandModules,
     loadEventModules: loadEventModules,
-    loadMemberQuotes: loadMemberQuotes,
+    loadExternalData: loadExternalData,
     loadPermissions: loadPermissions,
     loadTornData: loadTornData,
     setBotStatus: setBotStatus,
@@ -200,6 +200,37 @@ module.exports = (client) => {
       });
     });
     client.logger.ready(`Loaded quotes for ${chalk.bgGreen(client.quotedMembers.size)} members.`);
+  }
+
+  function loadJokes() {
+    client.logger.debug(`Starting to load jokes`);
+    const jokes = require("./jokes.json");
+
+    // Initialize EnMaps of quoted member names and aliases.
+    client.jokes = new Enmap();
+    client.jokeAliases = new Enmap();
+    client.jokeTypes = [];
+
+    jokes.forEach(type => {
+      const name = type.name.toLowerCase();
+
+      // Add this group of jokes to the EnMap.
+      client.jokes.set(name, type.jokes);
+
+      // Add this type to the master list.
+      client.jokeTypes.push(name);
+
+      // Map each joke type alias to the primary joke type.
+      type.aliases.forEach(alias => {
+        client.jokeAliases.set(alias, name);
+      });
+    });
+    client.logger.ready(`Loaded ${chalk.bgGreen(client.jokes.size)} types of jokes`);
+  }
+
+  function loadExternalData() {
+    loadMemberQuotes();
+    loadJokes();
   }
 
   function loadTornData() {
