@@ -17,6 +17,7 @@ module.exports = (client) => {
     getTornId: getTornId,
     getTornName: getTornName,
     handleApiError: handleApiError,
+    humanizeSeconds: humanizeSeconds,
     loadCommand: loadCommand,
     loadCommandModules: loadCommandModules,
     loadEventModules: loadEventModules,
@@ -456,6 +457,42 @@ module.exports = (client) => {
     }
 
     return channel.send(embedErrorResponse);
+  }
+
+  /**
+   * Parse a large number of seconds and display in a humanized form.
+   *
+   * @example humanizeSeconds(4587) => '1h 16m 27s'
+   *
+   * @param   {Number}   totalSeconds   A number of seconds.
+   * @return  {String}   A string representation of the time/duration.
+   */
+  function humanizeSeconds(totalSeconds) {
+    var remainingSeconds = totalSeconds || 0;
+    var hours = minutes = seconds = 0;
+    var output = '';
+
+    if (!remainingSeconds) {
+      return '0s';
+    }
+
+    if (remainingSeconds >= 3600) {
+      hours = Math.floor(remainingSeconds / 3600);
+      remainingSeconds = remainingSeconds - (hours * 3600);
+      output += `${hours}h`;
+    }
+
+    if (remainingSeconds >= 60) {
+      minutes = Math.floor(remainingSeconds / 60);
+      remainingSeconds = remainingSeconds - (minutes * 60);
+      output += ` ${minutes}m`;
+    }
+
+    if (remainingSeconds > 0) {
+      output += ` ${remainingSeconds}s`;
+    }
+
+    return output;
   }
 
 };

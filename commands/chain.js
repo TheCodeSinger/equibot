@@ -14,27 +14,30 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
    */
   function chainEmbed(chain) {
     // Completed chain is in cool down.
-    if (chain.cooldowm) {
+    if (chain.cooldown) {
+      client.watcher.stop();
+      const title = chain.current === chain.max ? 'Chain completed!' : 'Chain broken';
       return {
+        content: `@here ${title}`,
         embed: {
           color: client.config.colors.default,
           author: {
-            name: 'Chain Completed'
+            name: title
           },
           fields: [
             {
-              name: 'Chain Hits',
-              value: chain.current,
+              name: 'Completed Hits',
+              value: chain.current + ' of ' + chain.max,
               inline: false
             },
             {
-              name: 'Multiplier',
+              name: 'Ongoing Multiplier',
               value: chain.modifier + 'x',
               inline: false
             },
             {
-              name: 'Cooldown',
-              value: chain.cooldown + 's',
+              name: 'Cooldown Remaining',
+              value: client.humanizeSeconds(chain.cooldown),
               inline: false
             }
           ]
@@ -60,7 +63,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
             },
             {
               name: 'Timeout',
-              value: chain.timeout + 's',
+              value: client.humanizeSeconds(chain.timeout),
               inline: true
             },
             {
@@ -74,6 +77,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     }
 
     // No chain active.
+    client.watcher.stop();
     return {
       embed: {
         color: client.config.colors.default,
