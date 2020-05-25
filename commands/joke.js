@@ -62,8 +62,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         // Wait for the "Who's There?".
         message.channel
           .awaitMessages(response => (
-            response.author === message.author &&
-            scrubQuestion(response.content) === scrubQuestion(whosThere)
+            response.author === message.author && response.content.toLowerCase().match('who')
             ), { max: 1, time: 10000, errors: ['time'] })
           .then(() => {
             // Send The Name.
