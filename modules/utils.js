@@ -1,7 +1,7 @@
-const fs = require('fs');
+const fs = require("fs");
 const fetch = require('isomorphic-fetch');
-const Enmap = require('enmap');
-const chalk = require('chalk');
+const Enmap = require("enmap");
+const chalk = require("chalk");
 
 const profileLink = 'https://www.torn.com/profiles.php?XID=';
 
@@ -10,9 +10,7 @@ module.exports = (client) => {
   // Attach public methods to the client.
   Object.assign(client, {
     decorateUser: decorateUser,
-    ensureMemberStats: ensureMemberStats,
     filterItems: filterItems,
-    formatCurrency: formatCurrency,
     formatNumber: formatNumber,
     getPermlevel: getPermlevel,
     getRandomItem: getRandomItem,
@@ -24,14 +22,10 @@ module.exports = (client) => {
     loadCommandModules: loadCommandModules,
     loadEventModules: loadEventModules,
     loadExternalData: loadExternalData,
-    loadGameData: loadGameData,
-    loadMemberQuotes: loadMemberQuotes,
     loadPermissions: loadPermissions,
     loadTornData: loadTornData,
     setBotStatus: setBotStatus,
     unloadCommand: unloadCommand,
-    updateGameRecords: updateGameRecords,
-    updateGameStats: updateGameStats,
   });
 
   /**
@@ -43,13 +37,13 @@ module.exports = (client) => {
   function loadEvent(filename) {
     try {
       // If the file is not a JS file, ignore it.
-      if (!filename.endsWith('.js')) { return false; }
+      if (!filename.endsWith(".js")) { return false; }
 
       // Load the event file itself.
       const event = require(`../events/${filename}`);
 
       // Get the event name from the file name.
-      let eventName = filename.split('.')[0];
+      let eventName = filename.split(".")[0];
       client.logger.debug(`Loading Event: ${eventName}`);
 
       // Call each event with `client` as the first argument.
@@ -73,7 +67,7 @@ module.exports = (client) => {
    * appropriate event.
    */
   function loadEventModules() {
-    fs.readdir('./events/', (err, files) => {
+    fs.readdir("./events/", (err, files) => {
       let numLoadedEvents = 0;
       if (err) {
         return client.logger.error(err);
@@ -166,14 +160,14 @@ module.exports = (client) => {
     client.commands = new Enmap();
     client.aliases = new Enmap();
 
-    fs.readdir('./commands/', (err, files) => {
+    fs.readdir("./commands/", (err, files) => {
       let numLoadedCommands = 0;
       if (err) {
         return client.logger.error(err);
       }
       files.forEach(filename => {
         // If the file is not a JS file, ignore it.
-        if (!filename.endsWith('.js')) { return false; }
+        if (!filename.endsWith(".js")) { return false; }
         if (loadCommand(filename)) {
           numLoadedCommands = numLoadedCommands + 1;
         }
@@ -184,7 +178,7 @@ module.exports = (client) => {
 
   function loadMemberQuotes() {
     client.logger.debug(`Starting to load member quotes`);
-    const memberQuotes = require('./quotes.json');
+    const memberQuotes = require("./quotes.json");
 
     // Initialize EnMaps of quoted member names and aliases.
     client.quotedMembers = new Enmap();
@@ -210,7 +204,7 @@ module.exports = (client) => {
 
   function loadJokes() {
     client.logger.debug(`Starting to load jokes`);
-    const jokes = require('./jokes.json');
+    const jokes = require("./jokes.json");
 
     // Initialize EnMaps of quoted member names and aliases.
     client.jokes = new Enmap();
@@ -240,9 +234,7 @@ module.exports = (client) => {
   }
 
   function loadTornData() {
-    client.tornData = {
-      itemHashById: {}
-    };
+    client.tornData = {};
 
     fetch('https://api.torn.com/torn/?selections=items&key=' + client.auth.apiKey)
       .then(data => data.json())
@@ -290,9 +282,9 @@ module.exports = (client) => {
   /**
    * Sets the bot activity status.
    *
-   * @example  'Playing lotto'
-   * @example  'Watching for bugmuggers'
-   * @example  'Listening to !help'
+   * @example  "Playing lotto"
+   * @example  "Watching for bugmuggers"
+   * @example  "Listening to !help"
    *
    * @param  {string}  type  One of PLAYING|LISTENING|WATCHING.
    * @param  {string}  name  Name of activity.
@@ -528,135 +520,10 @@ module.exports = (client) => {
     }
 
     if (remainingSeconds > 0) {
-      output += ` ${Math.floor(remainingSeconds)}s`;
+      output += ` ${remainingSeconds}s`;
     }
 
     return output;
-  }
-
-  /**
-   * Loads the game data from Enmap or initializes if empty.
-   */
-  function loadGameData() {
-    client.games = new Enmap({name: 'games'});
-
-    client.games.defer.then(() => {
-      client.games.ensure('totals', {
-        started: 0,
-        canceled: 0,
-        completed: 0,
-        valueAwarded: 0,
-        startDate: Date.now(),
-      });
-      client.games.ensure('lotto', {
-        totals: {
-          started: 0,
-          canceled: 0,
-          completed: 0,
-          valueAwarded: 0,
-        },
-        records: {
-          mostParticipants: 0,
-          highestValue: 0,
-          longestDuration: 0,
-        },
-        startDate: Date.now(),
-      });
-    });
-  }
-
-  /**
-   * Updates game stats.
-   *
-   * @param   {String}   game       Name of game.
-   * @param   {String}   action     Action taken: started|canceled|completed|awarded|won
-   * @param   {String}   memberId   Member who took action.
-   * @param   {String}   value      Cash value of award.
-   */
-  function updateGameStats(game, action, memberId, value) {
-    client.logger.debug(`updateGameStats args: ${game}, ${action}, ${memberId}, ${value}`);
-    if (['started', 'canceled', 'completed'].includes(action)) {
-      client.games.math(memberId, 'add', 1, `totals[${action}]`);
-      client.games.math(memberId, 'add', 1, `lotto[${action}]`);
-      client.games.math(game, 'add', 1, `totals[${action}]`);
-      client.games.math('totals', 'add', 1, action);
-    } else if (action === 'awarded') {
-      client.games.math(memberId, 'add', value, 'totals.valueAwarded');
-      client.games.math(memberId, 'add', value, 'lotto.valueAwarded');
-      client.games.math(game, 'add', value, 'totals.valueAwarded');
-      client.games.math('totals', 'add', value, 'valueAwarded');
-    } else if (action === 'won') {
-      client.games.math(memberId, 'add', value, 'totals.valueWon');
-      client.games.math(memberId, 'add', value, 'lotto.valueWon');
-    }
-  }
-
-  /**
-   * Updates game records.
-   *
-   * @param   {String}   game       Name of game.
-   * @param   {Number}   joins      Number of participants.
-   * @param   {Number}   award      Value of award.
-   * @param   {Number}   duration   Duration of game in milliseconds.
-   */
-  function updateGameRecords(game, joins, award, duration) {
-    client.logger.debug(`updateGameRecords args: ${game}, ${joins}, ${award}, ${duration}`);
-
-    let currentRecords = client.games.get(game, 'records');
-    client.logger.debug(`currentRecords: ${JSON.stringify(currentRecords)}`);
-
-    if (joins > currentRecords.mostParticipants) {
-      client.games.set(game, joins, 'records.mostParticipants');
-    }
-
-    if (award > currentRecords.highestValue) {
-      client.games.set(game, award, 'records.highestValue');
-    }
-
-    if (duration > currentRecords.longestDuration) {
-      client.games.set(game, duration, 'records.longestDuration');
-    }
-  }
-
-  /**
-   * Formats a number as USD currency.
-   *
-   * @param   {Number}   number   A number of USD in decimal format.
-   * @return  {String}   String format of currency with no cents.
-   */
-  function formatCurrency(number) {
-    number = number || 0;
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(number).slice(0,-3);
-  }
-
-  /**
-   * Ensures the Enmap stats for a member is stubbed out.
-   *
-   * @param   {Number}   memberId   Discord member ID.
-   * @return  {Object}   Enmap object of member stats.
-   */
-  function ensureMemberStats(memberId) {
-    if (!memberId) {
-      return;
-    }
-
-    return client.games.ensure(memberId, {
-      totals: {
-        started: 0,
-        canceled: 0,
-        completed: 0,
-        valueAwarded: 0,
-        valueWon: 0,
-      },
-      lotto: {
-        started: 0,
-        canceled: 0,
-        completed: 0,
-        valueAwarded: 0,
-        valueWon: 0,
-      },
-      startDate: Date.now(),
-    });
   }
 
 };

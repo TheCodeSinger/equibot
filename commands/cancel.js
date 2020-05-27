@@ -40,8 +40,6 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
                 lotto.channel.send(output);
                   // Must use the original reference when setting null.
                 client.lotto = null;
-
-                client.updateGameStats('lotto', 'canceled', lotto.starter.id);
                 break;
 
               case 'no':
@@ -53,8 +51,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
                 message.reply('Not sure what you mean by that response. If you still need to cancel, ask me again.');
             }
           })
-          .catch((error) => {
-            client.logger.error(`Error confirming 'cancel' command: ${error}`);
+          .catch((collected) => {
             message.reply('Done waiting. If you still need to cancel, ask me again.');
           });
       });
