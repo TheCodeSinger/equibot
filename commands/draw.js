@@ -127,18 +127,18 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         }
 
         // Get market value of prize and multiply by quantity.
-        const filteredItems = client.filterItems(itemHashById, prize);
+        const filteredItems = client.filterItems(itemHashById, prize, true);
         client.logger.debug(`filteredItems: ${JSON.stringify(filteredItems)}`);
 
         // Should be an exact match if lotto host pasted in the actual sent item
         // message.
         const filteredItemKeys = Object.keys(filteredItems);
-        if (filteredItemKeys.length > 1) {
-          // There are multiple matches based on the submitted prize message
-          // which suggests the host did not paste in the proper "You sent..."
-          // message. We have to abort and warn the host.
+        if (!filteredItemKeys.length) {
+          // No matching item was found which suggests the host did not paste
+          // in the proper "You sent..." message. We have to abort and warn the
+          // host.
           client.logger.error(`Host sent a prize message with an ambiguous item name. Cannot record the prize.`);
-          lotto.channel.send(`Sorry ${lotto.starter.toString()}, but I could not record your awarded prize value. Next time paste in the precise 'You sent...' message after sending the prize to the winner. For example: "You sent 10x Xanax to Peterpan"`);
+          lotto.channel.send(`Sorry ${lotto.starter.toString()}, but I couldn't find a matching item by that name. Next time paste in the precise 'You sent...' message after sending the prize to the winner. For example: "You sent 10x Xanax to PeterPan with the message: You can fly!"`);
           itemId = 0;
           item = {};
         } else {
@@ -195,7 +195,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         prizeMessageEmbed.embed.title = `${quantity}x ${prize}`;
         prizeMessageEmbed.embed.fields.unshift({
           name: 'Item Info',
-          value: `Name: ${item.name}\nCirculation: ${client.formatNumber(item.circulation)}\nMarket Value: ${client.formatCurrency(item.market_value)}\nDescription: ${item.description}`
+          value: `Name: ${item.name}\nCirculation: ${client.formatNumber(item.circulation)}\nMarket Value: ${client.formatCurrency(item.market_value)}\nDescription: ${item.description || 'Unknown'}`
         });
       }
 

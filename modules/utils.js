@@ -244,6 +244,7 @@ module.exports = (client) => {
       itemHashById: {}
     };
 
+    client.logger.debug('BEGIN loading Torn items data');
     fetch('https://api.torn.com/torn/?selections=items&key=' + client.auth.apiKey)
       .then(data => data.json())
       .then(res => {
@@ -424,9 +425,23 @@ module.exports = (client) => {
     return formatted;
   }
 
-  function filterItems(itemList, substring) {
+  function filterItems(itemList, substring, exactMatch) {
+    /**
+     * Determines whether substring matches tested key from itemList.
+     *
+     * @param   {String}   keyName   Name of item from the itemList.
+     */
+    function doesItMatch(keyName) {
+      targetName = itemList[keyName].name.toLowerCase();
+      sourceName = substring.toLowerCase();
+      if (exactMatch) {
+        return targetName === sourceName;
+      }
+      return targetName.includes(sourceName);
+    }
+
     return Object.keys(itemList)
-      .filter(key => itemList[key].name.toLowerCase().includes(substring.toLowerCase()))
+      .filter(key => doesItMatch(key))
       .reduce((obj, key) => {
         obj[key] = itemList[key];
         return obj;

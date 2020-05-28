@@ -12,6 +12,7 @@
 
     const itemHashById = client.tornData.itemHashById;
     const filtered = client.filterItems(itemHashById, args[0]);
+    client.logger.debug(`filteredItems: ${JSON.stringify(filtered)}`);
     let itemKeys = Object.keys(filtered);
 
     /**
@@ -22,6 +23,7 @@
      * @return  {Object}  Embed object for item info.
      */
     function itemInfoEmbed(item, id) {
+      client.logger.debug(`selected item: ${JSON.stringify(item)}`);
       return {
         'embed': {
           'color': client.config.colors.default,
@@ -53,7 +55,7 @@
             },
             {
               'name': 'Description',
-              'value': item.description
+              'value': item.description || 'Unknown',
             }
           ]
         }
@@ -86,6 +88,7 @@
               }
             )
             .then((collected) => {
+              client.logger.debug(`info item reply: ${collected.first().content}`);
               message.reply(itemInfoEmbed(itemHashById[collected.first().content], collected.first().content));
             })
             .catch(() => {
