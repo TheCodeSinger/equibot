@@ -89,7 +89,7 @@
             )
             .then((collected) => {
               client.logger.debug(`info item reply: ${collected.first().content}`);
-              message.reply(itemInfoEmbed(itemHashById[collected.first().content], collected.first().content));
+              message.channel.send(itemInfoEmbed(itemHashById[collected.first().content], collected.first().content));
             })
             .catch(() => {
               message.reply('Done waiting. You can ask me again if you still need the info.');
@@ -98,7 +98,7 @@
     }
 
     // Exactly one match found. Show it.
-    message.reply(itemInfoEmbed(itemHashById[itemKeys[0]], itemKeys[0]));
+    message.channel.send(itemInfoEmbed(itemHashById[itemKeys[0]], itemKeys[0]));
 
   } catch (e) {
     client.logger.error(`Error executing 'info' command: ${e}`);

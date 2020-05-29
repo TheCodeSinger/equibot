@@ -76,7 +76,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
      *                           "You sent 10x Xanax to Peterpan."
      */
     function parsePrizeMessage(msg) {
-      client.logger.debug(`BEGIN parsePrizeMessage(: ${JSON.stringify(msg)})`);
+      client.logger.debug(`BEGIN parsePrizeMessage(${JSON.stringify(msg)})`);
 
       const itemHashById = client.tornData.itemHashById;
       let awardValue = 0;
@@ -93,7 +93,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
        *   You sent 10x Xanax to Peterpan.
        *   You sent some Xanax to Peterpan. // This means ONE.
        */
-      let msgParts = msg.match(/You sent (.*)( to )(.*)\.?/i);
+      let msgParts = msg.match(/You sent\s(.*)(\sto\s)(.*)\.?/i);
       if (!msgParts) {
         // Try again in case someone hand wrote the message differently.
         msgParts = msg.match(/You sent (.*)\.?/i);
