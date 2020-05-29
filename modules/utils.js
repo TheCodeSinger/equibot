@@ -2,6 +2,7 @@ const fs = require('fs');
 const fetch = require('isomorphic-fetch');
 const Enmap = require('enmap');
 const chalk = require('chalk');
+const CronJob = require('cron').CronJob;
 
 const profileLink = 'https://www.torn.com/profiles.php?XID=';
 
@@ -9,6 +10,7 @@ module.exports = (client) => {
 
   // Attach public methods to the client.
   Object.assign(client, {
+    createStockWatcher: createStockWatcher,
     decorateUser: decorateUser,
     ensureMemberStats: ensureMemberStats,
     filterItems: filterItems,
@@ -28,6 +30,7 @@ module.exports = (client) => {
     loadMemberQuotes: loadMemberQuotes,
     loadPermissions: loadPermissions,
     loadTornData: loadTornData,
+    restartCronJobs: restartCronJobs,
     setBotStatus: setBotStatus,
     unloadCommand: unloadCommand,
     updateGameRecords: updateGameRecords,
@@ -239,19 +242,93 @@ module.exports = (client) => {
     loadJokes();
   }
 
+  /**
+   * Start daily cron jobs to fetch some Torn Data.
+   */
   function loadTornData() {
+    // Holds the fetched data
     client.tornData = {
-      itemHashById: {}
+      items: {},
+      stockExchange: {
+        updated: Date.now(),
+        stocks: {},
+        symbols: {},
+      },
     };
 
-    client.logger.debug('BEGIN loading Torn items data');
-    fetch('https://api.torn.com/torn/?selections=items&key=' + client.auth.apiKey)
-      .then(data => data.json())
-      .then(res => {
-        client.tornData.itemHashById = res['items'];
-        client.logger.ready('Loaded the Torn City item list.');
-      })
-      .catch(error => { client.logger.error(error) });
+    // Holds the system crob jobs.
+    client.systemCronJobs = {};
+
+    function fetchTornItemsData() {
+      const apiKey = client.auth.apiKey;
+      const itemsApiEndpoint = 'https://api.torn.com/torn/?selections=items';
+      const itemsApiLink = itemsApiEndpoint + '&key=' + apiKey;
+
+      client.logger.debug('Fetching Torn City items data.');
+      fetch(itemsApiLink)
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            return client.handleApiError(data, channel, itemsApiLink);
+          }
+          client.tornData.items = data['items'];
+          client.logger.ready('Loaded Torn City items data.');
+          // TODO: Add a log message in a dedicated Discord channel.
+          // channel.send('Loaded a fresh copy of the Torn City item list.');
+        })
+        .catch(error => client.logger.error(`Error in fetchTornItemsData(): ${JSON.stringify(error)}`));
+    }
+
+    function fetchTornStocksData() {
+      const apiKey = client.auth.apiKey;
+      const stocksApiEndpoint = 'https://api.torn.com/torn/?selections=stocks';
+      const stocksApiLink = stocksApiEndpoint + '&key=' + apiKey;
+
+      client.logger.debug('Fetching Torn City stocks data.');
+      fetch(stocksApiLink)
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            return client.handleApiError(data, channel, stocksApiLink);
+          }
+          const stocks = data['stocks'];
+
+          // Create cross hash of symbol to id.
+          const symbolsMap = {};
+          Object.keys(stocks).forEach(function(key) {
+            const stockSymbol = stocks[key].acronym;
+            symbolsMap[key] = stockSymbol;
+            symbolsMap[stockSymbol] = key;
+          });
+
+          // Update stock exchange data.
+          Object.assign(client.tornData.stockExchange, {
+            updated: Date.now(),
+            stocks: stocks,
+            symbols: symbolsMap,
+          });
+
+          // TODO: Sort the stocks either alpha symbol or descending price.
+
+          client.logger.ready('Loaded Torn City stocks data.');
+
+          // TODO: Add a log message in a dedicated Discord channel.
+          // channel.send('Loaded a fresh copy of the Torn City stock ticker.');
+        })
+        .catch(error => client.logger.error(`Error in fetchTornStocksData(): ${JSON.stringify(error)}`));
+    }
+
+    // Run every day at 1800 server time.
+    client.systemCronJobs.fetchItems = new CronJob('0 18 * * *', fetchTornItemsData);
+    client.systemCronJobs.fetchItems.start();
+    client.systemCronJobs.fetchStocks = new CronJob('0 18 * * *', fetchTornStocksData);
+    client.systemCronJobs.fetchStocks.start();
+
+    // Fetch once right now.
+    fetchTornItemsData();
+    fetchTornStocksData();
+
+    return true;
   }
 
   /**
@@ -672,6 +749,92 @@ module.exports = (client) => {
       },
       startDate: Date.now(),
     });
+  }
+
+  /**
+   * Restarts all saved cron jobs.
+   */
+  function restartCronJobs() {
+    client.customCronJobs = new Enmap({name: 'customCronJobs'});
+    client.logger.debug('Restarting Custom Cron Jobs');
+
+    // Stub the personal watchers object, a hash by discord id.
+    client.customCronJobs.defer.then(() => {
+      const stockWatchers = client.customCronJobs.ensure('stocks', {});
+
+      Object.keys(stockWatchers).forEach(function forEachMember(memberId) {
+        client.logger.debug(`memberId: ${memberId}, ${stockWatchers[memberId]}`);
+
+        // Stub cron job hash for this user.
+        client.systemCronJobs[memberId] = client.systemCronJobs[memberId] || {};
+
+        const watcherParamsByStockId = stockWatchers[memberId];
+        Object.keys(watcherParamsByStockId).forEach(function forEachMember(stockId) {
+          const watcherParams = watcherParamsByStockId[stockId];
+          const watcher = client.createStockWatcher(
+            watcherParams[0],
+            watcherParams[1],
+            watcherParams[2],
+            watcherParams[3]);
+          watcher.start();
+          Object.assign(client.systemCronJobs[memberId], { [stockId]: watcher });
+        });
+      });
+    });
+  }
+
+  /**
+   * Creates a CronJob to daily check stock prices and notify watchers if their
+   * price thresholds have been crossed.
+   *
+   * @param   {Object}   memberId     The member ID who set the price watch.
+   * @param   {Number}   stockId      The ID of the stock in the API Response.
+   * @param   {Number}   targetPrice  The target price.
+   * @param   {String}   type         The watch type: 'buy' or 'sell'.
+   * @return  {Object}   CronJob promise to daily check stock price at 1800 TCT.
+   */
+  function createStockWatcher(memberId, stockId, targetPrice, type) {
+    try {
+      client.logger.debug(`createPriceWatch args: ${memberId} ${stockId} ${targetPrice} ${type}`);
+
+      function checkStockPrice() {
+        const stock = client.tornData.stockExchange.stocks[stockId] || {};
+        const watchers = client.systemCronJobs[memberId] || {};
+        const member = client.users.resolve(memberId);
+
+        if (type === 'buy') {
+          if (stock.current_price < targetPrice) {
+            client.logger.debug(`Stock Watcher: ${stock.acronym} ($${Math.floor(stock.current_price)}) fell below ${member.tag}'s buy price of $${targetPrice}`);
+            member.send(`Stock Watcher BUY ALERT: ${stock.acronym} ($${Math.floor(stock.current_price)}) fell below your BUY price of $${targetPrice}`);
+
+            // Find, stop, and delete this watcher.
+            if (watchers[stock.acronym]) {
+              watchers[stock.acronym].stop();
+              delete watchers[stock.acronym];
+            }
+            // Delete the stored config.
+            client.customCronJobs.remove('stocks', memberId[stock.acronym]);
+
+          } else {
+            client.logger.debug(`Stock Watcher: ${stock.acronym} ($${Math.floor(stock.current_price)}) still above ${member.tag}'s buy price of $${targetPrice}`);
+            member.send(`Stock Watcher: ${stock.acronym} ($${Math.floor(stock.current_price)}) still above your BUY price of $${targetPrice}`);
+          }
+        } else {
+          if (stock.current_price > targetPrice) {
+            client.logger.debug(`Stock Watcher: ${stock.acronym} ($${Math.floor(stock.current_price)}) surpassed ${member.tag}'s SELL price of $${targetPrice}`);
+            member.send(`Stock Watcher SELL ALERT: ${stock.acronym} ($${Math.floor(stock.current_price)}) surpassed your SELL price of $${targetPrice}`);
+          } else {
+            client.logger.debug(`Stock Watcher: ${stock.acronym} ($${Math.floor(stock.current_price)}) still below ${member.tag}'s SELL price of $${targetPrice}`);
+            member.send(`Stock Watcher: ${stock.acronym} ($${Math.floor(stock.current_price)}) still below your SELL price of $${targetPrice}`);
+          }
+        }
+      }
+      return new CronJob('0 18 * * * *', checkStockPrice);
+      // DEBUG: check every 15 seconds.
+      // return new CronJob('*/15 * * * * *', checkStockPrice);
+    } catch (e) {
+      client.logger.error(`Error executing 'createStockWatcher': ${e}`);
+    }
   }
 
 };

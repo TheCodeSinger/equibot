@@ -78,7 +78,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     function parsePrizeMessage(msg) {
       client.logger.debug(`BEGIN parsePrizeMessage(${JSON.stringify(msg)})`);
 
-      const itemHashById = client.tornData.itemHashById;
+      const itemHashById = client.tornData.items;
       let awardValue = 0;
       let itemId;
       let item;

@@ -28,11 +28,14 @@ client.loadPermissions();
 // Load the member quotes, jokes, and others into memory.
 client.loadExternalData();
 
+// Initialize the games.
+client.loadGameData();
+
 // Load into memory various Torn City data.
 client.loadTornData();
 
-// Initialize the games.
-client.loadGameData();
+// Restart saved cron jobs.
+client.restartCronJobs();
 
 // Log the bot into the Discord client.
 client.login(client.auth.botToken);

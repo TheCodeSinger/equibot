@@ -10,7 +10,7 @@
       return;
     }
 
-    const itemHashById = client.tornData.itemHashById;
+    const itemHashById = client.tornData.items;
     const filtered = client.filterItems(itemHashById, args[0]);
     client.logger.debug(`filteredItems: ${JSON.stringify(filtered)}`);
     let itemKeys = Object.keys(filtered);

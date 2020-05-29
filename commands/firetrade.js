@@ -4,7 +4,7 @@
  * @example   !firetrading <item name>
  */
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
-  const itemList = client.tornData.itemHashById;
+  const itemList = client.tornData.items;
   const lordofFire = client.quotedMembers.get('lordoffire');
 
   /**
