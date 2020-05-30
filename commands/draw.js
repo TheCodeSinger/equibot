@@ -93,7 +93,8 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
        *   You sent 10x Xanax to Peterpan.
        *   You sent some Xanax to Peterpan. // This means ONE.
        */
-      let msgParts = msg.match(/You sent\s(.*)(\sto\s)(.*)\.?/i);
+      const scrubbedMsg = msg.replace(/\s/g, ' ');
+      let msgParts = scrubbedMsg.match(/You sent (.*)( to )(.*)\.?/i);
       if (!msgParts) {
         // Try again in case someone hand wrote the message differently.
         msgParts = msg.match(/You sent (.*)\.?/i);
