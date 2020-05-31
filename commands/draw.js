@@ -119,6 +119,12 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       } else {
         // Prize was goods. Parse the quantity and actual goods.
 
+        // parse out any irregular units.
+        if (prize.startsWith('pair of ')) {
+          prize = prize.slice(8);
+        }
+        client.logger.debug(`updated prize: ${JSON.stringify(prize)}`);
+
         // Convert some non-numeric values to numbers
         if (['some', 'a', 'an'].includes(quantity)) {
           quantity = 1;
