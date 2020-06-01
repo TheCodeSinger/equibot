@@ -1,6 +1,6 @@
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   try {
-    const author = message.author.username;
+    const author = client.decorateUser(message.author, message).tornName;
     const mentioned = message.mentions.members.first();
     const name = mentioned ? mentioned.toString() : args[0];
 
