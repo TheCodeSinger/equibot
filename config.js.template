@@ -28,6 +28,10 @@
   // Prefix for bot commands.
   prefix: '!',
 
+  // Indentifier to distinguish log entries in the aggregated log files.
+  // Key: 0 = dev, 1 = staging, 2 = production
+  instance: 0,
+
   // Logging Levels
   logLevels: {
     // Displays verbose info about programmatic actions.
