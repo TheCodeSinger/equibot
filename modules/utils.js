@@ -318,10 +318,10 @@ module.exports = (client) => {
         .catch(error => client.logger.error(`Error in fetchTornStocksData(): ${JSON.stringify(error)}`));
     }
 
-    // Run every day at 1800 server time.
-    client.systemCronJobs.fetchItems = new CronJob('0 0 18 * * *', fetchTornItemsData);
+    // Run every day at 1700 server time.
+    client.systemCronJobs.fetchItems = new CronJob('0 0 17 * * *', fetchTornItemsData);
     client.systemCronJobs.fetchItems.start();
-    client.systemCronJobs.fetchStocks = new CronJob('0 0 18 * * *', fetchTornStocksData);
+    client.systemCronJobs.fetchStocks = new CronJob('0 0 17 * * *', fetchTornStocksData);
     client.systemCronJobs.fetchStocks.start();
 
     // Fetch once right now.
@@ -829,7 +829,10 @@ module.exports = (client) => {
           }
         }
       }
-      return new CronJob('0 18 * * * *', checkStockPrice);
+
+      // Recheck the watchers every day at 1800 TCT.
+      return new CronJob('0 0 18 * * *', checkStockPrice);
+
       // DEBUG: check every 15 seconds.
       // return new CronJob('*/15 * * * * *', checkStockPrice);
     } catch (e) {
