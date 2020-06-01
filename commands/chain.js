@@ -121,7 +121,12 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
             return client.handleApiError(data, channel, chainApiEndpoint);
           }
           client.logger.debug(`Chain data: ${JSON.stringify(data.chain)}`);
-          channel.send(chainEmbed(data.chain || {}));
+
+          // Display a message if the chain is no longer active or if it is
+          // active with fewer than 90 seconds on the timer.
+          if (!data.chain.current || data.chain.timeout < 120) {
+            channel.send(chainEmbed(data.chain || {}));
+          }
         })
         .catch(error => client.logger.error(JSON.stringify(error)));
     }
@@ -142,6 +147,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         message.channel.send('Chain watcher restarted.');
       }
     } else {
+      if (!args[0] || !['eq1', 'eq2'].includes(args[0])) {
+        return message.channel.send(`You must specify which faction to watch, either eq1 or eq2.`);
+      }
+
       // No watcher found. Start one.
       client.watcher = createChainWatcher(message.channel, args[0]);
       client.watcher.start();
