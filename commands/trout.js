@@ -1,24 +1,32 @@
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   try {
+    const author = message.author.username;
     const mentioned = message.mentions.members.first();
     const name = mentioned ? mentioned.toString() : args[0];
 
+    const errorMessages = [
+      author + ' looks around for ' + name + ' to slap with a trout but finds no one by that name.',
+    ];
+
     const missMessages = [
-      message.author.username + ' swings a trout wildly but hits nobody!',
-      message.author.username + ' looks around for someone to slap with a trout but finds no one.',
-      message.author.username + ' barges in swinging a trout but loses their grip and drops it. How embarrassing!!',
+      author + ' swings a trout wildly but hits nobody!',
+      author + ' barges in swinging a trout wildly and slaps himself in the face!',
+      author + ' charges at ' + name + ', swinging a trout, but loses their grip and drops it. How embarrassing!!',
     ];
 
     const hitMessages = [
-      message.author.username + ' slaps ' + name + ' with a trout! POW!',
-      message.author.username + ' swings a trout and slaps ' + name + ' upside the head!',
-      message.author.username + ' slaps ' + name + ' across the face with a trout!',
+      author + ' slaps ' + name + ' with a trout! POW!',
+      author + ' swings a trout and slaps ' + name + ' upside the head!',
+      author + ' slaps ' + name + ' across the face with a trout!',
+      author + ' slaps ' + name + ' in the gut with a trout! LOW BLOW!',
     ];
 
-    if (name) {
-      message.channel.send(client.getRandomItem(hitMessages));
+    if (mentioned) {
+      const random = Math.floor(Math.random() * 9) + 1;
+      const msg = random === 1 ? client.getRandomItem(missMessages) : client.getRandomItem(hitMessages);
+      message.channel.send(msg);
     } else {
-      message.channel.send(client.getRandomItem(missMessages));
+      message.channel.send(client.getRandomItem(errorMessages));
     }
     message.delete();
   } catch (e) {
