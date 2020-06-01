@@ -319,9 +319,9 @@ module.exports = (client) => {
     }
 
     // Run every day at 1800 server time.
-    client.systemCronJobs.fetchItems = new CronJob('0 18 * * *', fetchTornItemsData);
+    client.systemCronJobs.fetchItems = new CronJob('0 0 18 * * *', fetchTornItemsData);
     client.systemCronJobs.fetchItems.start();
-    client.systemCronJobs.fetchStocks = new CronJob('0 18 * * *', fetchTornStocksData);
+    client.systemCronJobs.fetchStocks = new CronJob('0 0 18 * * *', fetchTornStocksData);
     client.systemCronJobs.fetchStocks.start();
 
     // Fetch once right now.
