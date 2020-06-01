@@ -318,9 +318,11 @@ module.exports = (client) => {
         .catch(error => client.logger.error(`Error in fetchTornStocksData(): ${JSON.stringify(error)}`));
     }
 
-    // Run every day at 1700 server time.
-    client.systemCronJobs.fetchItems = new CronJob('0 0 17 * * *', fetchTornItemsData);
+    // Run every day at 1600 server time.
+    client.systemCronJobs.fetchItems = new CronJob('0 0 16 * * *', fetchTornItemsData);
     client.systemCronJobs.fetchItems.start();
+
+    // Run every day at 1700 server time.
     client.systemCronJobs.fetchStocks = new CronJob('0 0 17 * * *', fetchTornStocksData);
     client.systemCronJobs.fetchStocks.start();
 
@@ -803,6 +805,7 @@ module.exports = (client) => {
         const member = client.users.resolve(memberId);
 
         if (type === 'buy') {
+          // Check if stock has dropped below target buy price.
           if (stock.current_price < targetPrice) {
             client.logger.debug(`Stock Watcher: ${stock.acronym} ($${Math.floor(stock.current_price)}) fell below ${member.tag}'s buy price of $${targetPrice}`);
             member.send(`Stock Watcher BUY ALERT: ${stock.acronym} ($${Math.floor(stock.current_price)}) fell below your BUY price of $${targetPrice}`);
@@ -814,15 +817,23 @@ module.exports = (client) => {
             }
             // Delete the stored config.
             client.customCronJobs.remove('stocks', memberId[stock.acronym]);
-
           } else {
             client.logger.debug(`Stock Watcher: ${stock.acronym} ($${Math.floor(stock.current_price)}) still above ${member.tag}'s buy price of $${targetPrice}`);
             member.send(`Stock Watcher: ${stock.acronym} ($${Math.floor(stock.current_price)}) still above your BUY price of $${targetPrice}`);
           }
         } else {
+          // Check if stock has risen above target sell price.
           if (stock.current_price > targetPrice) {
             client.logger.debug(`Stock Watcher: ${stock.acronym} ($${Math.floor(stock.current_price)}) surpassed ${member.tag}'s SELL price of $${targetPrice}`);
             member.send(`Stock Watcher SELL ALERT: ${stock.acronym} ($${Math.floor(stock.current_price)}) surpassed your SELL price of $${targetPrice}`);
+
+            // Find, stop, and delete this watcher.
+            if (watchers[stock.acronym]) {
+              watchers[stock.acronym].stop();
+              delete watchers[stock.acronym];
+            }
+            // Delete the stored config.
+            client.customCronJobs.remove('stocks', memberId[stock.acronym]);
           } else {
             client.logger.debug(`Stock Watcher: ${stock.acronym} ($${Math.floor(stock.current_price)}) still below ${member.tag}'s SELL price of $${targetPrice}`);
             member.send(`Stock Watcher: ${stock.acronym} ($${Math.floor(stock.current_price)}) still below your SELL price of $${targetPrice}`);
