@@ -811,12 +811,12 @@ module.exports = (client) => {
             member.send(`Stock Watcher BUY ALERT: ${stock.acronym} ($${Math.floor(stock.current_price)}) fell below your BUY price of $${targetPrice}`);
 
             // Find, stop, and delete this watcher.
-            if (watchers[stock.acronym]) {
-              watchers[stock.acronym].stop();
-              delete watchers[stock.acronym];
+            if (watchers[stockId]) {
+              watchers[stockId].stop();
+              delete watchers[stockId];
             }
             // Delete the stored config.
-            client.customCronJobs.remove('stocks', memberId[stock.acronym]);
+            client.customCronJobs.remove('stocks', memberId[stockId]);
           } else {
             client.logger.debug(`Stock Watcher: ${stock.acronym} ($${Math.floor(stock.current_price)}) still above ${member.tag}'s buy price of $${targetPrice}`);
             member.send(`Stock Watcher: ${stock.acronym} ($${Math.floor(stock.current_price)}) still above your BUY price of $${targetPrice}`);
@@ -828,12 +828,12 @@ module.exports = (client) => {
             member.send(`Stock Watcher SELL ALERT: ${stock.acronym} ($${Math.floor(stock.current_price)}) surpassed your SELL price of $${targetPrice}`);
 
             // Find, stop, and delete this watcher.
-            if (watchers[stock.acronym]) {
-              watchers[stock.acronym].stop();
-              delete watchers[stock.acronym];
+            if (watchers[stockId]) {
+              watchers[stockId].stop();
+              delete watchers[stockId];
             }
             // Delete the stored config.
-            client.customCronJobs.remove('stocks', memberId[stock.acronym]);
+            client.customCronJobs.remove('stocks', memberId[stockId]);
           } else {
             client.logger.debug(`Stock Watcher: ${stock.acronym} ($${Math.floor(stock.current_price)}) still below ${member.tag}'s SELL price of $${targetPrice}`);
             member.send(`Stock Watcher: ${stock.acronym} ($${Math.floor(stock.current_price)}) still below your SELL price of $${targetPrice}`);
