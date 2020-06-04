@@ -176,7 +176,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         embed: {
           color: client.config.colors.default,
           thumbnail: {
-            url: 'http://torneq.com/assets/icon-cash.png',
+            url: 'http://torneq.com/assets/equibot/icon-cash.png',
           },
           author: {
             name: `Thank you to ${lotto.starter.tornName} for the lotto.`,
