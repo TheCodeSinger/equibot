@@ -39,5 +39,6 @@ exports.help = {
   name: 'choose',
   category: 'Fun',
   description: 'Chooses one of provided options.',
-  usage: 'choose <option-one> <option-two> <option-three> ...',
+  detailedDescription: 'Chooses at random one of provided options. Each option must be a single word.',
+  usage: 'choose <optionOne> <optionTwo> <optionThree> ...',
 };
