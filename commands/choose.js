@@ -1,10 +1,11 @@
 const moment = require("moment");
 
 /**
- * Randomly chooses one of the provided options separated by commas, otherwise
- * spaces.
+ * Randomly chooses one of the provided options separated by commas or 'or';
+ * otherwise spaces.
  *
  * @example   !choose eq1 eq2
+ * @example   !choose red or blue
  * @example   !choose Peterpan, Captain Hook, Tinkerbell
  */
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
@@ -16,14 +17,19 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     if (args.length < 2) {
       return message.reply('Provide at least two options and I will select one at random.');
     }
+
     if (argString.indexOf(',') > -1) {
       // List is comma-delimited.
       selections = argString.split(',');
       selection = selections[Math.floor(Math.random() * selections.length)];
+    } else if (argString.indexOf('or') > -1) {
+      // List is separated by 'or'.
+      selections = argString.split('or');
+      selection = selections[Math.floor(Math.random() * selections.length)];
     }
-    client.logger.debug(`selections: ${JSON.stringify(selections)}`);
 
     selected = selections[Math.floor(Math.random() * selections.length)];
+    client.logger.debug(`selections: ${JSON.stringify(selections)}`);
     client.logger.debug(`selected: ${selected}`);
 
     const embed = {
@@ -53,6 +59,6 @@ exports.help = {
   name: 'choose',
   category: 'Fun',
   description: 'Chooses one of provided options.',
-  detailedDescription: 'Chooses at random one of provided options. If any option is more than one word, you must use commas to separate all options. Otherwise, you can simply use spaces to separate single-word options.',
-  usage: 'choose <option one>, <option two>, <option three>, ...',
+  detailedDescription: 'Chooses at random one of provided options. For simple one-word options, you can separate with spaces. For multi-word options, you can separate by commas or the word "or".',
+  usage: '\n  choose eq1 eq2\n  choose red or blue\n  choose Peterpan, Captain Hook, Tinkerbell\n',
 };
