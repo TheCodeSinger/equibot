@@ -30,7 +30,7 @@ exports.conf = {
 
 exports.help = {
   name: 'link',
-  category: 'Faction',
+  category: 'Torn',
   description: 'Displays link to a Torn profile.',
   usage: 'link <@discord name>'
 };
