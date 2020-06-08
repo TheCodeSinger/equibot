@@ -19,8 +19,13 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   const memberId = message.author.id;
   const stockExchange = client.tornData.stockExchange;
   const symbolMap = stockExchange.symbols;
+  const author = message.author;
 
   try {
+    if (message.channel.type !== 'dm') {
+      message.reply('I messaged you privately about this.');
+    }
+
     if (!args.length) {
       // Show the available commands.
       const config = client.config;
@@ -42,7 +47,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
           ]
         }
       };
-      message.channel.send(commandsEmbed);
+      author.send(commandsEmbed);
       return;
     }
 
@@ -71,7 +76,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       output += '\nLegend:\n S $580 = target sell price\n B $260 = target buy price\n';
       output += `\nUpdated Daily: ${moment(stockExchange.updated).format('MMMM D HH:mm:ss')} TCT`;
 
-      message.channel.send(output, {code: 'asciidoc', split: { char: '\u200b' }});
+      author.send(output, {code: 'asciidoc', split: { char: '\u200b' }});
       return;
     }
 
@@ -92,10 +97,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         client.systemCronJobs[memberId] = undefined;
         client.customCronJobs.remove('stocks', memberId);
 
-        return message.channel.send('Cleared all of your stocks watchers.');
+        return author.send('Cleared all of your stocks watchers.');
       } else if (stockId) {
         if (!cronJobWatchers[stockId]) {
-          return message.channel.send('I was not watching that stock.');
+          return author.send('I was not watching that stock.');
         }
 
         // Stop the job.
@@ -107,10 +112,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         delete client.systemCronJobs[memberId][stockId];
         client.customCronJobs.delete('stocks', memberId + '[' + stockId + ']');
 
-        return message.channel.send(`Cleared your ${args[1].toUpperCase()} watcher.`);
+        return author.send(`Cleared your ${args[1].toUpperCase()} watcher.`);
       } else {
         client.logger.warn(`Unrecognized stock symbol: ${args[1]}`);
-        return message.channel.send('I do not recognize that stock symbol.');
+        return author.send('I do not recognize that stock symbol.');
       }
     }
 
@@ -118,17 +123,17 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     if (args[0].toLowerCase() === 'watch') {
       if (!args[1] || !symbolMap[args[1].toUpperCase()]) {
         client.logger.warn(`Unrecognized stock symbol: ${args[1]}`);
-        return message.channel.send('I do not recognize that stock symbol.');
+        return author.send('I do not recognize that stock symbol.');
       }
 
       if (!args[2] || !['buy', 'sell'].includes(args[2])) {
         client.logger.warn(`Unrecognized threshold type: ${args[2]}`);
-        return message.channel.send('You must specify either a BUY or SELL threshold: "watch sym buy 325"');
+        return author.send('You must specify either a BUY or SELL threshold: "watch sym buy 325"');
       }
 
       if (!args[3] || isNaN(args[3])) {
         client.logger.warn(`Unrecognized target price: ${args[3]}`);
-        return message.channel.send('You must specify a valid target price: "watch sym buy 325"');
+        return author.send('You must specify a valid target price: "watch sym buy 325"');
       }
 
       // Stub watcher objects for this user
@@ -151,13 +156,13 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       const params = [memberId, stockId, targetPrice, type];
       client.customCronJobs.set('stocks', params, memberId + '[' + stockId + ']');
 
-      message.reply(`I will notify you when ${symbol} ${threshold} $${targetPrice}.`);
+      author.send(`I will notify you when ${symbol} ${threshold} $${targetPrice}.`);
       return;
     }
 
     // Unrecognized command.
     client.logger.warn(`Unrecognized command`);
-    message.channel.send('I did not understand that command.');
+    author.send('I did not understand that command.');
 
   } catch (e) {
     client.logger.error(`Error executing 'stocks' command: ${e}`);
