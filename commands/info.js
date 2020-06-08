@@ -114,7 +114,7 @@ exports.conf = {
 
 exports.help = {
   name: 'info',
-  category: 'Trading',
+  category: 'Torn',
   description: 'Displays info about a Torn item.',
   usage: 'info <item name>'
 };

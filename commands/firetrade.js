@@ -106,7 +106,7 @@ exports.conf = {
 
 exports.help = {
   name: 'firetrade',
-  category: 'Trading',
+  category: 'Torn',
   description: 'Displays a Fire Trader price.',
   usage: 'firetrade <item name>',
 };

@@ -113,7 +113,7 @@ exports.conf = {
 
 exports.help = {
   name: 'bazaar',
-  category: 'Trading',
+  category: 'Torn',
   description: 'Displays a bazaar price list.',
   usage: 'bazaar <torn_profile_id>',
 };
