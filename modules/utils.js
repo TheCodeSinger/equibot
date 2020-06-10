@@ -800,15 +800,20 @@ module.exports = (client) => {
       client.logger.debug(`createPriceWatch args: ${memberId} ${stockId} ${targetPrice} ${type}`);
 
       function checkStockPrice() {
-        const stock = client.tornData.stockExchange.stocks[stockId] || {};
+        const stockExchange = client.tornData.stockExchange;
+        const symbols = stockExchange.symbols;
+        const stock = stockExchange.stocks[stockId] || {};
         const watchers = client.systemCronJobs[memberId] || {};
         const member = client.users.resolve(memberId);
 
+        // client.logger.debug(`checkStockPrice args: ${memberId} ${stockId} ${targetPrice} ${type}`);
+        // client.logger.debug(`${symbols[stockId]} data: ${JSON.stringify(stock)}`);
+
         if (type === 'buy') {
           // Check if stock has dropped below target buy price.
-          if (stock.current_price < targetPrice) {
-            client.logger.debug(`Stock Watcher: ${stock.acronym} ($${Math.floor(stock.current_price)}) fell below ${member.tag}'s buy price of $${targetPrice}`);
-            member.send(`Stock Watcher BUY ALERT: ${stock.acronym} ($${Math.floor(stock.current_price)}) fell below your BUY price of $${targetPrice}`);
+          if (Number(stock.current_price) < Number(targetPrice)) {
+            client.logger.debug(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) fell below ${member.tag}'s buy price of $${targetPrice}`);
+            member.send(`Stock Watcher BUY ALERT: ${stock.acronym} ($${stock.current_price}) fell below your BUY price of $${targetPrice}`);
 
             // Find, stop, and delete this watcher.
             if (watchers[stockId]) {
@@ -818,14 +823,14 @@ module.exports = (client) => {
             // Delete the stored config.
             client.customCronJobs.remove('stocks', memberId[stockId]);
           } else {
-            client.logger.debug(`Stock Watcher: ${stock.acronym} ($${Math.floor(stock.current_price)}) still above ${member.tag}'s buy price of $${targetPrice}`);
-            member.send(`Stock Watcher: ${stock.acronym} ($${Math.floor(stock.current_price)}) still above your BUY price of $${targetPrice}`);
+            client.logger.debug(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) still above ${member.tag}'s buy price of $${targetPrice}`);
+            member.send(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) still above your BUY price of $${targetPrice}`);
           }
         } else {
           // Check if stock has risen above target sell price.
-          if (stock.current_price > targetPrice) {
-            client.logger.debug(`Stock Watcher: ${stock.acronym} ($${Math.floor(stock.current_price)}) surpassed ${member.tag}'s SELL price of $${targetPrice}`);
-            member.send(`Stock Watcher SELL ALERT: ${stock.acronym} ($${Math.floor(stock.current_price)}) surpassed your SELL price of $${targetPrice}`);
+          if (Number(stock.current_price) > (targetPrice)) {
+            client.logger.debug(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) surpassed ${member.tag}'s SELL price of $${targetPrice}`);
+            member.send(`Stock Watcher SELL ALERT: ${stock.acronym} ($${stock.current_price}) surpassed your SELL price of $${targetPrice}`);
 
             // Find, stop, and delete this watcher.
             if (watchers[stockId]) {
@@ -835,8 +840,8 @@ module.exports = (client) => {
             // Delete the stored config.
             client.customCronJobs.remove('stocks', memberId[stockId]);
           } else {
-            client.logger.debug(`Stock Watcher: ${stock.acronym} ($${Math.floor(stock.current_price)}) still below ${member.tag}'s SELL price of $${targetPrice}`);
-            member.send(`Stock Watcher: ${stock.acronym} ($${Math.floor(stock.current_price)}) still below your SELL price of $${targetPrice}`);
+            client.logger.debug(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) still below ${member.tag}'s SELL price of $${targetPrice}`);
+            member.send(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) still below your SELL price of $${targetPrice}`);
           }
         }
       }

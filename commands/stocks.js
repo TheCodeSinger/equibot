@@ -16,6 +16,7 @@ const moment = require("moment");
  * @example   !stocks
  */
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
+  const config = client.config;
   const memberId = message.author.id;
   const stockExchange = client.tornData.stockExchange;
   const symbolMap = stockExchange.symbols;
@@ -28,7 +29,6 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
     if (!args.length) {
       // Show the available commands.
-      const config = client.config;
       const commandsEmbed = {
         embed: {
           color: config.colors.default,
@@ -82,10 +82,13 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
     // Clear one or all jobs for this user.
     if (args[0].toLowerCase() === 'clear') {
-      const stockId = symbolMap[args[1].toUpperCase()];
+      const stockId = symbolMap[(args[1] || '').toUpperCase()];
       const cronJobWatchers = client.systemCronJobs[memberId] || {};
 
-      if (args[1] === 'all') {
+      if (!args[1]) {
+        // Show the available commands.
+        return message.reply('You need to specify whether to clear all or a specific symbol.');
+      } else if (args[1] === 'all') {
         // Stop all the jobs.
         Object.keys(cronJobWatchers).forEach(function(key) {
           client.logger.debug(`Stopping ${symbolMap[key]}`);
@@ -115,7 +118,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         return author.send(`Cleared your ${args[1].toUpperCase()} watcher.`);
       } else {
         client.logger.warn(`Unrecognized stock symbol: ${args[1]}`);
-        return author.send('I do not recognize that stock symbol.');
+        return message.reply('I do not recognize that stock symbol.');
       }
     }
 
