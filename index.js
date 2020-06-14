@@ -28,8 +28,8 @@ client.loadPermissions();
 // Load the member quotes, jokes, and others into memory.
 client.loadExternalData();
 
-// Initialize the games.
-client.loadGameData();
+// Initialize the various data objects.
+client.stubData();
 
 // Load into memory various Torn City data.
 client.loadTornData();

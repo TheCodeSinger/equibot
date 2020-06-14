@@ -13,18 +13,22 @@ const CronJob = require('cron').CronJob;
  * @example   !chain
  */
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
+  const faction = (args[0] || '').toUpperCase();
+
   /**
    * Returns an embed object for displaying chain status.
    *
    * @param   {Object}   chain   Chain object from API.
    * @return  {Object}   Embed object for display chain status.
    */
-  function chainEmbed(chain) {
+  function chainEmbed(chain, faction) {
     // Completed chain is in cool down.
     if (chain.cooldown) {
-      client.watcher.stop();
-      delete client.watcher;
-      const title = chain.current === chain.max ? 'Chain completed!' : 'Chain broken';
+      client.chain[faction].stop();
+      delete client.chain[faction];
+      const milestones = [10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 25000, 50000, 100000];
+      const completed = milestones.includes(chain.current);
+      const title = completed ? `${faction} Chain Completed!` : `${faction} Chain Broken!`;
       return {
         content: `@here ${title}`,
         embed: {
@@ -35,7 +39,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
           fields: [
             {
               name: 'Completed Hits',
-              value: chain.current + ' of ' + chain.max,
+              value: chain.current + (completed ? '' : ' of ' + chain.max),
               inline: false
             },
             {
@@ -55,7 +59,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
     // Active chain.
     if (chain.current) {
-      const content = chain.timeout < 45 ? `@here SAVE THE CHAIN: ${chain.timeout}s left!` : undefined;
+      const content = chain.timeout < 45 ? `@here ${faction} SAVE THE CHAIN: ${chain.timeout}s left!` : undefined;
       return {
         content: content,
         embed: {
@@ -85,13 +89,13 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     }
 
     // No chain active.
-    client.watcher.stop();
-    delete client.watcher;
+    client.chain[faction].stop();
+    delete client.chain[faction];
     return {
       embed: {
         color: client.config.colors.default,
         author: {
-          name: 'No Active Chain'
+          name: `No Active Chain for ${faction}`
         },
         footer: {
           text: 'You should start one! Announce on chat that you want to start a mini-chain.'
@@ -108,7 +112,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
    * @return  {Object}   CronJob promise to send status message.
    */
   function createChainWatcher(channel, faction) {
-    const apiKey = client.auth.factionApiKeys[faction] || client.auth.apiKey;
+    const apiKey = client.auth.factionApiKeys[faction.toLowerCase()] || client.auth.apiKey;
     const chainApiEndpoint = 'https://api.torn.com/faction/?selections=chain';
     const chainApiLink = chainApiEndpoint + '&key=' + apiKey;
 
@@ -125,7 +129,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
           // Display a message if the chain is no longer active or if it is
           // active with fewer than 90 seconds on the timer.
           if (!data.chain.current || data.chain.timeout < 120) {
-            channel.send(chainEmbed(data.chain || {}));
+            channel.send(chainEmbed(data.chain || {}, faction));
           }
         })
         .catch(error => client.logger.error(JSON.stringify(error)));
@@ -135,28 +139,24 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
   // Main
   try {
-    if (client.watcher) {
-      // Watcher is active.
-      if (client.watcher.running) {
-        client.watcher.stop();
-        client.logger.log('Chain watcher paused');
-        message.channel.send('Chain watcher paused.');
-      } else {
-        client.watcher.start();
-        client.logger.log('Chain watcher restarted');
-        message.channel.send('Chain watcher restarted.');
-      }
-    } else {
-      if (!args[0] || !['eq1', 'eq2'].includes(args[0])) {
-        return message.channel.send(`You must specify which faction to watch, either eq1 or eq2.`);
-      }
-
-      // No watcher found. Start one.
-      client.watcher = createChainWatcher(message.channel, args[0]);
-      client.watcher.start();
-      client.logger.log(`Chain watcher started ${args[0] ? 'for ' + args[0] + ' ': ''}in #${message.channel.name} with 30-second interval.`);
-      message.channel.send(`Chain watcher started ${args[0] ? 'for ' + args[0] + ' ' : ''}with 30-second interval.`);
+    if (!faction || !['EQ1', 'EQ2'].includes(faction)) {
+      // No faction specified.
+      return message.channel.send(`You must specify which faction to watch, either eq1 or eq2.`);
     }
+
+    if (client.chain[faction]) {
+      // Watcher is active. Cancel it.
+      client.chain[faction].stop();
+      delete client.chain[faction];
+      client.logger.log(`Stopped chain watcher for ${faction}`);
+      return message.channel.send(`Stopped chain watcher for ${faction}`);
+    }
+
+    // No watcher found. Start one.
+    client.chain[faction] = createChainWatcher(message.channel, faction);
+    client.chain[faction].start();
+    client.logger.log(`Chain watcher started for ${faction} in #${message.channel.name}`);
+    return message.channel.send(`Chain watcher started for ${faction}`);
 
   } catch (e) {
     client.logger.error(`Error executing 'chain' command: ${e}`);
@@ -174,6 +174,6 @@ exports.help = {
   name: 'chain',
   category: 'Faction',
   description: 'Watches chain and displays status.',
-  detailedDescription: 'Watches chain and displays status. Typing the command a second time cancels the chain watcher. If you have more than one faction, specify which faction and ensure necessary API Keys in auth.js. If none specified, then it will use the primary API Key.',
-  usage: 'chain <faction_name>',
+  detailedDescription: 'Watches chain and displays status whenever the timer drops below two minutes. Typing the command a second time cancels the chain watcher.\n\nEnsure necessary API Keys in auth.js, one per faction.',
+  usage: 'chain eq1|eq2',
 };

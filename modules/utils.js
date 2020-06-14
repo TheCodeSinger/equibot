@@ -26,12 +26,12 @@ module.exports = (client) => {
     loadCommandModules: loadCommandModules,
     loadEventModules: loadEventModules,
     loadExternalData: loadExternalData,
-    loadGameData: loadGameData,
     loadMemberQuotes: loadMemberQuotes,
     loadPermissions: loadPermissions,
     loadTornData: loadTornData,
     restartCronJobs: restartCronJobs,
     setBotStatus: setBotStatus,
+    stubData: stubData,
     unloadCommand: unloadCommand,
     updateGameRecords: updateGameRecords,
     updateGameStats: updateGameStats,
@@ -626,6 +626,21 @@ module.exports = (client) => {
     }
 
     return output;
+  }
+
+  /**
+   * Stubs and loads various data objects.
+   */
+  function stubData() {
+    loadGameData();
+    stubChainData();
+  }
+
+  /**
+   * Stubs chain data object.
+   */
+  function stubChainData() {
+    client.chain = {};
   }
 
   /**
