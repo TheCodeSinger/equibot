@@ -12,10 +12,12 @@ const moment = require("moment");
  * `stocks watch HRG sell 325` : set a daily watcher to notify when the price rises above $325.
  * `stocks clear hrg` : Clear a watcher for HRG.
  * `stocks clear all` : Clear all watchers for the member.
+ * `stocks audit` : Audit all watchers. 'Bot Admin' role only.
  *
  * @example   !stocks
  */
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
+  const isBotAdmin = client.levelCache['Bot Admin'] <= level;
   const config = client.config;
   const memberId = message.author.id;
   const stockExchange = client.tornData.stockExchange;
@@ -23,6 +25,27 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   const author = message.author;
 
   try {
+    // List all stock watchers. "Bot Admin" role only.
+    if (isBotAdmin && args[0].toLowerCase() === 'audit') {
+      const allStockWatchers = client.customCronJobs.get('stocks');
+      client.logger.debug(`allStockWatchers: ${JSON.stringify(allStockWatchers)}`);
+      const auditOutput = [];
+      Object.keys(allStockWatchers).forEach(id => {
+        const watchers = client.customCronJobs.get('stocks', id) || {};
+        const memberWatcherInfo = {};
+        client.logger.debug(`memberName: ${JSON.stringify(message.guild.member(id))}`);
+        const memberName = message.guild ? message.guild.member(id).nickname : id;
+        for (const stock in watchers) {
+          memberWatcherInfo[memberName] = memberWatcherInfo[memberName] || [];
+          memberWatcherInfo[memberName].push(symbolMap[stock]);
+        }
+        client.logger.debug(`memberWatcherInfo: ${JSON.stringify(memberWatcherInfo)}`);
+        auditOutput.push(memberWatcherInfo);
+      });
+      client.logger.debug(`stockAudit: ${JSON.stringify(auditOutput)}`);
+      return message.channel.send(`${JSON.stringify(auditOutput)}`);
+    }
+
     if (message.channel.type !== 'dm') {
       message.reply('I messaged you privately about this.');
     }
