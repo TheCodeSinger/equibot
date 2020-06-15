@@ -155,7 +155,8 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     // No watcher found. Start one.
     client.chain[faction] = createChainWatcher(message.channel, faction);
     client.chain[faction].start();
-    client.logger.log(`Chain watcher started for ${faction} in #${message.channel.name}`);
+    const channelName = message.channel.name;
+    client.logger.log(`Chain watcher started for ${faction} ${channelName ? 'in #' + channelName : ''}`);
     return message.channel.send(`Chain watcher started for ${faction}`);
 
   } catch (e) {
