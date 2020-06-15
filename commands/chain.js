@@ -65,7 +65,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         embed: {
           color: client.config.colors.default,
           author: {
-            name: 'Chain Active'
+            name: `${faction} Chain Active`
           },
           fields: [
             {
