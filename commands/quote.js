@@ -47,7 +47,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         },
         title: member.title,
         description: client.getRandomItem(member.quotes),
-      }
+        footer: {
+          text: client.getRandomItem(member.footer),
+        }
+      },
     };
 
     const imageEmbed = {
@@ -56,6 +59,9 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         title: member.name,
         image: {
           url: client.getRandomItem(member.images),
+        },
+        footer: {
+          text: client.getRandomItem(member.footer),
         }
       }
     };
