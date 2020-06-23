@@ -820,13 +820,15 @@ module.exports = (client) => {
         const stock = stockExchange.stocks[stockId] || {};
         const watchers = client.systemCronJobs[memberId] || {};
         const member = client.users.resolve(memberId);
+        const current = Number(stock.current_price);
+        const target = Number(targetPrice);
 
         // client.logger.debug(`checkStockPrice args: ${memberId} ${stockId} ${targetPrice} ${type}`);
         // client.logger.debug(`${symbols[stockId]} data: ${JSON.stringify(stock)}`);
 
         if (type === 'buy') {
-          // Check if stock has dropped below target buy price.
-          if (Number(stock.current_price) < Number(targetPrice)) {
+          if (current < target) {
+            // Stock has dropped below target buy price.
             client.logger.debug(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) fell below ${member.tag}'s buy price of $${targetPrice}`);
             member.send(`Stock Watcher BUY ALERT: ${stock.acronym} ($${stock.current_price}) fell below your BUY price of $${targetPrice}`);
 
@@ -837,13 +839,16 @@ module.exports = (client) => {
             }
             // Delete the stored config.
             client.customCronJobs.remove('stocks', memberId[stockId]);
+          } else if (current < (target * 1.1)) {
+            // Stock is within 10% of target price.
+            member.send(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) is near your BUY price of $${targetPrice}`);
           } else {
-            client.logger.debug(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) still above ${member.tag}'s buy price of $${targetPrice}`);
-            member.send(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) still above your BUY price of $${targetPrice}`);
+            // client.logger.debug(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) still above ${member.tag}'s buy price of $${targetPrice}`);
+            // member.send(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) still above your BUY price of $${targetPrice}`);
           }
         } else {
           // Check if stock has risen above target sell price.
-          if (Number(stock.current_price) > (targetPrice)) {
+          if (current > target) {
             client.logger.debug(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) surpassed ${member.tag}'s SELL price of $${targetPrice}`);
             member.send(`Stock Watcher SELL ALERT: ${stock.acronym} ($${stock.current_price}) surpassed your SELL price of $${targetPrice}`);
 
@@ -854,9 +859,12 @@ module.exports = (client) => {
             }
             // Delete the stored config.
             client.customCronJobs.remove('stocks', memberId[stockId]);
+          } else if (current > (target * 1.1)) {
+            // Stock is within 10% of target price.
+            member.send(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) is near your BUY price of $${targetPrice}`);
           } else {
-            client.logger.debug(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) still below ${member.tag}'s SELL price of $${targetPrice}`);
-            member.send(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) still below your SELL price of $${targetPrice}`);
+            //client.logger.debug(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) still below ${member.tag}'s SELL price of $${targetPrice}`);
+            //member.send(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) still below your SELL price of $${targetPrice}`);
           }
         }
       }
