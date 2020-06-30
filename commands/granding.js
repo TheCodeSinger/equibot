@@ -6,7 +6,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         'author': {
           'name': 'verb'
         },
-        'title': 'Granding (grand′ ĭng)',
+        'title': 'granding (grand′ ĭng)',
         'description': 'The act of starting a lotto and then promptly forgetting you started a lotto.'
       }
     };
