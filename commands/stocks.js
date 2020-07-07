@@ -26,7 +26,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
   try {
     // List all stock watchers. "Bot Admin" role only.
-    if (isBotAdmin && args[0].toLowerCase() === 'audit') {
+    if (isBotAdmin && args[0] && args[0].toLowerCase() === 'audit') {
       const allStockWatchers = client.customCronJobs.get('stocks');
       client.logger.debug(`allStockWatchers: ${JSON.stringify(allStockWatchers)}`);
       const auditOutput = [];
