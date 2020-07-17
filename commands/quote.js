@@ -56,7 +56,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     const imageEmbed = {
       embed: {
         color: client.config.colors.default,
-        title: member.name,
+        title: member.title || member.name,
         image: {
           url: client.getRandomItem(member.images),
         },
