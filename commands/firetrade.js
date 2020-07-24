@@ -1,3 +1,5 @@
+const moment = require("moment");
+
 /**
  * Displays Fire Trader's price for an item.
  *
@@ -6,6 +8,7 @@
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   const itemList = client.tornData.items;
   const lordofFire = client.quotedMembers.get('lordoffire');
+  const timestamp = `[${moment().format("YYYY-MM-DD HH:mm:ss")}]:`;
 
   /**
    * Returns an embed object with Fire Trader's pricing for an item.
@@ -28,7 +31,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
           'name': item.name + ' #' + id
         },
         'image': {
-          'url': 'https://arsonwarehouse.com/!/lordoffire/bids/' + id + '@2x.png'
+          'url': 'https://arsonwarehouse.com/!/lordoffire/bids/' + id + '@2x.png?timestamp=' + timestamp
         },
         'footer': {
           'text': 'Fire Trading'
