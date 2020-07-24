@@ -8,7 +8,7 @@ const moment = require("moment");
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   const itemList = client.tornData.items;
   const lordofFire = client.quotedMembers.get('lordoffire');
-  const timestamp = `[${moment().format("YYYY-MM-DD HH:mm:ss")}]:`;
+  const timestamp = moment().format();
 
   /**
    * Returns an embed object with Fire Trader's pricing for an item.
