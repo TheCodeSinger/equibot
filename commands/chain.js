@@ -59,7 +59,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
     // Active chain.
     if (chain.current) {
-      const content = chain.timeout < 45 ? `@here ${faction} SAVE THE CHAIN: ${chain.timeout}s left!` : undefined;
+      const content = chain.timeout <= 90 ? `@here ${faction} SAVE THE CHAIN: ${chain.timeout}s left!` : undefined;
       return {
         content: content,
         embed: {
@@ -127,7 +127,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
           client.logger.debug(`Chain data: ${JSON.stringify(data.chain)}`);
 
           // Display a message if the chain is no longer active or if it is
-          // active with fewer than 90 seconds on the timer.
+          // active with fewer than 2 minutes on the timer.
           if (!data.chain.current || data.chain.timeout < 120) {
             channel.send(chainEmbed(data.chain || {}, faction));
           }
