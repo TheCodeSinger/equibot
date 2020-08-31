@@ -15,7 +15,7 @@
       embed: {
         color: client.config.colors.default,
         thumbnail: {
-          url: 'https://lh3.googleusercontent.com/proxy/zJy91oF-pChOdsKYcD6dHV-Q4r3_mrOvWr938Q1vynAP1JBIlxDnUtRhVCBUqkj0T_JR5-meE1Hg7AK7cRz3TfeV5u-0jySWX74zvTB9xzbt12s',
+          url: 'https://cdn.discordapp.com/attachments/645831366059098135/749464503606837308/61a8fR43rIL._AC_SL1500_.jpg',
         },
         title: 'Faction Minimum Requirememts',
         description: 'These are the minimum requirements to be considered in good standing. Repeated violation may result in being removed from the faction.',
@@ -26,15 +26,15 @@
           },
           {
             name: 'WITHIN THE FIRST 20 DAYS',
-            value: '4. Attain level 15\n5. Join Torn Stats and YATA',
+            value: '4. Attain level 15\n5. Join Torn Stats, YATA, and our Discord server',
           },
           {
             name: 'AFTER LEVEL 15',
-            value: '6. Be in Torn when OC is ready\n7. Contribute 22+ hits to large chains (2500+)\n8. Contribute 6+ hits to small chains (1000 or less)',
+            value: '6. Be in Torn when OC is ready\n7. Contribute 22+ hits to chains\n',
           },
         ],
         footer: {
-          text: 'Last updated: June 15, 2020',
+          text: 'Last updated: August 29, 2020',
         }
       }
     };
