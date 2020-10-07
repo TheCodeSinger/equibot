@@ -103,7 +103,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     }
 
     // keep track of partial matches
-    if(normalized_item_name.toUpperCase().startsWith(item_name.toUpperCase())) {
+    if(normalized_item_name.toUpperCase().includes(item_name.toUpperCase())) {
       partial_matches.push(normalized_item_name);
     }
   });
@@ -161,8 +161,8 @@ exports.conf = {
 };
 
 exports.help = {
-  name: 'firetrade',
+  name: 'trade',
   category: 'Torn',
-  description: 'Displays a Fire Trader price.',
-  usage: 'firetrade <item name>',
+  description: 'Displays EQ Trader prices.',
+  usage: 'tr[ade] <item name>',
 };
