@@ -8,8 +8,8 @@ const async = require('async');
  */
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   const item_list_cache = client.tornData.items;
-  const traders = client.config.params.firetrade.traders;
-  const price_url = client.config.params.firetrade.price_url;
+  const traders = client.config.params.trade.traders;
+  const price_url = client.config.params.trade.price_url;
 
   var trader_urls = [];
   Object.keys(traders).forEach(trader => {
@@ -95,7 +95,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     let normalized_item_name = item_list_cache[item_id]['name']
 
     // if an exact match is found
-    // e.g. `!tr xanex`
+    // e.g. `!tr xanax`
     if(item_name.toUpperCase() == normalized_item_name.toUpperCase()) {
       found_match = true
       process(normalized_item_name)
@@ -135,7 +135,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     return message.channel.send({
       embed: {
         description: `
-          Partial matches found for "${item_name}, use one of the below commands:
+          Partial matches found for "${item_name}", use one of the below commands:
           ${matches_string}
           `
       }
