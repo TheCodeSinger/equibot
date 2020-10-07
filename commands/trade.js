@@ -59,18 +59,26 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         }
     });
 
-    message.channel.send({
-      embed: {
-        title: `**Prices for ${item_name}:**`,
-        description: formatted_desc,
-        thumbnail: {
-          url: item['img']
-        },
-        footer: {
-          text: 'Please upvote your trader on the Pricelist and Forums'
+    if (formatted_desc != '') {
+      message.channel.send({
+        embed: {
+          title: `**Prices for ${item_name}:**`,
+          description: formatted_desc,
+          thumbnail: {
+            url: item['img']
+          },
+          footer: {
+            text: 'Please upvote your trader on the Pricelist and Forums'
+          }
         }
-      }
-    });
+      });
+    } else {
+      message.channel.send({
+        embed: {
+          description: `No faction traders are currently buying "${item_name}".`
+        }
+      });
+    }
   }
 
   // !tr help
