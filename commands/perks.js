@@ -57,7 +57,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     // list of results for all factions defined in client.auth.factionApiKeys
     const results = await Promise.all(urls.map((url) => fetch(url).then((r) => r.json()))).catch((error) => {});
     results.forEach(result => {
-        const perk_map = {}
+        const perk_map = {};
 
         // for each perk, check to see if a substring from any of the categories
         // match, if they do add it to perk_map in the structure of: k = category, 
@@ -73,7 +73,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
                         }
                         perk_map[category_name].push(perk);
                     }
-                })
+                });
             });
         });
 
@@ -93,7 +93,6 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
             }
         });
     });
-
 };
 
 exports.conf = {
