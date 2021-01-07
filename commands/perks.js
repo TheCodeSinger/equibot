@@ -14,6 +14,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
             'Reduces drug addiction gain by',
             'Decreases risk of overdose by',
             'Reduces passive negatives from drugs and addiction by',
+            'Reduces the side effects of drugs and increases addiction mitigation by',
         ],
 
         'Voracity' : [
