@@ -7,9 +7,15 @@ const async = require('async');
  * @example   !tr[ade] <item name>
  */
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
-  const item_list_cache = client.tornData.items;
+  let item_list_cache = client.tornData.items;
   const traders = client.config.params.trade.traders;
   const price_url = client.config.params.trade.price_url;
+
+  // add some fake items that exist on tornexchange.com but not in-game.
+  // this is not added to client.tornData.items directly as they are
+  // not real in-game items and do not have real ids.
+  item_list_cache['FAKE1'] = { 'name' : 'Plushie Set' };
+  item_list_cache['FAKE2'] = { 'name' : 'Flower Set' };
 
   var trader_urls = [];
   Object.keys(traders).forEach(trader => {
