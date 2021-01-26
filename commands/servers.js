@@ -13,6 +13,9 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     
     // message the user directly
     message.author.send(body);
+
+    // delete the message
+    message.delete();
 };
   
 exports.conf = {
