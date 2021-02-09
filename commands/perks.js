@@ -20,6 +20,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         'Voracity' : [
             'Increases nerve gain from alcohol by',
             'hours of maximum booster cooldown',
+            'hour of maximum booster cooldown',
             'Increases energy gain from energy drinks by',
             'Increases happy gain from candy by',
         ], 
@@ -59,6 +60,8 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     const results = await Promise.all(urls.map((url) => fetch(url).then((r) => r.json()))).catch((error) => {});
     results.forEach(result => {
         const perk_map = {};
+        let found_match = false;
+        const unsorted_perks = [];
 
         // for each perk, check to see if a substring from any of the categories
         // match, if they do add it to perk_map in the structure of: k = category, 
@@ -68,6 +71,8 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
                 // if the perk matches a substring, add it to the perk_map
                 categories[category_name].forEach(perk_substr => {
                     if(perk.includes(perk_substr)) {
+                        found_match = true;
+
                         // if the perk_map mapping does not exist, create it
                         if(!perk_map.hasOwnProperty(category_name)) {
                             perk_map[category_name] = [];
@@ -76,6 +81,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
                     }
                 });
             });
+
+            if(!found_match) {
+                unsorted_perks.push(perk);
+            }
         });
 
         let out = '';
@@ -86,6 +95,11 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
                 out = out + '\n\n**' + category_name + '**\n' + perk_map[category_name].join('\n');
             }
         });
+
+        // append unmatched perks to the end of the output
+        if(unsorted_perks.length > 0) {
+            out = out + '\n\n**Unsorted**\n' + unsorted_perks.join('\n');        
+        }
 
         return message.channel.send({
             embed: {
