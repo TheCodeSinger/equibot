@@ -5,6 +5,9 @@ module.exports = (client, message) => {
   // Ignore messages not starting with the prefix (in config.json)
   if (message.content.indexOf(client.config.prefix) !== 0) { return; }
 
+  // Ignore messages sent to blacklisted channel ids
+  if (client.config.blacklisted_channels.includes(message.channel.id)) { return; }
+
   // Parse the input into the command and arguments.
   const args = message.content.slice(client.config.prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
