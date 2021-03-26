@@ -46,6 +46,14 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
             'Reduces rehabilitation costs by',
             'ncreases cayman bank interest by',
         ],
+
+        'Fortitude' : [
+            'Decreases all hospital time by',
+            'minutes of maximum medical cooldown',
+            'life per tick',
+            'medical item effectiveness',
+            'Reduces the energy used while reviving to'
+        ],
     };
 
     const urls = [];
