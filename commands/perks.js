@@ -54,6 +54,14 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
             'medical item effectiveness',
             'Reduces the energy used while reviving to'
         ],
+
+        'Aggression' : [
+            'Increases all accuracy by',
+            'Increases speed passively by',
+            'Increases strength passively by',
+            'Increases outgoing hospitalization time by',
+            'Increases all damage by',
+        ]
     };
 
     const urls = [];
