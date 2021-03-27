@@ -823,8 +823,10 @@ module.exports = (client) => {
         const current = Number(stock.current_price);
         const target = Number(targetPrice);
 
-        // client.logger.debug(`checkStockPrice args: ${memberId} ${stockId} ${targetPrice} ${type}`);
-        // client.logger.debug(`${symbols[stockId]} data: ${JSON.stringify(stock)}`);
+        client.logger.debug(`checkStockPrice args: ${memberId} ${stockId} ${targetPrice} ${type}`);
+        client.logger.debug(`${symbols[stockId]} data: ${JSON.stringify(stock)}`);
+        client.logger.debug(`client.users: ${JSON.stringify(client.users)}`);
+        client.logger.debug(`Member: ${JSON.stringify(member)}`);
 
         if (type === 'buy') {
           if (current < target) {
@@ -837,8 +839,14 @@ module.exports = (client) => {
               watchers[stockId].stop();
               delete watchers[stockId];
             }
+
             // Delete the stored config.
-            client.customCronJobs.remove('stocks', memberId[stockId]);
+            client.logger.debug(`client.customCronJobs: ${JSON.stringify(client.customCronJobs)}`);
+            if (Object.keys(client.customCronJobs).length) {
+              client.customCronJobs.remove('stocks', memberId[stockId]);
+              client.logger.debug(`removed custom cron job from db`);
+            }
+            client.logger.debug(`completed stocks buy check`);
           } else if (current < (target * 1.1)) {
             // Stock is within 10% of target price.
             member.send(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) is near your BUY price of $${targetPrice}`);
@@ -870,10 +878,10 @@ module.exports = (client) => {
       }
 
       // Recheck the watchers every day at 1800 TCT.
-      return new CronJob('0 0 18 * * *', checkStockPrice);
+      // return new CronJob('0 0 18 * * *', checkStockPrice);
 
       // DEBUG: check every 15 seconds.
-      // return new CronJob('*/15 * * * * *', checkStockPrice);
+      return new CronJob('*/45 * * * * *', checkStockPrice);
     } catch (e) {
       client.logger.error(`Error executing 'createStockWatcher': ${e}`);
     }
