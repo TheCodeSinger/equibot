@@ -118,7 +118,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   /**
    * Fetches chain data and posts a message.
    */
-  function fetchChainData() {
+  function fetchChainData(printStatus) {
     client.logger.log('Fetching chain data');
     fetch(chainApiLink)
       .then(response => response.json())
@@ -130,7 +130,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
         // Display a message if the chain is no longer active or if it is
         // active with fewer than 2 minutes on the timer.
-        if (!data.chain.current || data.chain.timeout < 120) {
+        if (printStatus || !data.chain.current || data.chain.timeout < 120) {
           message.channel.send(chainEmbed(data.chain || {}, faction));
         }
       })
@@ -175,7 +175,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         return message.channel.send(`No active chain watcher.`);
       }
 
-      return fetchChainData();
+      return fetchChainData(true);
     }
 
     // Command not recognized.
