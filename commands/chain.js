@@ -19,7 +19,6 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
   const action = (args[0]).toLowerCase() || '';
   const faction = (args[1]).toLowerCase() || '';
-  const chain = client.chain[faction];
 
   const apiKey = client.auth.factionApiKeys[faction] || client.auth.apiKey;
   const chainApiEndpoint = 'https://api.torn.com/faction/?selections=chain';
@@ -32,13 +31,15 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
    * @return  {Object}   Embed object for display chain status.
    */
   function chainEmbed(chain, faction) {
+    const factionTag = (faction || '').toUpperCase();
+
     // Completed chain is in cool down.
     if (chain.cooldown) {
       client.chain[faction].stop();
       delete client.chain[faction];
       const milestones = [10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 25000, 50000, 100000];
       const completed = milestones.includes(chain.current);
-      const title = completed ? `${faction.toUpperCase()} Chain Completed!` : `${faction.toUpperCase()} Chain Broken!`;
+      const title = completed ? `${factionTag} Chain Completed!` : `${factionTag} Chain Broken!`;
       return {
         content: `@here ${title}`,
         embed: {
@@ -70,7 +71,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     // Active chain.
     if (chain.current) {
       const content = chain.timeout <= 90 ?
-        `@here ${faction} SAVE THE CHAIN: ${chain.timeout}s left!` : `${faction} CHAIN STATUS`;
+        `@here ${factionTag} SAVE THE CHAIN: ${chain.timeout}s left!` : `${factionTag} Chain Status`;
       return {
         content: content,
         embed: {
