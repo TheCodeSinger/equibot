@@ -780,7 +780,7 @@ module.exports = (client) => {
       const stockWatchers = client.customCronJobs.ensure('stocks', {});
 
       Object.keys(stockWatchers).forEach(function forEachMember(memberId) {
-        client.logger.debug(`memberId: ${memberId}, ${stockWatchers[memberId]}`);
+        client.logger.debug(`memberId: ${memberId}, ${JSON.stringify(stockWatchers[memberId])}`);
 
         // Stub cron job hash for this user.
         client.systemCronJobs[memberId] = client.systemCronJobs[memberId] || {};
@@ -793,8 +793,10 @@ module.exports = (client) => {
             watcherParams[1],
             watcherParams[2],
             watcherParams[3]);
-          watcher.start();
-          Object.assign(client.systemCronJobs[memberId], { [stockId]: watcher });
+          if (watcher) {
+            watcher.start();
+            Object.assign(client.systemCronJobs[memberId], { [stockId]: watcher });
+          }
         });
       });
     });
@@ -814,18 +816,18 @@ module.exports = (client) => {
     try {
       client.logger.debug(`createPriceWatch args: ${memberId} ${stockId} ${targetPrice} ${type}`);
 
+      const member = client.users.resolve(memberId);
+
       function checkStockPrice() {
         const stockExchange = client.tornData.stockExchange;
         const symbols = stockExchange.symbols;
         const stock = stockExchange.stocks[stockId] || {};
         const watchers = client.systemCronJobs[memberId] || {};
-        const member = client.users.resolve(memberId);
         const current = Number(stock.current_price);
         const target = Number(targetPrice);
 
         client.logger.debug(`checkStockPrice args: ${memberId} ${stockId} ${targetPrice} ${type}`);
         client.logger.debug(`${symbols[stockId]} data: ${JSON.stringify(stock)}`);
-        client.logger.debug(`client.users: ${JSON.stringify(client.users)}`);
         client.logger.debug(`Member: ${JSON.stringify(member)}`);
 
         if (type === 'buy') {
@@ -877,11 +879,16 @@ module.exports = (client) => {
         }
       }
 
+      if (!member) {
+        client.logger.debug(`Could not resolve memberId. Aborting createStockWatcher`);
+        return;
+      }
+
       // Recheck the watchers every day at 1800 TCT.
-      // return new CronJob('0 0 18 * * *', checkStockPrice);
+      return new CronJob('0 0 18 * * *', checkStockPrice);
 
       // DEBUG: check every 15 seconds.
-      return new CronJob('*/45 * * * * *', checkStockPrice);
+      // return new CronJob('*/45 * * * * *', checkStockPrice);
     } catch (e) {
       client.logger.error(`Error executing 'createStockWatcher': ${e}`);
     }
