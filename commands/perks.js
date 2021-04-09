@@ -23,7 +23,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
             'hour of maximum booster cooldown',
             'Increases energy gain from energy drinks by',
             'Increases happy gain from candy by',
-        ], 
+        ],
 
         'Suppression' : [
             'upon escape attempt',
@@ -61,6 +61,14 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
             'Increases strength passively by',
             'Increases outgoing hospitalization time by',
             'Increases all damage by',
+        ],
+
+        'Criminality' : [
+            'Increases maximum nerve by',
+            'passive bonus to crime EXP',
+            'Decreases all jail time by',
+            'Decreases bust nerve cost by',
+            'Increase bust success chance by',
         ]
     };
 
@@ -80,7 +88,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         const unsorted_perks = [];
 
         // for each perk, check to see if a substring from any of the categories
-        // match, if they do add it to perk_map in the structure of: k = category, 
+        // match, if they do add it to perk_map in the structure of: k = category,
         // v = perk
         result['faction_perks'].forEach(perk => {
             Object.keys(categories).forEach(category_name => {
@@ -114,7 +122,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
         // append unmatched perks to the end of the output
         if(unsorted_perks.length > 0) {
-            out = out + '\n\n**Unsorted**\n' + unsorted_perks.join('\n');        
+            out = out + '\n\n**Unsorted**\n' + unsorted_perks.join('\n');
         }
 
         return message.channel.send({
