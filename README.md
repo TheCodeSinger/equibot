@@ -16,7 +16,7 @@ Other bits needed:
 ## Installation
 
 - In the parent directory where you want to clone this repo. run the following:
-- - `git clone https://github.com/dclose73/equibot`
+- - `git clone https://github.com/TheCodeSinger/equibot`
 - In the folder from where you ran the git command, run `cd equibot` and then run `npm install`.
 - **If you get any error about python or msibuild.exe or binding, review the requirements section**
 - Copy `auth.js.template` to `auth.js` and fill out the required fields.
