@@ -93,6 +93,6 @@ exports.help = {
   name: 'quote',
   category: 'Fun',
   description: 'Displays a perfectly apropos quote.',
-  detailedDescription: 'Displays a random quote by or about a specified member.\n\nIf no member specified, then selects a perfectly apropos quote for the moment.\n\nYou may also omit the `!quote` and directly use the member name (or nickname) as the command. e.g. `!peterpan` or `!pan`.\n\nSaw something quotable? Message Aarlo with the quote and he\'ll add it.',
+  detailedDescription: 'Displays a random quote by or about a specified member.\n\nIf no member specified, then selects a perfectly apropos quote for the moment.\n\nYou may also omit the `!quote` and directly use the member name (or nickname) as the command. e.g. `!peterpan` or `!pan`.\n\nSaw something quotable? Submit it with the !idea command.',
   usage: 'quote [member name]',
 };
