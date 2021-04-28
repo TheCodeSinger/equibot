@@ -488,6 +488,7 @@ module.exports = (client) => {
 
     user.discordName = guildUser.displayName;
     user.tornName = getTornName(user.discordName);
+    user.tornId = getTornId(user.discordName);
     user.tornLink = profileLink + getTornId(user.discordName);
 
     return user;
