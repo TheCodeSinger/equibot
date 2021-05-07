@@ -6,7 +6,7 @@ module.exports = (client, message) => {
   if (message.content.indexOf(client.config.prefix) !== 0) { return; }
 
   // Ignore messages sent to blacklisted channel ids
-  if (client.config.blacklisted_channels.includes(message.channel.id)) { return; }
+  if (client.config.blacklistedChannels.includes(message.channel.id)) { return; }
 
   // Parse the input into the command and arguments.
   const args = message.content.slice(client.config.prefix.length).trim().split(/ +/g);

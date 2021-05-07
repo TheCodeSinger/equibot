@@ -12,19 +12,25 @@
  * not undo that.
  */
  const auth = {
-  // Your Discord Bot Secret Token.
-  // Available from https://discordapp.com/developers/applications/me
-  botToken: '',
+  /**
+   * Your Discord Bot Secret Token.
+   * Available from https://discordapp.com/developers/applications/me
+   */
+  botToken: '', // Name:
 
-  // A Torn City API key, for general use.
-  // Available from https://www.torn.com/preferences.php#tab=api
-  apiKey: '',
+  /**
+   * One Torn City API key, for general use.
+   * Find yours from https://www.torn.com/preferences.php#tab=api
+   */
+  apiKey: '', // Name:
 
-  // One API Key per faction, for faction-specific features.
-  // Use meaningful keynames for easy reference. e.g. `chain faction1`
+  /**
+   * One API Key per faction, for faction-specific features. Find one volunteer
+   * from each of your subfactions so commands work for each faction. Use
+   * meaningful keynames for easy reference with commands. e.g. `chain faction1`
+   */
   factionKeys: {
-    faction1: '',
-    faction2: '',
+    faction1: '', // Name:
   }
 };
 

@@ -28,6 +28,15 @@
   // Prefix for bot commands.
   prefix: '!',
 
+  /**
+   * Colors which can be referenced in member-specific content.
+   * Everything uses `default` unless overridedn.
+   */
+  colors: {
+    // Light Blue
+    default: 3759820,
+  },
+
   // Indentifier to distinguish log entries in the aggregated log files.
   // Key: 0 = dev, 1 = staging, 2 = production
   instance: 0,
@@ -35,7 +44,7 @@
   // Logging Levels
   logLevels: {
     // Displays verbose info about programmatic actions.
-    debug: true,
+    debug: false,
 
     // Displays each command executed, including arguments and the callee.
     // Example: CMD help(["link"]) PeterPan(Level 0)
@@ -91,7 +100,55 @@
       // Verify the user is the bot owner.
       check: (message) => config.auth.ownerID === message.author.id
     }
-  ]
+  ],
+
+  /**
+   * List of channels referenced by bot commands.
+   */
+  channels: {
+    apidev: '', // #api-dev - for bot operators.
+  },
+
+  /**
+   * Hash map for the proper display name of each faction.
+   *   e.g. `eq1: 'Equilibrium'`
+   */
+  factionList: {
+    faction1: '',
+  },
+
+  /**
+   * Channels in which the bot should be silent.
+   */
+  blacklistedChannels: [''],
+
+  /**
+   * Discord Giveaway servers.
+   */
+  discordServers: [
+    'https://discord.gg/WByjMmG',    // R3x
+    'https://discord.gg/4smdYW7',    // Duck Pond
+    'https://discord.gg/NJudqNg',    // Torn City Park
+    'https://discord.gg/wnwr8gT',    // Mount Olympus
+    'https://discord.gg/vzn5PxM',    // TORN Fexellent Server
+    'https://discord.gg/sfrp5hjTfd', // Torn City Lounge
+    'https://discord.gg/wWQjq4XWJk', // Torn Zero
+    'https://discord.gg/UWfPXsGs',   // The Rifle Company
+  ],
+
+  /**
+   * Faction traders config.
+   */
+  tradeConfig:  {
+    price_url: 'https://eq.kastang.com/tce',
+    traders: {
+      'Triple_Kill' : {
+        'trade_url' : 'https://www.torn.com/trade.php#step=start&userID=1166266/',
+        'price_url' : 'https://www.tornexchange.com/prices/Triple_Kill/',
+        'forum_url' : 'https://www.torn.com/forums.php#p=threads&f=10&t=16219275&b=0&a=0',
+      },
+    },
+  },
 };
 
 module.exports = config;

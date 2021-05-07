@@ -8,8 +8,8 @@ const async = require('async');
  */
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   let item_list_cache = client.tornData.items;
-  const traders = client.config.params.trade.traders;
-  const price_url = client.config.params.trade.price_url;
+  const traders = client.config.trade.traders;
+  const price_url = client.config.trade.price_url;
 
   // add some fake items that exist on tornexchange.com but not in-game.
   // this is not added to client.tornData.items directly as they are
@@ -47,7 +47,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         });
         return true
       }
-      
+
       trader = Object.keys(result)[0]
       items = result[trader];
       if (item_name in items) {

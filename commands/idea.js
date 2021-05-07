@@ -1,3 +1,5 @@
+const moment = require("moment");
+
 /**
  * Displays a clickable link to the Torn profile for the specified member.
  *
@@ -10,28 +12,19 @@
       return;
     }
 
-    const idea = `${message.author.toString()} sends the following message:\n${args.join(' ')}`;
+    const ideaEmbed = {
+      embed: {
+        color: client.config.colors.default,
+        author: {
+          name: `${message.author.username}\'s Bright Idea.`,
+        },
+        description: args.join(' '),
+        color: 11127212,
+        timestamp: moment(),
+      },
+    };
 
-    /**
-     * Send DM to developers.
-     *   Aarlo: 550079162564476997
-     *   kastang: 576918909672751124
-     *   Orion: 320016515602579456
-     */
-    const developerIds = ['550079162564476997', '576918909672751124', '320016515602579456'];
-    developerIds.forEach(id => {
-      const guild = message.guild;
-      if (guild) {
-        const developer = guild.member(id);
-        if (developer) {
-          developer.send(idea);
-        } else {
-          client.logger.debug(`No member found with ID ${id}.`);
-        }
-      } else {
-        client.logger.debug(`No guilds found. Must have been a DM.`);
-      }
-    });
+    client.logger.debug(`author: ${JSON.stringify(message.author)}`);
 
     const listOfConfirmations = [
       'Don\'t worry. I forwarded your idea. I just haven\'t had my coffee today.',
@@ -51,28 +44,28 @@
       'No way! Not touching that with a ten-foot pole.',
       'I\'ve got an idea, too. *Maybe* you should think a little harder before you share your ideas.',
       'You\'re only allowed one good idea per day. I\'ve yet to see you meet your quota.',
+      'I\'d tell you I don\'t care, but that\'s putting it mildly.',
 
       // Cony_Cage's list
       'Since you know it all, you should also know when to shut up.',
       'This suggestion looks like something I wrote with my left hand after having 3 strokes.',
-      'If I was a bird I\'d know who to shit on. Oh wait, I am a bird.',
-      'As a bot, I\'m always forced to do shit I\'m not qualified for. Like being nice to fucking idiots.',
+      'If I was a bird I\'d know who to poop on. Oh wait, I am a bird.',
+      'As a bot, I\'m always forced to do stuff I\'m not qualified for. Like being nice to idiots.',
       'Oh, so you\'re the reason there\'s instructions on shampoo.',
       'I hope that one day you choke on your keyboard.',
       'If you have another suggestion: raise one hand. Now put it over your mouth.',
-      'Giving a fuck really doesn\'t go with my outfit today.',
+      // 'Giving a shit really doesn\'t go with my outfit today.',
       'You smell like drama and a headache, please go away.',
       'Due to budgetary restraints I can only please one person per day. Today is not your day; tomorrow doesn\'t look good either.',
     ];
 
     /**
-     * Send to a channel.
-     *   #api-dev: 680114562057502771
+     * Send to a channel #api-dev, mapped in config.js.
      */
-    const devChannelId = '680114562057502771';
+    const devChannelId = client.config.channels.apidev;
     const channel = client.channels.cache.find(channel => channel.id === devChannelId);
     if (channel) {
-      channel.send(idea);
+      channel.send(ideaEmbed);
     } else {
       client.logger.debug(`No channel found with ID ${devChannelId}.`);
     }

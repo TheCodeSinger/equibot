@@ -4,20 +4,20 @@
  * @example   !servers
  */
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
-    const discord_servers = client.config.params.discord_servers;
-    
+    const discordServers = client.config.discordServers;
+
     // build the body of the message
     let body = '';
-    body += discord_servers.join('\n');
+    body += discordServers.join('\n');
     body += '\n\n**Please report any broken or missing invites to `@API Developer`**';
-    
+
     // message the user directly
     message.author.send(body);
 
     // delete the message
     message.delete();
 };
-  
+
 exports.conf = {
     enabled: true,
     guildOnly: false,
@@ -28,6 +28,6 @@ exports.conf = {
 exports.help = {
     name: 'servers',
     category: 'Torn',
-    description: 'Direct Message lotto server invite links to users.',
+    description: 'DM a list of lotto server invites.',
     usage: 'servers',
 };

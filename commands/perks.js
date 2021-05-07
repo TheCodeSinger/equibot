@@ -8,7 +8,7 @@
  */
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
     const specifiedFaction = (args[0] || '').toLowerCase();
-    const factionList = client.auth.factionList;
+    const factionList = client.config.factionList;
     const allApiKeys = client.auth.factionApiKeys;
     const selectedApiKeys = [];
     const urls = [];
