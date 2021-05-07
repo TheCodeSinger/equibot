@@ -1,9 +1,17 @@
 /**
- * Display EQ and EQ2 Perks
+ * Display active faction perks.
  *
  * @example   !perks
+ * @example   !perks eq1
+ * @example   !perks Equilibrium
+ * @example   !perks all
  */
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
+    const specifiedFaction = (args[0] || '').toLowerCase();
+    const factionList = client.auth.factionList;
+    const allApiKeys = client.auth.factionApiKeys;
+    const selectedApiKeys = [];
+    const urls = [];
 
     // category mappings, to add more copy and paste the text from the faction page
     // do not use the wording on the torn wiki page as some entries are worded differently
@@ -72,15 +80,66 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         ]
     };
 
-    const urls = [];
+    // Determine which factions are being requested.
+    if (specifiedFaction) {
+      client.logger.debug(`specifiedFaction: ${JSON.stringify(specifiedFaction)}`);
+      // Determine specified faction.
+      switch (specifiedFaction) {
+        case 'eq1':
+        case factionList['eq1'].toLowerCase():
+          selectedApiKeys.push(allApiKeys['eq1']);
+          break;
 
-    // generate a list of urls for faction name and faction perk api calls
-    Object.keys(client.auth.factionApiKeys).forEach(faction_key => {
-        const api_key = client.auth.factionApiKeys[faction_key];
-        urls.push(`https://api.torn.com/user/?selections=perks,profile&key=${api_key}`);
+        case 'eq2':
+        case factionList['eq2'].toLowerCase():
+          selectedApiKeys.push(allApiKeys['eq2']);
+          break;
+
+        case 'eq3':
+        case factionList['eq3'].toLowerCase():
+          selectedApiKeys.push(allApiKeys['eq3']);
+          break;
+
+        case 'all':
+          Object.keys(allApiKeys).forEach(apiKey => selectedApiKeys.push(allApiKeys[apiKey]));
+          break;
+
+        default:
+          return message.reply('That is not a recognized faction name.');
+      }
+    } else {
+      // No faction specified. Determine author's faction and display only those perks.
+      function getFactionApiKey(role) {
+        client.logger.debug(`getFactionApiKey(role): ${JSON.stringify(role.name)}`);
+        switch(role.name) {
+          case 'Equilibrium':
+            return selectedApiKeys.push(allApiKeys['eq1']);
+
+          case 'Equilibrate':
+            return selectedApiKeys.push(allApiKeys['eq2']);
+
+          case 'Equilibrium: Foundation':
+            return selectedApiKeys.push(allApiKeys['eq3']);
+
+          default:
+            // Faction not recognized.
+        }
+      }
+      message.member.roles.cache.some(getFactionApiKey);
+    }
+
+    if (!selectedApiKeys.length) {
+      return message.reply('You do not have a recognized faction role. Contact your Discord admin.');
+    }
+    client.logger.debug(`selectedApiKeys: ${JSON.stringify(selectedApiKeys)}`);
+
+    // generate a list of urls faction perk api keys.
+    selectedApiKeys.forEach(apiKey => {
+        urls.push(`https://api.torn.com/user/?selections=perks,profile&key=${apiKey}`);
     });
+    client.logger.debug(`urls: ${JSON.stringify(urls)}`);
 
-    // list of results for all factions defined in client.auth.factionApiKeys
+    // list of results for all specified factions.
     const results = await Promise.all(urls.map((url) => fetch(url).then((r) => r.json()))).catch((error) => {});
     results.forEach(result => {
         const perk_map = {};
@@ -144,6 +203,7 @@ exports.conf = {
 exports.help = {
     name: 'perks',
     category: 'Torn',
-    description: 'Shows EQ and EQ2 Faction perks',
+    description: 'Shows active faction perks',
+    detailedDescription: 'Shows active faction perks. If you do not specify a faction, it will display the perks for your faction. You may specify a faction name "all" to see perks for all factions.\n\n\t!perks\n\t!perks eq1\n\t!perks Equilibrium\n\t!perks all',
     usage: 'perks',
 };
