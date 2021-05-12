@@ -1,7 +1,7 @@
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   try {
     const pingInsulted = !!args[1];
-    const insultAuthor = !args.length
+    const insultAuthor = !args.length;
     const author = client.decorateUser(message.author, message);
     const mentioned = message.mentions.members.first();
     const resolvedUser = client.decorateUser(mentioned, message);
