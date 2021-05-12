@@ -37,11 +37,12 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       insulted + ', you\'re more disappointing than a pizza with no cheese.',
       insulted + ', light travels faster than sound, which is why you seemed bright until you spoke.',
       insulted + ', you have so many gaps in your teeth that it looks like your tongue is in jail.',
-      'I\'ll never forget the first time I met met ' + insulted + ', but I\'ll keep trying.',
+      'I\'ve never forgotten the first time I met ' + insulted + ', but I keep trying.',
       insulted + ', hold still. I\'m trying to imagine you with a personality.',
       insulted + ', your face makes onions cry.',
       insulted + ', your teeth are so bad you could eat an apple through a fence.',
       insulted + ', I thought of you today. It reminded me to take out the trash.',
+      insulted + ', remember that time you said a bunch of stuff I don\'t care about? It was now.',
     ];
 
     message.channel.send(client.getRandomItem(insults));
