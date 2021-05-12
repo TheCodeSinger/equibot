@@ -1,7 +1,7 @@
 /**
- * Displays a nice embedded output of a Torn item.
+ * Displays the faction rules.
  *
- * @example   !info xanax
+ * @example   !rules
  */
  exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   try {
@@ -22,19 +22,28 @@
         fields: [
           {
             name: 'BASIC REQUIREMENTS',
-            value: '1. Log in daily\n2. Subscriber/Donator Status\n3. Armory Xanax and Refills are for Chains only',
+            value: '1. Log in daily\n' +
+                   '2. Maintain Subscriber/Donator Status\n' +
+                   '3. Armory Xanax and Refills are for Chains only\n',
           },
           {
-            name: 'WITHIN THE FIRST 20 DAYS',
-            value: '4. Attain level 15\n5. Join Torn Stats, YATA, and our Discord server',
+            name: 'WITHIN THE FIRST 30 DAYS',
+            value: '4. Attain level 15\n' +
+                   '5. Join Torn Stats, YATA, and our Discord server\n',
           },
           {
             name: 'AFTER LEVEL 15',
-            value: '6. Be in Torn when OC is ready\n7. Contribute 22+ hits to chains\n',
+            value: '6. Share a Private Island\n' +
+                   '7. Be in Torn when OC is ready\n'+
+                   '8. Contribute 1% hits to chains\n',
+          },
+          {
+            name: 'AFTER 60 DAYS',
+            value: '9. Consume 1+ Xanax per day.\n',
           },
         ],
         footer: {
-          text: 'Last updated: August 29, 2020',
+          text: 'Last updated: May 12, 2021',
         }
       }
     };
