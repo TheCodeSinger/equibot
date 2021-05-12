@@ -1,6 +1,7 @@
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   try {
     const lotto = client.lotto;
+    let messages;
 
     if (!lotto) {
       return message.reply('No active lotto. Why don\'t you start one?');
@@ -22,23 +23,32 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     ]
 
     const loserMessages = [
-      '',
-    ];
-
-    const penceRoasts = [
-      'I\'m 60 years old. I believe in taking care of myself, and a balanced diet and a rigorous taser training routine.',
       'Weird ok but flex',
-      'Jesus Christ how many times did you drop your dad on his head when you were a child?',
-      'NAME you sir are a buffoon.\nYou do know we dont all cheat when playing this game?\nYou bragging about winning a lotto does not sit well with most of us NAME.',
+      'How many times did you drop your dad on his head when you were a child?',
+      lotto.winner.toString() + ', you sir are a buffoon.\nYou do know we don\'t all cheat when playing this game?\nYou bragging about winning a lotto does not sit well with most of us.',
     ];
 
-    let messages = loserMessages;
-    if (lotto.starter === message.author) {
-      messages = starterMessages;
-    } else if (lotto.winner === message.author) {
-      messages = winnerMessages;
+    switch (message.author) {
+      case lotto.starter:
+        messages = starterMessages;
+        break;
+
+      case lotto.winner:
+        messages = winnerMessages;
+        break;
+
+      default:
+        messages = loserMessages;
     }
 
+    // let messages = loserMessages;
+    // if (lotto.starter === message.author) {
+    //   messages = starterMessages;
+    // } else if (lotto.winner === message.author) {
+    //   messages = winnerMessages;
+    // }
+
+    lotto.roasts = lotto.roasts || [];
     if (!lotto.roasts.includes(message.author)) {
       lotto.channel.send(client.getRandomItem(messages));
       lotto.roasts.push(message.author);
