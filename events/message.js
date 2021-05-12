@@ -38,6 +38,11 @@ module.exports = (client, message) => {
     return message.reply(`Oops. You stumbled upon a secret command that is not yet enabled. Exciting!`);
   }
 
+  // Rebuke user when attempting to issue a guild-only command directly to the bot.
+  if (cmd.conf.guildOnly && !message.guild) {
+    return message.reply(`Please don't pester me privately with public commands.`);
+  }
+
   // Log execution of the command.
   const commandLogString = args.length ? command + '(' + JSON.stringify(args) + ')' : command;
   client.logger.cmd(commandLogString + ' ' + userLogString);
