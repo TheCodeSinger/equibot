@@ -41,13 +41,6 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         messages = loserMessages;
     }
 
-    // let messages = loserMessages;
-    // if (lotto.starter === message.author) {
-    //   messages = starterMessages;
-    // } else if (lotto.winner === message.author) {
-    //   messages = winnerMessages;
-    // }
-
     lotto.roasts = lotto.roasts || [];
     if (!lotto.roasts.includes(message.author)) {
       lotto.channel.send(client.getRandomItem(messages));
