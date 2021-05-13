@@ -15,7 +15,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     const output = {
       'embed': {
         'color': config.colors.default,
-        'description': 'It appears that ' + message.author.toString() + ' got cold feet and cancelled the lotto.',
+        'description': 'It appears that ' + lotto.starter.toString() + ' got cold feet and cancelled the lotto.',
         'footer': {
           'text': 'They probably deserve to be TP\'d or forked or some other innocous but socially approved form of hazing.'
         }
