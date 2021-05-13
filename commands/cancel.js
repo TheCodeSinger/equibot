@@ -9,7 +9,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     }
 
     if (message.author !== lotto.starter && !isBotAdmin) {
-      return message.reply('Only the starter can cancel a lotto.');
+      return message.reply('Only the starter (or bot admin) can cancel a lotto.');
     }
 
     const output = {
