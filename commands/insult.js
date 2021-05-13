@@ -19,7 +19,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
       if (!resolvedUser) {
         // Use the name as typed because it did not match any known member.
-        return '**' + args[0].replace('@', '') + '**';
+        return '**' + args.join(' ').replace('@', '') + '**';
       }
 
       if (pingInsulted) {
