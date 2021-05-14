@@ -84,7 +84,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
           'Within the next ' + registrationPeriodMs/1000 + ' seconds, type `rps` for a chance to play. ' +
           'Then two players will be selected to compete.',
         footer: {
-          text: 'Note: This game is still in development.'
+          text: 'Note: This game is still in development. Eventually, for MONEY!'
         }
       }
     }
@@ -226,7 +226,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
               })
               .catch((e, f) => {
                 client.logger.debug(`awaitMessages catch: ${JSON.stringify(e)} ${JSON.stringify(f)}`);
-                chan.send('Time is up! Return to the public channel.');
+                chan.send('Time is up! Return to the public channel. (Or there was an unknown error)');
                 let answer = ['timeout', player];
                 if (rps.answer) {
                   let winner = getRpsWinner(rps.answer[0], answer[0]);
@@ -303,7 +303,7 @@ exports.shutdown = async (client) => {
 };
 
 exports.conf = {
-  enabled: true,
+  enabled: false,
   guildOnly: true,
   aliases: [],
   permLevel: 'User',
