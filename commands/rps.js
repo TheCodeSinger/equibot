@@ -47,9 +47,6 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
               'value': moment.duration(Date.now() - rps.startTime).humanize(),
             },
           ],
-          footer: {
-            text: 'Developer Note: This game is still in development.'
-          }
         }
       };
       return rps.channel.send(rpsInfo);
@@ -58,6 +55,8 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     // if (!args[0]) {
     //   return message.reply('You did not specify a prize. Games are more fun when you actually offer something to win.');
     // }
+
+
 
     //
     // Starting new game of RPS
@@ -77,15 +76,27 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     // client.ensureMemberStats(rps.starter.id);
     // client.updateGameStats('rps', 'started', rps.starter.id);
 
-    function rpsStartMsg(rps) {
+    const registrationMsg = {
+      embed: {
+        color: config.colors.default,
+        title: 'Rock, Paper, Scissors',
+        description: rps.starter.username + ' has called for a new game of Rock, Paper, Scissors.\n\n' +
+          'Within the next ' + registrationPeriodMs/1000 + ' seconds, type `rps` for a chance to play. ' +
+          'Then two players will be selected to compete.',
+        footer: {
+          text: 'Note: This game is still in development.'
+        }
+      }
+    }
+
+    function getStartMessage(player1, player2) {
       return {
-        'embed': {
-          'color': config.colors.default,
-          'author': {
-            'name': 'New RPS started!'
-          },
-          'title': rps.starter.username + ' has called for a new game of Rock, Paper, Scissors for ' + rps.prize,
-          'description': 'Type `RPS` in the next ' + registrationPeriodMs/1000 + ' seconds for a chance to play.'
+        embed: {
+          color: config.colors.default,
+          title: 'Rock, Paper, Scissors',
+          description: player1.toString() + ' vs ' + player2.toString() + '\n\n' +
+           'I\'ve sent a direct message to each of you.\n\n' +
+           'You will remain in your DM channel until I ping you again in this public channel.',
         }
       }
     }
@@ -101,6 +112,12 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       footerText = '';
 
       switch(winner) {
+        case 0:
+          // Draw
+          resultText = '**DRAW**! Go again..';
+          footerText = '';
+          break;
+
         case 1:
           // Player 1
           resultText = `Winner: ${a1[1].toString()}\n\n ${footerText}`;
@@ -112,15 +129,14 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
           break;
 
         default:
-          // Draw
-          resultText = '**DRAW**! Go again..';
-          footerText = '';
+          // Both timed out.
+          resultText = 'You\'re Both Losers';
       }
 
       return {
         content: winner > 0 ? `${a1[1].toString()} ${a2[1].toString()}` : '',
         embed: {
-          color:config.color,
+          color:config.colors.default,
           author: {
             name: `Rock-Paper-Scissors Round ${rps.round} results`,
           },
@@ -133,11 +149,20 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
     /**
      * Determines the winner based on the two answers.
-     * Returns 0 for a draw, or 1|2 which referrs to answer 1 or 2.
+     *
+     * Returns
+     *   -1 for mutual timeout
+     *    0 for a draw
+     *    1 or 2 for the winning player
      */
     function getRpsWinner (answer1, answer2) {
       client.logger.debug(`getRpsWinner(${answer1}, ${answer2})`);
-      if (answer1 === answer2) { return 0; }
+      if (answer1 === answer2) {
+        if (answer1 === 'timeout' && answer2 === 'timeout') {
+          return -1;
+        }
+        return 0;
+      }
       if (answer1 === 'rock' && answer2 === 'scissors') { return 1; }
       if (answer1 === 'rock' && answer2 === 'paper') { return 2; }
       if (answer1 === 'paper' && answer2 === 'rock') { return 1; }
@@ -157,7 +182,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
       return {
         embed: {
-          color: config.color,
+          color: config.colors.default,
           author: {
             name: `Rock-Paper-Scissors Round ${rps.round}`,
           },
@@ -216,25 +241,30 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       });
     }
 
+    message.channel.send(registrationMsg).then(() => {
+      // Ignore anything other than 'rps' as a message.
+      const contentFilter = response => (
+        // response.author !== message.author &&
+        response.content.toLowerCase().includes('rps')
+      );
+      const collector = message.channel.createMessageCollector(contentFilter, { time: registrationPeriodMs });
 
-    // Ignore anything other than 'rps' as a message.
-    const contentFilter = response => (
-      // response.author !== message.author &&
-      response.content.toLowerCase().includes('rps')
-    );
+      collector.on('collect', msg => {
+        client.logger.debug(`Responded: ${JSON.stringify(msg.author)}`);
+        // Register each respondant, but ignore double entries.
+        if (!(rps.entrants.includes(msg.author))) {
+          rps.entrants.push(msg.author);
+          msg.channel.send(msg.author.toString() + 'is registered.');
+          msg.delete();
+        }
+      });
 
-    message.channel.send(rpsStartMsg(rps)).then(() => {
-      message.channel.awaitMessages(contentFilter, { time: registrationPeriodMs }).then((collected) => {
-        collected.each((msg) => {
-          if (!(rps.entrants.includes(msg.author))) {
-            // For each person who responded, add to the game, but ignore double entries.
-            rps.entrants.push(msg.author);
-          }
-        });
-
+      collector.on('end', collected => {
+        client.logger.debug(`Total Responded: ${JSON.stringify(collected.size)}`);
+        client.logger.debug(`Total Registered: ${JSON.stringify(rps.entrants)}`);
         if (rps.entrants.length < 2) {
           // Did not get at least two entrants.
-          message.channel.send('At least two players needed, RPS aborted!');
+          message.channel.send('At least two players needed. RPS canceled.');
           rps = client.rps = null;
         } else {
           // Select two unique entrants.
@@ -243,22 +273,19 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
           while (player1 === player2) {
             player2 = client.getRandomItem(rps.entrants);
           }
-          message.channel.send(player1.toString() + ' vs ' + player2.toString());
+          message.channel.send(getStartMessage(player1, player2));
 
           playRPSMsg(rps, player1);
           playRPSMsg(rps, player2);
         }
-      }).catch((error) => {
-        client.logger.error(`rps error: ${JSON.stringify(error)}`);
-        message.channel.send('RPS aborted!');
-        rps = client.rps = null;
       });
     });
-
     message.delete();
 
   } catch (e) {
     client.logger.error(`Error executing 'rps' command: ${e}`);
+    message.channel.send('RPS aborted due to an error.');
+    rps = client.rps = null;
   }
 };
 
