@@ -46,7 +46,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
               'name': 'Elapsed time: ',
               'value': moment.duration(Date.now() - rps.startTime).humanize(),
             },
-          ]
+          ],
+          footer: {
+            text: 'Developer Note: This game is still in development.'
+          }
         }
       };
       return rps.channel.send(rpsInfo);
@@ -283,6 +286,6 @@ exports.help = {
   name: 'rps',
   category: 'Fun',
   description: 'Starts Rock, Paper, Scissors.',
-  detailedDescription: 'Starts a game of Rock, Paper, Scissors.',
+  detailedDescription: '[BETA] Starts a game of Rock, Paper, Scissors.',
   usage: 'rps',
 };
