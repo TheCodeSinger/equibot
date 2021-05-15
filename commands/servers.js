@@ -27,7 +27,7 @@ exports.conf = {
 
 exports.help = {
     name: 'servers',
-    category: 'Torn',
+    category: 'Fun',
     description: 'DM a list of lotto server invites.',
     usage: 'servers',
 };

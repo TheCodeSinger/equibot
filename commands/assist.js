@@ -35,7 +35,7 @@
 };
 
 exports.conf = {
-  enabled: true,
+  enabled: false,
   guildOnly: true,
   aliases: [],
   permLevel: 'User',
@@ -43,7 +43,7 @@ exports.conf = {
 
 exports.help = {
   name: 'assist',
-  category: 'Hidden',
+  // category: 'Torn',
   description: 'Calls for an assist',
   usage: 'assist attackerName defenderName defenderId',
 };

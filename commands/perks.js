@@ -202,7 +202,7 @@ exports.conf = {
 
 exports.help = {
     name: 'perks',
-    category: 'Torn',
+    category: 'Faction',
     description: 'Shows active faction perks',
     detailedDescription: 'Shows active faction perks. If you do not specify a faction, it will display the perks for your faction. You may specify a faction name "all" to see perks for all factions.\n\n\t!perks\n\t!perks eq1\n\t!perks Equilibrium\n\t!perks all',
     usage: 'perks',

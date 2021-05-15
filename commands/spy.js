@@ -7,36 +7,31 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
   function getStatEmbed(stats, name) {
     return {
-      'embed': {
-        'color': client.config.colors.default,
-        'author': {
-          'name': name
+      embed: {
+        color: client.config.colors.default,
+        author: {
+          name: name
         },
-        'fields': [
+        fields: [
           {
-            'name': 'Strength',
-            'value': stats.strength || 'n/a',
-            'inline': true
+            name: 'Strength',
+            value: stats.strength.toLocaleString() || 'n/a',
           },
           {
-            'name': 'Defense',
-            'value': stats.defense || 'n/a',
-            'inline': true
+            name: 'Speed',
+            value: stats.speed.toLocaleString() || 'n/a',
           },
           {
-            'name': 'Speed',
-            'value': stats.speed || 'n/a',
-            'inline': true
+            name: 'Dexterity',
+            value: stats.dexterity.toLocaleString() || 'n/a',
           },
           {
-            'name': 'Dexterity',
-            'value': stats.dexterity || 'n/a',
-            'inline': true
+            name: 'Defense',
+            value: stats.defense.toLocaleString() || 'n/a',
           },
           {
-            'name': 'Total',
-            'value': stats.total || 'n/a',
-            'inline': true
+            name: 'Total',
+            value: stats.total.toLocaleString() || 'n/a',
           }
         ]
       }
@@ -61,7 +56,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 };
 
 exports.conf = {
-  enabled: false,
+  enabled: true,
   guildOnly: false,
   aliases: [],
   permLevel: 'User',
@@ -69,7 +64,7 @@ exports.conf = {
 
 exports.help = {
   name: 'spy',
-  category: 'Faction',
-  description: 'Spies on a target.',
-  usage: 'spy',
+  category: 'Torn',
+  description: 'Prints last known spy report.',
+  usage: 'spy <player name>',
 };

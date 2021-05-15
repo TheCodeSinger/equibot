@@ -32,7 +32,7 @@ exports.conf = {
 
 exports.help = {
   name: 'speak',
-  category: 'Hidden',
+  // category: 'System',
   description: 'Speaks a message through the bot.',
   usage: 'speak <channel> <message>'
 };
