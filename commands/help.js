@@ -50,7 +50,7 @@ exports.run = (client, message, args, level) => {
       if (level < client.levelCache[command.conf.permLevel]) { return; }
 
       // Build the help message.
-      let text = `= ${command.help.name} = \n${command.help.detailedDescription || command.help.description}\n\nusage:: ${command.help.usage}`;
+      let text = `= ${command.help.name} = \n${command.help.detailedDescription || command.help.description}\n\nusage:: ${client.config.prefix}${command.help.usage}`;
       if (command.conf.aliases.length) {
         text += `\naliases:: ${command.conf.aliases.join(', ')}`;
       }

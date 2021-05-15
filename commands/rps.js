@@ -274,6 +274,12 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
           answerCollector.on('end', collected => {
             client.logger.debug(`answerCollector.on('end'): ${JSON.stringify(collected)}`);
+
+            if (!client.rps) {
+              // Game was likely cancelled. Do nothing.
+              return;
+            }
+
             if (!collected.size) {
               // No answer collected. Player timed out.
               client.logger.debug(`${player.tornName} timed out`);
@@ -302,6 +308,9 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
      * time, select two players and start the contest.
      */
     message.channel.send(registrationMsg).then(() => {
+      // Display a visible countdown.
+      // client.displayCountdown(registrationPeriodMs/1000, message.channel, 'Starting in');
+
       // Ignore anything other than 'rps' as a message.
       const regFilter = response => (
         // response.author !== message.author &&

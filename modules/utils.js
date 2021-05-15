@@ -35,6 +35,7 @@ module.exports = (client) => {
     unloadCommand: unloadCommand,
     updateGameRecords: updateGameRecords,
     updateGameStats: updateGameStats,
+    displayCountdown: displayCountdown,
   });
 
   /**
@@ -893,6 +894,44 @@ module.exports = (client) => {
     } catch (e) {
       client.logger.error(`Error executing 'createStockWatcher': ${e}`);
     }
+  }
+
+  /**
+   * Displays an animated countdown for specified number of seconds.
+   *
+   * @param {number}  totalSeconds   Number of seconds to count down.
+   * @param {object}  channel        Reference to the message channel.
+   * @param {string}  message        Message to display.
+   */
+    async function displayCountdown(totalSeconds, channel, message) {
+    /**
+     * Sleep for specified number of milliseconds.
+     *
+     * @param   {Number}   ms   Number of milliseconds to sleep.
+     * @return  {Object}   A promise to wait a number of milliseconds.
+     */
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    const countdownMsg = await channel.send({
+      embed: {
+        color: client.config.colors.default,
+        description: message + ' ...',
+      }
+    });
+    let seconds = totalSeconds;
+    while (seconds > 0) {
+      await sleep(850);
+      await countdownMsg.edit({
+        embed: {
+          color: client.config.colors.default,
+          description: `${message} ${seconds}`,
+        }
+      });
+      seconds--;
+    }
+    await countdownMsg.delete();
   }
 
 };
