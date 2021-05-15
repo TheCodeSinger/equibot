@@ -6,12 +6,18 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   const spyLink = `https://www.tornstats.com/api.php?key=${client.auth.apiKey}&action=spy&target=`;
 
   function getStatEmbed(stats, name) {
+    if (!stats) {
+      return `No player by the name \`${name}\``;
+    }
+
+    if (!stats.status) {
+      return `No known spy report for \`${name}\``;
+    }
+
     return {
       embed: {
         color: client.config.colors.default,
-        author: {
-          name: name
-        },
+        title: name,
         fields: [
           {
             name: 'Strength',
@@ -43,8 +49,9 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       fetch((spyLink + args[0]))
         .then(res => res.json())
         .then(data => {
-          const stats = data.spy.status ? data.spy : {};
-          message.channel.send(getStatEmbed(stats, args[0]));
+          client.logger.debug(`spy data for ${args[0]}: ${JSON.stringify(data)}`);
+
+          message.channel.send(getStatEmbed(data.spy, args[0]));
         })
         .catch(error => {client.logger.error(error)});
     } else {
