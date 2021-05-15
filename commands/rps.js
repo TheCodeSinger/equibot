@@ -20,7 +20,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     const config = client.config;
 
     // How long to wait for people to register to play.
-    const registrationPeriodMs = 30000;
+    const registrationPeriodMs = 15000;
 
     // How long to wait for each player reponse.
     const answerPeriodMs = 30000;
