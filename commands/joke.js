@@ -149,6 +149,6 @@ exports.help = {
   name: 'joke',
   category: 'Fun',
   description: 'Displays a random joke.',
-  detailedDescription: 'Displays a random joke. You can optionally specify a type, like one-liner, two-liner, or knock-knock. For example: \'!joke kk\' or  \'!joke knock\' or \'!joke 1l\' or \'!joke one\' or \'!joke 2l\' or \'!joke two\'.\n\nPlease submit your favorite jokes and recommendations for additional types of jokes.',
+  detailedDescription: 'Displays a random joke. You can optionally specify a type, like one-liner, two-liner, or knock-knock.\n\n\tKnock-knock: !joke kk, !joke knock\n\tOne-liners: !joke 1, !joke 1l\n\tTwo-liners: !joke 2, !joke 2l\n\nPlease submit your favorite jokes and recommendations for additional types of jokes.',
   usage: 'joke [type]',
 };

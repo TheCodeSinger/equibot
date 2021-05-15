@@ -1,7 +1,7 @@
 [
   {
     "name": "oneLiners",
-    "aliases": ["1l", "ol", "one"],
+    "aliases": ["1l", "1", "ol", "one", "oneliner"],
     "jokes": [
       "6:30 is the best time on a clock, hands down.",
       "A blind man walked into a bar… and a table… and a chair…",
@@ -180,7 +180,7 @@
   },
   {
     "name": "twoLiners",
-    "aliases": ["2l", "tl", "two"],
+    "aliases": ["2l", "2", "tl", "two", "twoliner"],
     "jokes": [
       ["Have you heard about the corduroy pillow?", "It’s making headlines!"],
       ["How can you tell it’s a dogwood tree?", "By the bark."],

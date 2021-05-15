@@ -24,13 +24,27 @@ module.exports = (client, message) => {
     const memberQuote =
       client.quotedMembers.get(command) ||
       client.quotedMembers.get(client.quotedAliases.get(command));
+
     if (memberQuote) {
       // Found a matching quotable. Run the quote command.
       return client.commands.get('quote').run(client, message, [command], level);
     }
-    // return message.reply(`Sorry. I don't know what to do with the command \`${client.config.prefix}${command}\``);
-    // Exit silently. Don't make a fuss.
-    return;
+
+    // Unknown command. Reply with a snarky retort.
+    function getRetort(cmd) {
+      const prefix = client.config.prefix;
+      const retorts = [
+        `Sorry. I don't know what your mean by \`${prefix}${cmd}\``,
+        `Go \`${prefix}${cmd}\` yourself.`,
+        `That may work on other girlbots, but not me.`,
+      ];
+
+      return client.getRandomItem(retorts);
+    }
+
+    return message.reply(getRetort(command));
+    // OR Exit silently. Don't make a fuss.
+    // return;
   }
 
   // Ignore commands which are disabled.
