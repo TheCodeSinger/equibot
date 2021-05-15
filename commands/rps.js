@@ -1,61 +1,94 @@
+const { Collection } = require("discord.js");
 const moment = require("moment");
 
 /**
- * Starts a game of Rock, Paper, Scissors to play for a prize. Other members can `!join`
- * and the host can `!draw` when ready.
+ * Starts a game of Rock, Paper, Scissors to play for a prize.
  *
  * The command expects an argument which is the prize to be given away. If no
- * argument provided, the command will display info about the current rps.
+ * argument provided, the command will display info about the current game.
  *
  * Commands for:
- *   Hosts: !rps, !lastcall, !draw, !cancel
- *   Participants: !join, !goodgame, !thankyou
- *   Everyone: !rpsinfo, !roast
+ *   Hosts: !cancel
  *
  * @example   !rps 10 Xanax
+ * @example   !rps cancel
  * @example   !rps
  */
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   try {
-
-    const registrationPeriodMs = 30000;
-    const answerPeriodMs = 30000;
-
-    let rps = client.rps;
+    const isBotAdmin = client.levelCache['Bot Support'] <= level;
     const config = client.config;
 
+    // How long to wait for people to register to play.
+    const registrationPeriodMs = 30000;
+
+    // How long to wait for each player reponse.
+    const answerPeriodMs = 30000;
+
+    // Cache reference to the game data.
+    let rps = client.rps;
+
+    client.decorateUser(message.author, message);
+
     if (rps) {
-      // Already a game of rps running.
+      // Already a game of RPS running.
       if (args[0]) {
-        return message.reply('There is already a rps running. Please wait for this one to be completed.');
+        if (args[0].toLowerCase() === 'cancel') {
+          // Check if admin is intervening.
+          if (message.author === rps.starter || isBotAdmin) {
+            // Author is authorized. Cancel game.
+            rps = client.rps = null;
+            client.logger.log(message.author.username + ' cancelled the game of RPS.');
+            return message.channel.send(message.author.toString() + ' cancelled the current game of RPS.');
+          } else {
+            // Author is NOT authorized. Do NOT cancel game.
+            client.logger.debug(message.author.username + ' is NOT authorized to cancel');
+            return message.reply('Only the starter (or a bot admin) can cancel a game of RPS.');
+          }
+        }
+
+        client.logger.debug(message.author.username + ' tried to start a new RPS but one is running.');
+        return message.reply('There is already a game of RPS running. Please wait for this one to be completed.');
       }
 
-      // Display the rps info.
+      // Author issued `!rps` command by itself while a game is running.
+      // Display game info.
       client.decorateUser(rps.starter, message);
-      const rpsInfo = {
-        'embed': {
-          'color': config.colors.default,
-          // 'title': rps.starter.tornName + ' started a game of RPS for *' + rps.prize + '*',
-          'title': rps.starter.tornName + ' started a game of RPS',
-          'fields': [
-            {
-              'name': 'Players: ',
-              'value': rps.entrants.join(', '),
-            },
-            {
-              'name': 'Elapsed time: ',
-              'value': moment.duration(Date.now() - rps.startTime).humanize(),
-            },
-          ],
+      function rpsGameInfo() {
+        const listOfFields = [
+          {
+            name: 'Elapsed time: ',
+            value: moment.duration(Date.now() - rps.startTime).humanize(),
+          }
+        ];
+
+        if (rps.round === 0) {
+          listOfFields.push({
+            name: 'Registered players: ',
+            value: rps.entrants.join(', ') || 'None yet!',
+          });
+        } else {
+          listOfFields.push({
+            name: 'Competing right now: ',
+            value: rps.selected.join(', '),
+          });
+        }
+
+        return {
+          embed: {
+            color: config.colors.default,
+            // 'title': rps.starter.tornName + ' started a game of RPS for *' + rps.prize + '*',
+            title: rps.starter.tornName + ' started a game of RPS',
+            fields: listOfFields,
+          }
         }
       };
-      return rps.channel.send(rpsInfo);
+      return rps.channel.send(rpsGameInfo());
     }
 
     // if (!args[0]) {
     //   return message.reply('You did not specify a prize. Games are more fun when you actually offer something to win.');
     // }
-
 
 
     //
@@ -69,27 +102,30 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       startTime: Date.now(),
       prize: args.join(' '),
       entrants: [],
-      round: 1,
+      selected: [],
+      round: 0,
     };
 
     // Update database.
     // client.ensureMemberStats(rps.starter.id);
     // client.updateGameStats('rps', 'started', rps.starter.id);
 
+    // Message displayed when the game is initialized.
     const registrationMsg = {
       embed: {
         color: config.colors.default,
         title: 'Rock, Paper, Scissors',
-        description: rps.starter.username + ' has called for a new game of Rock, Paper, Scissors.\n\n' +
+        description: '**' + rps.starter.username + '** has called for a new game of Rock, Paper, Scissors.\n\n' +
           'Within the next ' + registrationPeriodMs/1000 + ' seconds, type `rps` for a chance to play. ' +
-          'Then two players will be selected to compete.',
+          'Then two players will be randomly selected to compete.',
         footer: {
           text: 'Note: This game is still in development. Eventually, for MONEY!'
         }
       }
     }
 
-    function getStartMessage(player1, player2) {
+    // Message displayed after selecting the two players.
+    function getStartMsg(player1, player2) {
       return {
         embed: {
           color: config.colors.default,
@@ -101,10 +137,9 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       }
     }
 
-    function publicRoundMsg(rps, a1, a2, winner) {
-      client.decorateUser(a1[1], message);
-      client.decorateUser(a2[1], message);
-      client.logger.debug(`publicRoundMsg(${JSON.stringify(rps.starter.username)}, ${a1}, ${a2}, ${winner})`);
+    // Public message displayed after each round of play.
+    function getPublicRoundMsg(rps, a1, a2, winner) {
+      client.logger.log(`Round ${rps.round}: ${a1[0]} vs ${a2[0]}`);
       let footerText = `${rps.starter.toString()}, please send your **${rps.prize}** and then paste the sent message to record your prize.`;
       let resultText = '';
 
@@ -173,83 +208,108 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       if (answer2 === 'timeout') { return 1; }
     }
 
-    function dmPrompt() {
+    // Private message sent to each player, for each round.
+    function getDmPrompt(previousAnswer) {
       let titleText = '';
 
-      if (rps.round > 1) {
-        titleText = `Round ${rps.round - 1} was a DRAW. Go again!`;
+      if (previousAnswer && rps.round > 1) {
+        titleText = `You both answered ${previousAnswer.toUpperCase()}. Go again!`;
       }
 
       return {
         embed: {
           color: config.colors.default,
-          author: {
-            name: `Rock-Paper-Scissors Round ${rps.round}`,
-          },
           title: titleText,
           description: 'Answer with `rock`, `paper` or `scissors` in the next ' + answerPeriodMs/1000 + ' seconds!',
         }
       }
     }
 
-    function playRPSMsg(rps, player) {
-      player.createDM().then((chan) => {
-        chan.send(dmPrompt())
-          .then(() => {
-            chan.awaitMessages(response =>
-                (response.author.id === player.id && (['rock', 'paper', 'scissors'].includes(response.content.toLowerCase()))),
-              {
-                max: 1,
-                time: answerPeriodMs,
-                errors: ['time'],
-              })
-              .then((collected) => {
-                chan.send('Answer collected');
-                let answer = [collected.first().content.toLowerCase(), player];
-                client.logger.log(`${JSON.stringify(answer[1].tornName)} chose ${JSON.stringify(answer[0])}`);
-                if (rps.answer) {
-                  let winner = getRpsWinner(rps.answer[0], answer[0]);
-                  rps.channel.send(publicRoundMsg(rps, rps.answer, answer, winner));
+    /**
+     * Creates a DM channel with the player and prompts them for their answer.
+     * Then checks game data, and if the other player has submitted their answer,
+     * we resolve the round. Otherwise, store this player's answer in the game data.
+     */
+    function promptPlayer(number, rps, player, previousAnswer) {
+      player.createDM().then((dmChannel) => {
+        // Set the dmChannel in the RPS game data.
+        rps['dmChannel' + number] = dmChannel;
 
-                  if (winner > 0) {
-                    // Winner determined.
-                    rps = client.rps = null;
-                  } else {
-                    playRPSMsg(rps, rps.answer[1]);
-                    playRPSMsg(rps, answer[1]);
-                    rps.round += 1;
-                    rps.answer = null;
-                  }
-                } else {
-                  rps.answer = answer;
-                }
-              })
-              .catch((e, f) => {
-                client.logger.debug(`awaitMessages catch: ${JSON.stringify(e)} ${JSON.stringify(f)}`);
-                chan.send('Time is up! Return to the public channel. (Or there was an unknown error)');
-                let answer = ['timeout', player];
-                if (rps.answer) {
-                  let winner = getRpsWinner(rps.answer[0], answer[0]);
-                  rps.channel.send(publicRoundMsg(rps, rps.answer, answer, winner));
-                  rps = client.rps = null;
-                } else {
-                  rps.answer = answer;
-                }
-              });
+        // Store the other player number so we can reference them easily.
+        const otherPlayerNumber = number === 1 ? 2 : 1;
+
+        dmChannel.send(getDmPrompt(previousAnswer)).then(() => {
+          client.logger.debug(``);
+          // Ignore anything other than 'rock', 'paper', 'scissors' as a message.
+          const answerFilter = response => (
+            response.author.id === player.id && (['rock', 'paper', 'scissors'].includes(response.content.toLowerCase()))
+          );
+          const answerCollector = dmChannel.createMessageCollector(answerFilter, { max: 1, time: answerPeriodMs, errors: ['time'] });
+
+          answerCollector.on('collect', msg => {
+            const answer = [msg.content.toLowerCase(), player];
+            client.logger.log(`${JSON.stringify(answer[1].tornName)} chose ${JSON.stringify(answer[0])}`);
+            if (rps.answer) {
+              dmChannel.send('Answer collected');
+              const winner = getRpsWinner(rps.answer[0], answer[0]);
+              rps.channel.send(getPublicRoundMsg(rps, rps.answer, answer, winner));
+
+              if (winner > 0) {
+                // Winner determined. Game over.
+                dmChannel.send('Winner decided. Return to public channel.');
+                rps['dmChannel' + otherPlayerNumber].send('Winner decided. Return to public channel.');
+                rps = client.rps = null;
+              } else {
+                // It was a draw. Go again.
+                promptPlayer(1, rps, rps.answer[1], answer[0]);
+                promptPlayer(2, rps, answer[1], answer[0]);
+                rps.answer = null;
+                rps.round += 1;
+              }
+            } else {
+              dmChannel.send('Answer collected. Wait for your opponent to decide.');
+              rps.answer = answer;
+            }
           });
+
+          answerCollector.on('end', collected => {
+            client.logger.debug(`answerCollector.on('end'): ${JSON.stringify(collected)}`);
+            if (!collected.size) {
+              // No answer collected. Player timed out.
+              client.logger.debug(`${player.tornName} timed out`);
+              dmChannel.send('Time is up! Too slow. Return to the public channel.');
+              rps['dmChannel' + otherPlayerNumber].send('Winner decided. Return to public channel.');
+              const answer = ['timeout', player];
+              if (rps.answer) {
+                const winner = getRpsWinner(rps.answer[0], answer[0]);
+                rps.channel.send(getPublicRoundMsg(rps, rps.answer, answer, winner));
+                rps = client.rps = null;
+              } else {
+                rps.answer = answer;
+              }
+            }
+
+            // Answer collected. Nothing more to do beyond what was handled in
+            // the answerCollector.on('collect')
+          });
+        });
         player.deleteDM();
       });
     }
 
+    /**
+     * Initializes a game of RPS and collects registrations. After the allotted
+     * time, select two players and start the contest.
+     */
     message.channel.send(registrationMsg).then(() => {
       // Ignore anything other than 'rps' as a message.
-      const contentFilter = response => (
+      const regFilter = response => (
         // response.author !== message.author &&
-        response.content.toLowerCase().includes('rps')
+        response.content.toLowerCase() === 'rps'
       );
-      const collector = message.channel.createMessageCollector(contentFilter, { time: registrationPeriodMs });
+      const regCollector = message.channel.createMessageCollector(regFilter, { time: registrationPeriodMs });
 
-      collector.on('collect', msg => {
+      regCollector.on('collect', msg => {
         client.logger.debug(`Responded: ${JSON.stringify(msg.author)}`);
         // Register each respondant, but ignore double entries.
         if (!(rps.entrants.includes(msg.author))) {
@@ -259,9 +319,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         }
       });
 
-      collector.on('end', collected => {
+      regCollector.on('end', collected => {
         client.logger.debug(`Total Responded: ${JSON.stringify(collected.size)}`);
         client.logger.debug(`Total Registered: ${JSON.stringify(rps.entrants)}`);
+
         if (rps.entrants.length < 2) {
           // Did not get at least two entrants.
           message.channel.send('At least two players needed. RPS canceled.');
@@ -270,13 +331,20 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
           // Select two unique entrants.
           let player1 = client.getRandomItem(rps.entrants);
           let player2 = client.getRandomItem(rps.entrants);
+
           while (player1 === player2) {
             player2 = client.getRandomItem(rps.entrants);
           }
-          message.channel.send(getStartMessage(player1, player2));
 
-          playRPSMsg(rps, player1);
-          playRPSMsg(rps, player2);
+          client.decorateUser(player1, message);
+          client.decorateUser(player2, message);
+
+          rps.selected = [player1, player2];
+          message.channel.send(getStartMsg(player1, player2));
+
+          rps.round += 1;
+          promptPlayer(1, rps, player1);
+          promptPlayer(2, rps, player2);
         }
       });
     });
@@ -303,7 +371,7 @@ exports.shutdown = async (client) => {
 };
 
 exports.conf = {
-  enabled: false,
+  enabled: true,
   guildOnly: true,
   aliases: [],
   permLevel: 'User',
@@ -313,6 +381,6 @@ exports.help = {
   name: 'rps',
   category: 'Fun',
   description: 'Starts Rock, Paper, Scissors.',
-  detailedDescription: '[BETA] Starts a game of Rock, Paper, Scissors.',
+  detailedDescription: '[BETA] Starts a game of Rock, Paper, Scissors. During an initial period of registration, anyone can type `rps` to register. Then two players will be selected at random to compete. The contest will take place via moderated DMs but can be monitored publicly in the channel where the game was started.',
   usage: 'rps',
 };
