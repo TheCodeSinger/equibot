@@ -119,7 +119,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
           'Within the next ' + registrationPeriodMs/1000 + ' seconds, type `rps` for a chance to play. ' +
           'Then two players will be randomly selected to compete.',
         footer: {
-          text: 'Note: This game is still in development. Eventually, for MONEY!'
+          text: 'Note: This game is still in development. It will be gambling game.'
         }
       }
     }
@@ -309,7 +309,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
      */
     message.channel.send(registrationMsg).then(() => {
       // Display a visible countdown.
-      // client.displayCountdown(registrationPeriodMs/1000, message.channel, 'Starting in');
+      client.displayCountdown(registrationPeriodMs/1000, message.channel, 'Starting in');
 
       // Ignore anything other than 'rps' as a message.
       const regFilter = response => (

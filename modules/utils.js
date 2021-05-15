@@ -903,35 +903,27 @@ module.exports = (client) => {
    * @param {object}  channel        Reference to the message channel.
    * @param {string}  message        Message to display.
    */
-    async function displayCountdown(totalSeconds, channel, message) {
-    /**
-     * Sleep for specified number of milliseconds.
-     *
-     * @param   {Number}   ms   Number of milliseconds to sleep.
-     * @return  {Object}   A promise to wait a number of milliseconds.
-     */
-    function sleep(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
+  async function displayCountdown(seconds, channel, msgText) {
+    const increment = 2;
+    const getText = () => {
+      return `${msgText} **${seconds}s** ...`;
+    };
 
-    const countdownMsg = await channel.send({
-      embed: {
-        color: client.config.colors.default,
-        description: message + ' ...',
+    const updateCounter = (msg) => {
+      msg.edit(getText());
+      seconds = seconds - increment;
+
+      if (seconds <= 0) {
+        return countdownMsg.delete();
       }
-    });
-    let seconds = totalSeconds;
-    while (seconds > 0) {
-      await sleep(850);
-      await countdownMsg.edit({
-        embed: {
-          color: client.config.colors.default,
-          description: `${message} ${seconds}`,
-        }
-      });
-      seconds--;
-    }
-    await countdownMsg.delete();
+
+      setTimeout(() => {
+        updateCounter(msg);
+      }, 1000 * increment);
+    };
+
+    const countdownMsg = await channel.send(getText());
+    updateCounter(countdownMsg);
   }
 
 };
