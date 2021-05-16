@@ -27,7 +27,12 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     var formatted_desc = ''
 
     // process each trader_urls as a promise to get the api response
-    const results = await Promise.all(trader_urls.map((url) => fetch(url).then((r) => r.json()))).catch((error) => {});
+    const results = await Promise.all(trader_urls.map((url) => fetch(url).then((r) => {
+      client.logger.debug(`Response from ${url}: ${JSON.stringify(r)}`);
+      return r.json();
+    }))).catch((error) => {
+      client.logger.error(`Error fetching trader info for ${url}: ${JSON.stringify(error)}`);
+    });
     if(results == undefined) {
       // if the promise fails (most commonly an api error, note it and move stop processing
       return message.channel.send({
