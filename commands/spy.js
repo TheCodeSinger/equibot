@@ -41,8 +41,11 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
           {
             name: 'Total',
             value: stats.total.toLocaleString() || 'n/a',
-          }
-        ]
+          },
+        ],
+        footer: {
+          text: `Last spied: ${stats.difference}`,
+        }
       }
     }
   }
