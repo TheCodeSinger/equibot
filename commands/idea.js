@@ -57,6 +57,7 @@ const moment = require("moment");
       // 'Giving a shit really doesn\'t go with my outfit today.',
       'You smell like drama and a headache, please go away.',
       'Due to budgetary restraints I can only please one person per day. Today is not your day; tomorrow doesn\'t look good either.',
+      'Life is full of disappointments. I just added you to my list.',
     ];
 
     /**

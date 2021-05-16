@@ -30,6 +30,12 @@ module.exports = (client, message) => {
       return client.commands.get('quote').run(client, message, [command], level);
     }
 
+    if (['clear', 'verify', 'verifyall', 'checkfactions', 'assign', 'revive',
+      'retal', 'loot', 'oc', 'ocready'].includes(cmd)) {
+      // Ignore common YATA commands.
+      return;
+    }
+
     // Unknown command. Reply with a snarky retort.
     function getRetort(cmd) {
       const prefix = client.config.prefix;
@@ -42,7 +48,9 @@ module.exports = (client, message) => {
       return client.getRandomItem(retorts);
     }
 
+    // Issue a snarky retort for unrecognized commands.
     return message.reply(getRetort(command));
+
     // OR Exit silently. Don't make a fuss.
     // return;
   }

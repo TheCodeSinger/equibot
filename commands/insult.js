@@ -43,6 +43,8 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       insulted + ', your teeth are so bad you could eat an apple through a fence.',
       insulted + ', I thought of you today. It reminded me to take out the trash.',
       insulted + ', remember that time you said a bunch of stuff I don\'t care about? It was now.',
+      insulted + ', your birth certificate is actually a letter of apology from the condom factory.',
+      insulted + ', you remind me of a penny: two-faced and not worth much.',
     ];
 
     message.channel.send(client.getRandomItem(insults));
