@@ -1,6 +1,9 @@
 /**
- * TODO: This command is not complete. Needs more thought about what it should
- * even do.
+ * Displays last known spy report for specified player. Draws from TornStats.
+ *
+ * Planned Enhancements:
+ *   1. Disallow in public channels.
+ *
  */
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   const spyLink = `https://www.tornstats.com/api.php?key=${client.auth.apiKey}&action=spy&target=`;
