@@ -31,8 +31,9 @@ module.exports = (client, message) => {
     }
 
     if (['clear', 'verify', 'verifyall', 'checkfactions', 'assign', 'revive',
-      'retal', 'loot', 'oc', 'ocready'].includes(cmd)) {
+      'retal', 'loot', 'oc', 'ocready'].includes(command)) {
       // Ignore common YATA commands.
+      client.logger.cmd(`Ignored unrecognized command: ${command}`);
       return;
     }
 
