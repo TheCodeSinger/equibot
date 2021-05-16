@@ -42,7 +42,7 @@ module.exports = (client, message) => {
       const prefix = client.config.prefix;
       const retorts = [
         `Sorry. I don't know what your mean by \`${prefix}${cmd}\``,
-        `Go \`${prefix}${cmd}\` yourself.`,
+        `Go \`${prefix}${cmd}\` yourself!`,
         `That may work on other girlbots, but not me.`,
       ];
 
