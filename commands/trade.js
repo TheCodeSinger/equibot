@@ -50,11 +50,12 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
             description : 'API returned an expected error. Try again in a few minutes.',
           }
         });
-        return true
+        return true;
       }
 
       trader = Object.keys(result)[0]
       items = result[trader];
+      // client.logger.debug(`\n\n${trader}'s Items: ${JSON.stringify(items)}`);
       if (item_name in items) {
           item = items[item_name];
 
