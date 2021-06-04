@@ -28,7 +28,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     } else {
       message.channel.send(client.getRandomItem(errorMessages));
     }
-    message.delete();
+    // message.delete();
   } catch (e) {
     client.logger.error(`Error executing 'trout' command: ${e}`);
   }
