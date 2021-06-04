@@ -6,6 +6,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
     const errorMessages = [
       author + ' looks around for ' + name + ' to slap with a trout but finds no one by that name.',
+      author + ' looks around for ' + name + ' to slap with a trout but they must have slipped away.',
     ];
 
     const missMessages = [
@@ -19,6 +20,8 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       author + ' swings a trout and slaps ' + name + ' upside the head!',
       author + ' slaps ' + name + ' across the face with a trout!',
       author + ' slaps ' + name + ' in the gut with a trout! LOW BLOW!',
+      author + ' caps ' + name + ' across the knees with a trout!',
+      'With a two-handed grip, ' + author + ' wallops ' + name + ' across the back of the head with a trout!',
     ];
 
     if (mentioned) {
