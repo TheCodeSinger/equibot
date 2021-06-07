@@ -34,7 +34,7 @@ client.stubData();
 // Load into memory various Torn City data.
 client.loadTornData();
 
-// Restart saved cron jobs.
+// Restart member custom cron jobs.
 client.restartCronJobs();
 
 // Log the bot into the Discord client.

@@ -33,7 +33,6 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       Object.keys(allStockWatchers).forEach(id => {
         const watchers = client.customCronJobs.get('stocks', id) || {};
         const memberWatcherInfo = {};
-        client.logger.debug(`memberName: ${JSON.stringify(message.guild.member(id))}`);
         const memberName = message.guild ? message.guild.member(id).nickname : id;
         for (const stock in watchers) {
           memberWatcherInfo[memberName] = memberWatcherInfo[memberName] || [];
@@ -42,7 +41,6 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         client.logger.debug(`memberWatcherInfo: ${JSON.stringify(memberWatcherInfo)}`);
         auditOutput.push(memberWatcherInfo);
       });
-      client.logger.debug(`stockAudit: ${JSON.stringify(auditOutput)}`);
       return message.channel.send(`${JSON.stringify(auditOutput)}`);
     }
 
@@ -107,36 +105,39 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     if (args[0].toLowerCase() === 'clear') {
       const stockId = symbolMap[(args[1] || '').toUpperCase()];
       const cronJobWatchers = client.systemCronJobs[memberId] || {};
+      const watcherConfigs = client.customCronJobs.get('stocks', memberId);
+      //client.logger.debug(`cronJobWatchers: ${JSON.stringify(cronJobWatchers)}`);
+      //client.logger.debug(`watcherConfigs: ${JSON.stringify(watcherConfigs)}`);
 
       if (!args[1]) {
         // Show the available commands.
         return message.reply('You need to specify whether to clear all or a specific symbol.');
       } else if (args[1] === 'all') {
+        if (!watcherConfigs) {
+          return author.send('There are no watchers to clear.');
+        }
+
         // Stop all the jobs.
-        Object.keys(cronJobWatchers).forEach(function(key) {
-          client.logger.debug(`Stopping ${symbolMap[key]}`);
-          cronJobWatchers[key].stop();
+        Object.keys(watcherConfigs).forEach(function(key) {
+          cronJobWatchers[key]?.stop();
+          client.logger.debug(`${symbolMap[key]} (${key}) job stopped`);
         });
-
-        // Delete all the jobs.
-        client.logger.debug(`Deleting all jobs`);
-        client.systemCronJobs[memberId] = undefined;
-        client.customCronJobs.remove('stocks', memberId);
-
+        client.customCronJobs.set('stocks', {}, memberId);
+        client.logger.debug(`All watcher configs removed`);
         return author.send('Cleared all of your stocks watchers.');
       } else if (stockId) {
-        if (!cronJobWatchers[stockId]) {
+        if (!watcherConfigs[stockId]) {
           return author.send('I was not watching that stock.');
         }
 
         // Stop the job.
-        client.logger.debug(`Stopping ${symbolMap[stockId]}`);
-        cronJobWatchers[stockId].stop();
+        cronJobWatchers[stockId]?.stop();
+        client.logger.debug(`${symbolMap[stockId]} (${stockId}) job stopped`);
 
         // Delete the job.
-        client.logger.debug(`Deleting ${symbolMap[stockId]}`);
         delete client.systemCronJobs[memberId][stockId];
-        client.customCronJobs.delete('stocks', memberId + '[' + stockId + ']');
+        client.customCronJobs.set('stocks', undefined, memberId + '[' + stockId + ']');
+        client.logger.debug(`${symbolMap[stockId]} (${stockId}) config removed`);
 
         return author.send(`Cleared your ${args[1].toUpperCase()} watcher.`);
       } else {

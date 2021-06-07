@@ -324,7 +324,10 @@ module.exports = (client) => {
     client.systemCronJobs.fetchItems.start();
 
     // Run every day at 1700 server time.
-    client.systemCronJobs.fetchStocks = new CronJob('0 0 17 * * *', fetchTornStocksData);
+    // client.systemCronJobs.fetchStocks = new CronJob('0 0 17 * * *', fetchTornStocksData);
+    // OR
+    // Run every 1 minute.
+    client.systemCronJobs.fetchStocks = new CronJob('*/60 * * * * *', fetchTornStocksData);
     client.systemCronJobs.fetchStocks.start();
 
     // Fetch once right now.
@@ -830,7 +833,6 @@ module.exports = (client) => {
 
         client.logger.debug(`checkStockPrice args: ${memberId} ${stockId} ${targetPrice} ${type}`);
         client.logger.debug(`${symbols[stockId]} data: ${JSON.stringify(stock)}`);
-        client.logger.debug(`Member: ${JSON.stringify(member)}`);
 
         if (type === 'buy') {
           if (current < target) {
@@ -854,6 +856,7 @@ module.exports = (client) => {
           } else if (current < (target * 1.1)) {
             // Stock is within 10% of target price.
             member.send(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) is near your BUY price of $${targetPrice}`);
+            client.logger.debug(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) is near, but still above ${member.tag}'s buy price of $${targetPrice}`);
           } else {
             client.logger.debug(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) still above ${member.tag}'s buy price of $${targetPrice}`);
             // member.send(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) still above your BUY price of $${targetPrice}`);
@@ -873,7 +876,8 @@ module.exports = (client) => {
             client.customCronJobs.remove('stocks', memberId[stockId]);
           } else if (current > (target * 1.1)) {
             // Stock is within 10% of target price.
-            member.send(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) is near your SELL price of $${targetPrice}`);
+            member.send(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) is *near* your SELL price of $${targetPrice}`);
+            client.logger.debug(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) is near, but still below ${member.tag}'s SELL price of $${targetPrice}`);
           } else {
             client.logger.debug(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) still below ${member.tag}'s SELL price of $${targetPrice}`);
             //member.send(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) still below your SELL price of $${targetPrice}`);
@@ -887,10 +891,10 @@ module.exports = (client) => {
       }
 
       // Recheck the watchers every day at 1800 TCT.
-      return new CronJob('0 0 18 * * *', checkStockPrice);
+      // return new CronJob('0 0 18 * * *', checkStockPrice);
 
-      // DEBUG: check every 15 seconds.
-      // return new CronJob('*/45 * * * * *', checkStockPrice);
+      // Day trading mode: check every 60 seconds.
+      return new CronJob('*/60 * * * * *', checkStockPrice);
     } catch (e) {
       client.logger.error(`Error executing 'createStockWatcher': ${e}`);
     }
