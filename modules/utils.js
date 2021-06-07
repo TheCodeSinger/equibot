@@ -855,7 +855,7 @@ module.exports = (client) => {
             client.logger.debug(`completed stocks buy check`);
           } else if (current < (target * 1.1)) {
             // Stock is within 10% of target price.
-            member.send(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) is near your BUY price of $${targetPrice}`);
+            // member.send(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) is near your BUY price of $${targetPrice}`);
             client.logger.debug(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) is near, but still above ${member.tag}'s buy price of $${targetPrice}`);
           } else {
             client.logger.debug(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) still above ${member.tag}'s buy price of $${targetPrice}`);
@@ -876,7 +876,7 @@ module.exports = (client) => {
             client.customCronJobs.remove('stocks', memberId[stockId]);
           } else if (current > (target * 1.1)) {
             // Stock is within 10% of target price.
-            member.send(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) is *near* your SELL price of $${targetPrice}`);
+            // member.send(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) is *near* your SELL price of $${targetPrice}`);
             client.logger.debug(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) is near, but still below ${member.tag}'s SELL price of $${targetPrice}`);
           } else {
             client.logger.debug(`Stock Watcher: ${stock.acronym} ($${stock.current_price}) still below ${member.tag}'s SELL price of $${targetPrice}`);
