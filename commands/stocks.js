@@ -25,8 +25,22 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   const author = message.author;
 
   try {
-    // List all stock watchers. "Bot Admin" role only.
+    // Audit tools. "Bot Admin" role only.
     if (isBotAdmin && args[0] && args[0].toLowerCase() === 'audit') {
+
+      if (args[1]) {
+        // Parse the second word after `audit`.
+        if (args[1].toLowerCase() === 'reset') {
+          // `!stocks audit reset` will delete all stock watcher configs.
+          client.customCronJobs.clear('stocks');
+          client.customCronJobs.ensure('stocks', {});
+          return message.channel.send('All stocks data has been cleared and reset.');
+        } else {
+          return message.channel.send(`I don't recognize the command \`!stocks audit ${args[1].toLowerCase()}\`. You can \`!stocks audit\` to list all active watchers or \`!stocks audit reset\` to clear all stocks data.`);
+        }
+      }
+
+      // List all stock watchers.
       const allStockWatchers = client.customCronJobs.get('stocks');
       client.logger.debug(`allStockWatchers: ${JSON.stringify(allStockWatchers)}`);
       const auditOutput = [];
@@ -54,7 +68,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         embed: {
           color: config.colors.default,
           title: 'Equilibrium Stock Market Tools',
-          description: 'See an output of current stock prices and which stocks you are watching. Set BUY/SELL target prices and be notified when those thresholds are exceeded.',
+          description: 'See an output of current stock prices and which stocks you are watching. Set BUY/SELL target prices and be notified when those thresholds are exceeded.\n\nNOTE: At this time, the tool is useful for day trading only because when the bot is restarted after an update, it will lose all your watchers.',
           fields: [
             {
               name: 'Commands:',

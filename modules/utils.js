@@ -777,21 +777,26 @@ module.exports = (client) => {
    * Restarts all saved cron jobs.
    */
   function restartCronJobs() {
-    client.customCronJobs = new Enmap({name: 'customCronJobs'});
     client.logger.debug('Restarting Custom Cron Jobs');
+    client.customCronJobs = new Enmap({name: 'customCronJobs'});
+
+    // TEMPORARY: Do not persist watchers across reboots.
+    // Need to figure out how to identify the Discord user so the watcher
+    // can send them messages.
+    client.customCronJobs.clear('stocks');
 
     // Stub the personal watchers object, a hash by discord id.
     client.customCronJobs.defer.then(() => {
       const stockWatchers = client.customCronJobs.ensure('stocks', {});
 
       Object.keys(stockWatchers).forEach(function forEachMember(memberId) {
-        client.logger.debug(`memberId: ${memberId}, ${JSON.stringify(stockWatchers[memberId])}`);
+        client.logger.debug(`For memberId: ${memberId}, ${JSON.stringify(stockWatchers[memberId])}`);
 
         // Stub cron job hash for this user.
         client.systemCronJobs[memberId] = client.systemCronJobs[memberId] || {};
 
         const watcherParamsByStockId = stockWatchers[memberId];
-        Object.keys(watcherParamsByStockId).forEach(function forEachMember(stockId) {
+        Object.keys(watcherParamsByStockId).forEach(function forEachStockId(stockId) {
           const watcherParams = watcherParamsByStockId[stockId];
           const watcher = client.createStockWatcher(
             watcherParams[0],
@@ -821,6 +826,7 @@ module.exports = (client) => {
     try {
       client.logger.debug(`createPriceWatch args: ${memberId} ${stockId} ${targetPrice} ${type}`);
 
+      //client.logger.debug(`client users: ${JSON.stringify(client.users)}`);
       const member = client.users.resolve(memberId);
 
       function checkStockPrice() {
