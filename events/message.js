@@ -1,3 +1,5 @@
+const config = require("../config");
+
 module.exports = (client, message) => {
   // Ignore all bots, unless you enjoy that sort of thing.
   if (message.author.bot) { return; }
@@ -30,8 +32,7 @@ module.exports = (client, message) => {
       return client.commands.get('quote').run(client, message, [command], level);
     }
 
-    if (['clear', 'verify', 'verifyall', 'checkfactions', 'assign', 'revive',
-      'retal', 'loot', 'oc', 'ocready'].includes(command)) {
+    if (client.config.commandIgnoreList.includes(command)) {
       // Ignore common YATA commands.
       client.logger.cmd(`Ignored unrecognized command: ${command}`);
       return;
