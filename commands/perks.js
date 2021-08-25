@@ -95,10 +95,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
           selectedApiKeys.push(allApiKeys['eq2']);
           break;
 
-        case 'eq3':
-        case factionList['eq3'].toLowerCase():
-          selectedApiKeys.push(allApiKeys['eq3']);
-          break;
+        // case 'eq3':
+        // case factionList['eq3'].toLowerCase():
+        //   selectedApiKeys.push(allApiKeys['eq3']);
+        //   break;
 
         case 'all':
           Object.keys(allApiKeys).forEach(apiKey => selectedApiKeys.push(allApiKeys[apiKey]));
@@ -118,8 +118,8 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
           case 'Equilibrate':
             return selectedApiKeys.push(allApiKeys['eq2']);
 
-          case 'Equilibrium: Foundation':
-            return selectedApiKeys.push(allApiKeys['eq3']);
+          // case 'Equilibrium: Foundation':
+          //   return selectedApiKeys.push(allApiKeys['eq3']);
 
           default:
             // Faction not recognized.
