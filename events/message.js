@@ -34,8 +34,8 @@ module.exports = (client, message) => {
 
     if (client.config.commandIgnoreList.includes(command)) {
       // Ignore common YATA commands.
-      client.logger.cmd(`Ignored unrecognized command: ${command}`);
-      return;
+      client.logger.cmd(`Ignored command: ${command}`);
+      return message.reply(`That may work on other girlbots, but not me. (Try \`?${command}\` instead)`);
     }
 
     // Unknown command. Reply with a snarky retort.
