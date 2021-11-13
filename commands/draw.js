@@ -94,12 +94,14 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
        *   You sent 10x Xanax to Peterpan.
        *   You sent some Xanax to Peterpan. // This means ONE.
        *   You sent 8x Donator Pack to Peterpan with the message: Winner!
+       *   01:54:20 - 13/11/21 You sent 2x Erotic DVD to ScowlingGoblin with the message: Winner
        */
       const scrubbedMsg = msg.replace(/\s/g, ' ');
-      let msgParts = scrubbedMsg.match(/You sent (.*?)( to )(.*)/i);
+      const regex = /.*You sent (.*?)( to )(.*)/;
+      let msgParts = scrubbedMsg.match(regex);
       if (!msgParts) {
         // Try again in case someone hand wrote the message differently.
-        msgParts = msg.match(/You sent (.*)\.?/i);
+        msgParts = msg.match(/You sent (.*)\.?/);
       }
       client.logger.debug(`msgParts: ${JSON.stringify(msgParts)}`);
 

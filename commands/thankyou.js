@@ -15,6 +15,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
     const starterMessages = [
       ':clap: ' + message.author.tornName + ' says, "A big round of applause for me. Thank you!"',
+      ':clap: ' + message.author.tornName + ' says, "Yes, that was generous of me, wasn\'t it?"',
     ]
 
     const winnerMessages = [

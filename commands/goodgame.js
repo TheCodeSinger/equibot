@@ -18,6 +18,8 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
     const winnerMessages = [
       ':money_mouth: ' + message.author.tornName + ' shouts, "I WON!! WOOHOO!"',
+      ':money_mouth: ' + message.author.tornName + ' shouts, "ME!!!"',
+      ':money_mouth: ' + message.author.tornName + ' shouts, "Yay, me!"',
     ]
 
     const loserMessages = [

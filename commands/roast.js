@@ -26,8 +26,8 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     ]
 
     const loserMessages = [
-      'Weird ok but flex',
-      'How many times did you drop your dad on his head when you were a child?',
+      lotto.winner.toString() + ', Weird flex but ok',
+      lotto.winner.toString() + ', How many times did you drop your dad on his head when you were a child?',
       lotto.winner.toString() + ', you sir are a buffoon.\nYou do know we don\'t all cheat when playing this game?\nYou bragging about winning a lotto does not sit well with most of us.',
     ];
 
