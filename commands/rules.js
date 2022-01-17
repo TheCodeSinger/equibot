@@ -23,27 +23,25 @@
           {
             name: 'BASIC REQUIREMENTS',
             value: '1. Log in daily\n' +
-                   '2. Maintain Subscriber/Donator Status\n' +
-                   '3. Armory Xanax and Refills are for Chains only\n',
-          },
-          {
-            name: 'WITHIN THE FIRST 30 DAYS',
-            value: '4. Attain level 15\n' +
+                   '2. Live on a Private Island\n' +
+                   '3. Maintain Subscriber/Donator Status\n' +
+                   '4. Armory Xanax and Refills are for Chains only\n' +
                    '5. Join Torn Stats, YATA, and our Discord server\n',
           },
           {
-            name: 'AFTER LEVEL 15',
-            value: '6. Share a Private Island\n' +
-                   '7. Be in Torn when OC is ready\n'+
-                   '8. Contribute 1% hits to chains\n',
+            name: 'PARTICIPATION',
+            value: '6. Be in Torn when OC is ready\n' +
+                   '7. Contribute 1% hits to chains\n',
           },
           {
-            name: 'AFTER 60 DAYS',
-            value: '9. Consume 1+ Xanax per day.\n',
+            name: 'PERSONAL GROWTH',
+            value: '8. Train at least 500 energy per day\n' +
+                   '9. Consume 2+ Xanax (or LSD) per day.\n',
+
           },
         ],
         footer: {
-          text: 'Last updated: May 12, 2021',
+          text: 'Last updated: Jan 16, 2022',
         }
       }
     };
