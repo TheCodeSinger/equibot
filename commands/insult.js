@@ -48,7 +48,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     ];
 
     message.channel.send(client.getRandomItem(insults));
-    // message.delete();
+    message.delete();
   } catch (e) {
     client.logger.error(`Error executing 'insult' command: ${e}`);
   }
