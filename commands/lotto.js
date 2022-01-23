@@ -71,7 +71,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     client.decorateUser(lotto.starter, message);
 
     const output = {
-      content: 'New @Lotto',
+      content: '@Lotto started',
       embed: {
         color: config.colors.default,
         // author: {
