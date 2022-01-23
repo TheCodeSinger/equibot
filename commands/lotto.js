@@ -71,7 +71,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     client.decorateUser(lotto.starter, message);
 
     const output = {
-      content: '@Lotto started',
+      content: 'New <@934947272419061812>',
       embed: {
         color: config.colors.default,
         // author: {
@@ -91,7 +91,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
           },
           {
             name: 'Notifications:',
-            value: 'Grant yourself the `lotto` role in #role-assign in order to be notified when a lotto is started.'
+            value: 'Grant yourself the `lotto` role in <#863805186518810624> in order to be notified when a lotto is started.'
           }
         ],
       }
