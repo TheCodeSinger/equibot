@@ -71,12 +71,13 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     client.decorateUser(lotto.starter, message);
 
     const output = {
+      content: 'New @Lotto',
       embed: {
         color: config.colors.default,
         // author: {
         //   name: 'New lotto started!'
         // },
-        title: lotto.starter.tornName + ' started a new @lotto for *' + lotto.prize + '*',
+        title: lotto.starter.tornName + ' started a new lotto for *' + lotto.prize + '*',
         fields: [
           {
             name: 'Starter commands:',
