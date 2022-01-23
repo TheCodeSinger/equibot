@@ -76,7 +76,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         // author: {
         //   name: 'New lotto started!'
         // },
-        title: lotto.starter.tornName + ' started a new lotto for *' + lotto.prize + '*',
+        title: lotto.starter.tornName + ' started a new @lotto for *' + lotto.prize + '*',
         fields: [
           {
             name: 'Starter commands:',
@@ -87,8 +87,12 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
           {
             name: 'Player commands:',
             value: '`' + config.prefix + 'j` Join'
+          },
+          {
+            name: 'Notifications:',
+            value: 'Grant yourself the `lotto` role in #role-assign in order to be notified when a lotto is started.'
           }
-        ]
+        ],
       }
     };
     message.channel.send(output);
