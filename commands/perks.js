@@ -115,11 +115,8 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
           case 'Equilibrium':
             return selectedApiKeys.push(allApiKeys['eq1']);
 
-          case 'Equilibrate':
+          case 'Ministry of Mayhem':
             return selectedApiKeys.push(allApiKeys['eq2']);
-
-          // case 'Equilibrium: Foundation':
-          //   return selectedApiKeys.push(allApiKeys['eq3']);
 
           default:
             // Faction not recognized.
