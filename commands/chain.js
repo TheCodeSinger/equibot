@@ -13,12 +13,12 @@ const CronJob = require('cron').CronJob;
  * @example   !chain
  */
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
-  if (args.length < 2) {
+  if (!args.length) {
     return message.reply('Use the format `!chain start eq1`');
   }
 
   const action = (args[0]).toLowerCase() || '';
-  const faction = (args[1]).toLowerCase() || '';
+  const faction = (args[1] || 'eq1').toLowerCase() || '';
 
   const apiKey = client.auth.factionApiKeys[faction] || client.auth.apiKey;
   const chainApiEndpoint = 'https://api.torn.com/faction/?selections=chain';
