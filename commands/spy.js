@@ -78,5 +78,5 @@ exports.help = {
   name: 'spy',
   category: 'Torn',
   description: 'Prints last known spy report.',
-  usage: 'spy <player name>',
+  usage: 'spy <player name or id>',
 };
