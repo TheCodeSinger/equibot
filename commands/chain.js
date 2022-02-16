@@ -70,8 +70,20 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
     // Active chain.
     if (chain.current) {
-      const content = chain.timeout <= 90 ?
-        `@here ${factionTag} SAVE THE CHAIN: ${chain.timeout}s left!` : `${factionTag} Chain Status`;
+      let content = '';
+      switch(true) {
+        case chain.timeout <= 60:
+          content = `@everyone ${factionTag} SAVE THE CHAIN: ${chain.timeout}s left!`;
+          break;
+
+        case chain.timeout <= 90:
+          content = `@here ${factionTag} SAVE THE CHAIN: ${chain.timeout}s left!`;
+          break;
+
+        default:
+          content = `${factionTag} Chain Status`;
+      }
+
       return {
         content: content,
         embed: {
