@@ -27,7 +27,7 @@
     "enmap": "^5.2.4",
     "inquirer": "^7.1.0",
     "isomorphic-fetch": "^3.0.0",
-    "moment": "^2.25.3",
+    "moment": "^2.29.4",
     "moment-duration-format": "^2.3.2",
     "netmask": ">=2.0.1",
     "pm2": "^4.5.5"
