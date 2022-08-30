@@ -21,7 +21,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   const faction = (args[1] || 'eq1').toLowerCase() || '';
 
   // Fall back to @here so still works if a new faction hasn't been properly set up.
-  const factionRoleId = client.config.factionRoleNames[faction] || 'here';
+  const factionRoleId = client.config.factionRoleIds[faction] || 'here';
   const factionDisplayName = client.config.factionList[faction] || '';
 
   const apiKey = client.auth.factionApiKeys[faction] || client.auth.apiKey;
