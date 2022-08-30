@@ -20,6 +20,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   const action = (args[0]).toLowerCase() || '';
   const faction = (args[1] || 'eq1').toLowerCase() || '';
 
+  // Fall back to @here so still works if a new faction hasn't been properly set up.
+  const factionRoleId = client.config.factionRoleNames[faction] || 'here';
+  const factionDisplayName = client.config.factionList[faction] || '';
+
   const apiKey = client.auth.factionApiKeys[faction] || client.auth.apiKey;
   const chainApiEndpoint = 'https://api.torn.com/faction/?selections=chain';
   const chainApiLink = chainApiEndpoint + '&key=' + apiKey;
@@ -31,17 +35,15 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
    * @return  {Object}   Embed object for display chain status.
    */
   function chainEmbed(chain, faction) {
-    const factionTag = (faction || '').toUpperCase();
-
     // Completed chain is in cool down.
     if (chain.cooldown) {
       client.chain[faction].stop();
       delete client.chain[faction];
       const milestones = [10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 25000, 50000, 100000];
       const completed = milestones.includes(chain.current);
-      const title = completed ? `${factionTag} Chain Completed!` : `${factionTag} Chain Broken!`;
+      const title = completed ? `${factionDisplayName} Chain Completed!` : `${factionDisplayName} Chain Broken!`;
       return {
-        content: `@here ${title}`,
+        content: `<@&${factionRoleId}> ${title}`,
         embed: {
           color: client.config.colors.default,
           author: {
@@ -73,15 +75,15 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       let content = '';
       switch(true) {
         case chain.timeout <= 60:
-          content = `@everyone ${factionTag} SAVE THE CHAIN: ${chain.timeout}s left!`;
+          content = `<@&${factionRoleId}> SAVE THE CHAIN: ${chain.timeout}s left!`;
           break;
 
         case chain.timeout <= 90:
-          content = `@here ${factionTag} SAVE THE CHAIN: ${chain.timeout}s left!`;
+          content = `<@&${factionRoleId}> SAVE THE CHAIN: ${chain.timeout}s left!`;
           break;
 
         default:
-          content = `${factionTag} Chain Status`;
+          content = `${factionDisplayName} Chain Status`;
       }
 
       return {
@@ -89,7 +91,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         embed: {
           color: client.config.colors.default,
           author: {
-            name: `${faction} Chain Active`
+            name: `${factionDisplayName} Chain Active`
           },
           fields: [
             {
@@ -119,7 +121,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       embed: {
         color: client.config.colors.default,
         author: {
-          name: `No Active Chain for ${faction}`
+          name: `No Active Chain for ${factionDisplayName}`
         },
         footer: {
           text: 'You should start one! Announce on chat that you want to start a mini-chain.'
@@ -152,8 +154,8 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
   // Main
   try {
-    if (!['eq1', 'eq2', 'eq3'].includes(faction)) {
-      return message.channel.send(`You must specify which faction to watch, either eq1 or eq2.`);
+    if (!['eq1', 'eq2', 'eq3', 'eq4'].includes(faction)) {
+      return message.channel.send(`You must specify which faction to watch: eq1, eq2, etc.`);
     }
 
     if (action === 'stop') {
@@ -165,8 +167,8 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       // Watcher is active. Cancel it.
       client.chain[faction].stop();
       delete client.chain[faction];
-      client.logger.log(`Stopped chain watcher for ${faction}`);
-      return message.channel.send(`Stopped chain watcher for ${faction}`);
+      client.logger.log(`Stopped chain watcher for ${factionDisplayName}`);
+      return message.channel.send(`Stopped chain watcher for ${factionDisplayName}`);
     }
 
     if (action === 'start') {
@@ -179,8 +181,8 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       client.chain[faction] = new CronJob('*/30 * * * * *', fetchChainData);;
       client.chain[faction].start();
       const channelName = message.channel.name;
-      client.logger.log(`Chain watcher started for ${faction} ${channelName ? 'in #' + channelName : ''}`);
-      return message.channel.send(`Chain watcher started for ${faction}`);
+      client.logger.log(`Chain watcher started for ${factionDisplayName} ${channelName ? 'in #' + channelName : ''}`);
+      return message.channel.send(`Chain watcher started for ${factionDisplayName}`);
     }
 
     if (action === 'status') {
@@ -211,5 +213,5 @@ exports.help = {
   category: 'Faction',
   description: 'Watches chain and displays status.',
   detailedDescription: 'Watches chain and displays status whenever the timer drops below two minutes.',
-  usage: 'chain start|stop|status eq1|eq2',
+  usage: 'chain start|stop|status eq1|eq2|eq3',
 };
