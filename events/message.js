@@ -51,6 +51,7 @@ module.exports = (client, message) => {
     }
 
     // Issue a snarky retort for unrecognized commands.
+    client.logger.cmd(`Unknown command: ${command}`);
     return message.reply(getRetort(command));
 
     // OR Exit silently. Don't make a fuss.
