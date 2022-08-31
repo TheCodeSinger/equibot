@@ -11,7 +11,11 @@
     const channel = message.channel;
 
     if (client.config.protectedChannels.includes(channel.id)) {
-      return channel.send('This command is reserved for someone special... not you.');
+      return message
+        .reply('Clear command disabled in this channel')
+        .then(repliedMessage => {
+          setTimeout(() => repliedMessage.delete(), 3000);
+        })
     }
 
     // Max 100 lines to bulk delete
