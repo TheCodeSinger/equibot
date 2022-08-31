@@ -111,19 +111,11 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       // No faction specified. Determine author's faction and display only those perks.
       function getFactionApiKey(role) {
         client.logger.debug(`getFactionApiKey(role): ${JSON.stringify(role.name)}`);
-        switch(true) {
-          case role.name.includes('Equilibrium'):
-            return selectedApiKeys.push(allApiKeys['eq1']);
-
-          case role.name.includes('Ministry of Mayhem'):
-            return selectedApiKeys.push(allApiKeys['eq2']);
-
-          case role.name.includes('Mandalors'):
-            return selectedApiKeys.push(allApiKeys['eq3']);
-
-          default:
-            // Faction not recognized.
+        const factionTag = factionList[role.name];
+        if (!factionTag || !allApiKeys[factionTag]) {
+          return;
         }
+        return selectedApiKeys.push(allApiKeys[factionTag]);
       }
       message.member.roles.cache.some(getFactionApiKey);
     }
