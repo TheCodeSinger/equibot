@@ -20,6 +20,8 @@
 
     // Max 100 lines to bulk delete
     const numLines = args[0] ?? 99;
+    client.logger.debug(`Will try to delete ${numLines} messages`);
+
 
     /**
      * Silly use case to delete zero messgaes, but let's handle it appropriately.
@@ -99,9 +101,9 @@
     }
 
     channel.messages
-      .fetch({ limit: numLines + 1 })
-      .then((messages) => {
-        const deletableMessages = messages.filter(message => !message.pinned);
+      .fetch({ limit: parseInt(numLines) + 1 })
+      .then((msgs) => {
+        const deletableMessages = msgs.filter(message => !message.pinned);
         client.logger.log(`Number of messages to retrieved for delete: ${deletableMessages.size}`);
         deleteBulk(deletableMessages);
       }).catch(error => {
