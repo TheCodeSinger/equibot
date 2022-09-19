@@ -281,6 +281,8 @@ module.exports = (client) => {
     }
 
     function fetchTornStocksData() {
+      // DISABLED
+      return;
       const apiKey = client.auth.apiKey;
       const stocksApiEndpoint = 'https://api.torn.com/torn/?selections=stocks';
       const stocksApiLink = stocksApiEndpoint + '&key=' + apiKey;
