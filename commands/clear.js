@@ -14,7 +14,7 @@
       return message
         .reply('Clear command disabled in this channel')
         .then(repliedMessage => {
-          setTimeout(() => repliedMessage.delete(), 3000);
+          setTimeout(() => repliedMessage.delete(), 5000);
         })
     }
 
@@ -108,8 +108,8 @@
       .then((msgs) => {
         const deletableMessages = msgs.filter(message => !message.pinned);
         client.logger.log(`Number of messages to retrieved for delete: ${deletableMessages.size}`);
-        if (numLines + 1 > deletableMessages.size) {
-          showFeedback(`Skipped ${numLines + 1 - deletableMessages.size} pinned message(s)`);
+        if (msgs.size > deletableMessages.size) {
+          showFeedback(`Skipped ${msgs.size - deletableMessages.size} pinned message(s)`);
         }
         deleteBulk(deletableMessages);
       }).catch(error => {
