@@ -19,7 +19,7 @@
     }
 
     // Max 100 lines to bulk delete
-    const numLines = args[0] ?? 99;
+    const numLines = parseInt(args[0] ?? 99);
     client.logger.debug(`Will try to delete ${numLines} messages`);
 
 
@@ -37,7 +37,7 @@
      * @param {Number} numLines
      */
     function deleteIncrementally(numLines) {
-      client.logger.debug('method: deleteIncrementally');
+      client.logger.debug(`method: deleteIncrementally ${numLines} lines`);
       let countDeleted = 0;
       channel.messages
         .fetch({ limit: numLines })
@@ -61,17 +61,20 @@
      * @param {Number} numLines
      */
     function deleteBulk(messages) {
-      client.logger.debug('method: deleteBulk');
+      client.logger.debug(`method: deleteBulk ${messages.size - 1} lines`);
       channel
         .bulkDelete(messages)
         .then((response) => {
-          showFeedback(messages.size - 1);
+          showFeedback(`Deleted ${messages.size - 1} messages`);
         })
         .catch(error => {
           errorHandler(error);
           if (error.code == 50034) {
-            client.logger.log('Switching to incremental delete because messages are older than 14 days');
-            return deleteIncrementally(numLines + 1);
+            client.logger.log('Aborting delete because at least one message is older than 14 days');
+            message.reply('Aborting delete because at least one message is older than 14 days');
+            // Danger, this next command seemingly started deleting continuously.
+            // client.logger.log('Switching to incremental delete because messages are older than 14 days');
+            // return deleteIncrementally(messages.size);
           }
         });
     }
@@ -80,12 +83,12 @@
      * Give feedback but delete it after a few seconds.
      * @param {Number} numLines
      */
-    function showFeedback(numLines) {
+    function showFeedback(msg) {
       client.logger.debug('method: showFeedback');
       message
-        .reply(`Deleted ${numLines} messages`)
+        .reply(msg)
         .then(repliedMessage => {
-          setTimeout(() => repliedMessage.delete(), 3000);
+          setTimeout(() => repliedMessage.delete(), 8000);
         })
         .catch(error => {
           errorHandler(error);
@@ -101,10 +104,13 @@
     }
 
     channel.messages
-      .fetch({ limit: parseInt(numLines) + 1 })
+      .fetch({ limit: numLines + 1 })
       .then((msgs) => {
         const deletableMessages = msgs.filter(message => !message.pinned);
         client.logger.log(`Number of messages to retrieved for delete: ${deletableMessages.size}`);
+        if (numLines + 1 > deletableMessages.size) {
+          showFeedback(`Skipped ${numLines + 1 - deletableMessages.size} pinned message(s)`);
+        }
         deleteBulk(deletableMessages);
       }).catch(error => {
         errorHandler(error);
