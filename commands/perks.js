@@ -19,64 +19,67 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     // eq2 unlock/leverage other branches.
     const categories = {
         'Toleration' : [
-            'Reduces drug addiction gain by',
-            'Decreases risk of overdose by',
-            'Reduces passive negatives from drugs and addiction by',
-            'Reduces the side effects of drugs and increases addiction mitigation by',
+            'drug addiction gain reduction',
+            'drug overdose risk reduction',
+            'drug addiction mitigation and side effects reduction',
+
+            'passive negatives from drugs and addiction',
         ],
 
         'Voracity' : [
-            'Increases nerve gain from alcohol by',
-            'hours of maximum booster cooldown',
-            'hour of maximum booster cooldown',
-            'Increases energy gain from energy drinks by',
-            'Increases happy gain from candy by',
+            'nerve gain from alcohol',
+            'maximum booster cooldown',
+            'energy gain from energy drinks',
+            'happy gain from candy',
         ],
 
         'Suppression' : [
             'upon escape attempt',
-            'Increases dexterity passively by',
-            'Increases defense passively by',
-            'Increases maximum life by',
+            'dexterity passively',
+            'defense passively',
+            'maximum life',
         ],
 
         'Steadfast' : [
-            'Increases strength gym gains by',
-            'Increases speed gym gains by',
-            'Increases defense gym gains by',
-            'Increases dexterity gym gains by',
+            'strength gym gains',
+            'speed gym gains',
+            'defense gym gains',
+            'dexterity gym gains',
         ],
 
         'Excursion' : [
-            'Increases maximum traveling capacity by',
-            'Reduces travelling fees by',
-            'Increases hunting income by',
-            'Reduces rehabilitation costs by',
-            'ncreases cayman bank interest by',
+            'travel item capacity',
+
+            'travelling fees',
+            'hunting income',
+            'rehabilitation costs',
+            'cayman bank interest',
         ],
 
         'Fortitude' : [
-            'Decreases all hospital time by',
-            'minutes of maximum medical cooldown',
-            'life per tick',
+            'incoming hospital time reduction',
+            'minutes maximum medical cooldown',
+            'life regeneration',
             'medical item effectiveness',
-            'Reduces the energy used while reviving to'
+
+            'the energy used while reviving to'
         ],
 
         'Aggression' : [
-            'Increases all accuracy by',
-            'Increases speed passively by',
-            'Increases strength passively by',
-            'Increases outgoing hospitalization time by',
-            'Increases all damage by',
+            'all accuracy',
+            'speed passively',
+            'strength passively',
+            'outgoing hospitalization time',
+            'all damage',
         ],
 
         'Criminality' : [
-            'Increases maximum nerve by',
-            'passive bonus to crime EXP',
-            'Decreases all jail time by',
-            'Decreases bust nerve cost by',
-            'Increase bust success chance by',
+            'passive crime XP',
+            'maximum nerve',
+            'jail time reduction',
+
+            'bust nerve cost',
+            'bust success chance',
         ]
     };
 
