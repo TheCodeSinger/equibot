@@ -49,10 +49,9 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
         'Excursion' : [
             'travel item capacity',
-
+            'rehabilitation cost reduction',
             'travelling fees',
             'hunting income',
-            'rehabilitation costs',
             'cayman bank interest',
         ],
 
