@@ -10,12 +10,24 @@
   try {
     const channel = message.channel;
 
+    return message.reply('test');
+
+    // Allow only Council role to use this command.
+    if (!message.member.roles.cache.some(role => role.id === '634499256916508677')) {
+      return message
+        .reply('Only `@council` are authorized to destroy incriminating records.')
+        .then(repliedMessage => {
+          setTimeout(() => repliedMessage.delete(), 5000);
+        });
+    }
+
+    // Verify not disabled in current channel.
     if (client.config.protectedChannels.includes(channel.id)) {
       return message
         .reply('Clear command disabled in this channel')
         .then(repliedMessage => {
           setTimeout(() => repliedMessage.delete(), 5000);
-        })
+        });
     }
 
     // Max 100 lines to bulk delete

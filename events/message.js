@@ -53,13 +53,11 @@ module.exports = (client, message) => {
     // Issue a snarky retort for unrecognized commands.
     client.logger.cmd(`Unknown command: ${command}`);
     return message.reply(getRetort(command));
-
-    // OR Exit silently. Don't make a fuss.
-    // return;
   }
 
   // Ignore commands which are disabled.
   if (!cmd.conf.enabled) {
+    client.logger.cmd(`Disabled command: ${command}`);
     return message.reply(`Oops. You stumbled upon a secret command that is not yet enabled. Exciting!`);
   }
 
