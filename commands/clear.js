@@ -19,7 +19,10 @@
     }
 
     // Max 100 lines to bulk delete
-    const numLines = parseInt(args[0] ?? 99);
+    const numLines = parseInt(args[0]);
+    if (numLines === NaN) {
+      numLines = 99;
+    }
     client.logger.debug(`Will try to delete ${numLines} messages`);
 
 
