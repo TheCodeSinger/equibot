@@ -691,6 +691,13 @@ module.exports = (client) => {
    */
   function updateGameStats(game, action, memberId, value) {
     client.logger.debug(`updateGameStats args: ${game}, ${action}, ${memberId}, ${value}`);
+    client.games.ensure('totals', {
+      started: 0,
+      canceled: 0,
+      completed: 0,
+      valueAwarded: 0,
+      startDate: Date.now(),
+    });
     if (['started', 'canceled', 'completed'].includes(action)) {
       client.games.math(memberId, 'add', 1, `totals[${action}]`);
       client.games.math(memberId, 'add', 1, `lotto[${action}]`);
