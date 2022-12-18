@@ -133,7 +133,9 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
         // Stop all the jobs.
         Object.keys(watcherConfigs).forEach(function(key) {
-          cronJobWatchers[key]?.stop();
+          if (cronJobWatchers[key]) {
+            cronJobWatchers[key].stop();
+          }
           client.logger.debug(`${symbolMap[key]} (${key}) job stopped`);
         });
         client.customCronJobs.set('stocks', {}, memberId);
@@ -145,7 +147,9 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         }
 
         // Stop the job.
-        cronJobWatchers[stockId]?.stop();
+        if (cronJobWatchers[stockId]) {
+          cronJobWatchers[stockId]?.stop();
+        }
         client.logger.debug(`${symbolMap[stockId]} (${stockId}) job stopped`);
 
         // Delete the job.
