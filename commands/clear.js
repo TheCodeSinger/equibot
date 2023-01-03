@@ -10,8 +10,6 @@
   try {
     const channel = message.channel;
 
-    return message.reply('test');
-
     // Allow only Council role to use this command.
     if (!message.member.roles.cache.some(role => role.id === '634499256916508677')) {
       return message
