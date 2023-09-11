@@ -134,6 +134,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
     // list of results for all specified factions.
     const results = await Promise.all(urls.map((url) => fetch(url).then((r) => r.json()))).catch((error) => {});
+    client.logger.debug(`factionApiResults: ${JSON.stringify(results)}`);
     results.forEach(result => {
         const perk_map = {};
         let found_match = false;
