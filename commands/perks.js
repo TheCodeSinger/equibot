@@ -56,7 +56,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         ],
 
         'Fortitude' : [
-            'Reduces the energy used while reviving',
+            'revive energy cost reduction',
             'incoming hospital time reduction',
             'minutes maximum medical cooldown',
             'life regeneration',
