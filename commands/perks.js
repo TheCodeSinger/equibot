@@ -56,12 +56,11 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         ],
 
         'Fortitude' : [
+            'Reduces the energy used while reviving',
             'incoming hospital time reduction',
             'minutes maximum medical cooldown',
             'life regeneration',
             'medical item effectiveness',
-
-            'the energy used while reviving to'
         ],
 
         'Aggression' : [
@@ -76,7 +75,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
             'passive crime XP',
             'maximum nerve',
             'jail time reduction',
-
+            'crime exp and skill gain',
             'bust nerve cost',
             'bust success chance',
         ]
